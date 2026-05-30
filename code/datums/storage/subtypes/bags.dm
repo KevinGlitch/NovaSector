@@ -30,6 +30,16 @@
 	max_total_storage = 60
 	max_slots = 60
 
+///Singularity trash bag
+/datum/storage/bag/trash/singularity
+	max_total_storage = 99999999
+	max_slots = 80
+
+/datum/storage/bag/trash/singularity/unrestricted
+	max_total_storage = 999999999
+	max_slots = 999999999
+	max_specific_storage = WEIGHT_CLASS_GIGANTIC
+
 ///Ore Bag
 /datum/storage/bag/ore
 	max_specific_storage = WEIGHT_CLASS_HUGE

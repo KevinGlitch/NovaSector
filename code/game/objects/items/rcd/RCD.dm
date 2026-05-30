@@ -645,3 +645,38 @@
 /obj/item/rcd_ammo/large
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*24, /datum/material/glass=SHEET_MATERIAL_AMOUNT*16)
 	ammoamt = 160
+
+// Arcanum Designed RCDs.
+/obj/item/construction/rcd/arcrcd
+	name = "ARC RCD"
+	desc = "A massively improved iteration over the existing Rapid Construction Devices, this one being granted additional matter capacity, ranged capabilities, and 95% faster construction."
+	icon = 'icons/obj/tools.dmi'
+	icon_state = "arcrcd"
+	worn_icon_state = "arcrcd"
+	lefthand_file = 'icons/mob/inhands/equipment/tools_lefthand.dmi'
+	righthand_file = 'icons/mob/inhands/equipment/tools_righthand.dmi'
+	max_matter = 240
+	matter = 80 //Preloaded to one third of capacity.
+	canRturf = TRUE //Ranged Capability.
+	ranged = TRUE //Ranged Capability.
+	slot_flags = ITEM_SLOT_BELT
+	item_flags = NO_MAT_REDEMPTION | NOBLUDGEON
+	has_ammobar = TRUE
+	actions_types = list(/datum/action/item_action/rcd_scan)
+	action_slots = ALL
+	drop_sound = 'sound/items/handling/tools/rcd_drop.ogg'
+	pickup_sound = 'sound/items/handling/tools/rcd_pickup.ogg'
+	sound_vary = TRUE
+	delay_mod = 0.05
+
+/obj/item/construction/rcd/arcrcd/preloaded
+	max_matter = 240
+	matter = 240 //Preloaded to full capacity.
+	construction_upgrades = RCD_ALL_UPGRADES
+
+/obj/item/construction/rcd/arcrcd/overpowered
+	name = "Broken ARC RCD"
+	desc = "A byproduct of Arcanum's tinkering with singularities..."
+	max_matter = INFINITY
+	matter = INFINITY
+	construction_upgrades = RCD_ALL_UPGRADES & ~RCD_UPGRADE_SILO_LINK

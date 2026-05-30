@@ -95,6 +95,9 @@
 /mob/proc/update_body()
 	return
 
+/mob/proc/update_hair()
+	return
+
 ///Updates the glasses overlay & HUD element.
 /mob/proc/update_worn_glasses()
 	return

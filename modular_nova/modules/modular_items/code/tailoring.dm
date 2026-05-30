@@ -59,7 +59,6 @@
 	reqs = list(/obj/item/clothing/glasses/hud/security/sunglasses/eyepatch = 1)
 	tool_behaviors = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
 	category = CAT_CLOTHING
-	crafting_flags = parent_type::crafting_flags | CRAFT_SKIP_MATERIALS_PARITY
 
 /datum/crafting_recipe/medpatch
 	name = "Medical Eyepatch HUD"
@@ -74,7 +73,6 @@
 	reqs = list(/obj/item/clothing/glasses/hud/eyepatch/med = 1)
 	tool_behaviors = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
 	category = CAT_CLOTHING
-	crafting_flags = parent_type::crafting_flags | CRAFT_SKIP_MATERIALS_PARITY
 
 /datum/crafting_recipe/mesonpatch
 	name = "Meson Eyepatch HUD"
@@ -89,7 +87,6 @@
 	reqs = list(/obj/item/clothing/glasses/hud/eyepatch/meson = 1)
 	tool_behaviors = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
 	category = CAT_CLOTHING
-	crafting_flags = parent_type::crafting_flags | CRAFT_SKIP_MATERIALS_PARITY
 
 /datum/crafting_recipe/robopatch
 	name = "Diagnostic Eyepatch HUD"
@@ -104,7 +101,6 @@
 	reqs = list(/obj/item/clothing/glasses/hud/eyepatch/diagnostic = 1)
 	tool_behaviors = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
 	category = CAT_CLOTHING
-	crafting_flags = parent_type::crafting_flags | CRAFT_SKIP_MATERIALS_PARITY
 
 /datum/crafting_recipe/scipatch
 	name = "Science Eyepatch HUD"
@@ -119,5 +115,4 @@
 	reqs = list(/obj/item/clothing/glasses/hud/eyepatch/sci = 1)
 	tool_behaviors = list(TOOL_SCREWDRIVER, TOOL_WIRECUTTER)
 	category = CAT_CLOTHING
-	crafting_flags = parent_type::crafting_flags | CRAFT_SKIP_MATERIALS_PARITY
 //eyepatches end//

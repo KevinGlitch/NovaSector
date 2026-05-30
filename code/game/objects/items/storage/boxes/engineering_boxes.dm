@@ -24,7 +24,7 @@
 	storage_type = /datum/storage/box/debug
 
 /obj/item/storage/box/debugtools/PopulateContents()
-	var/list/items_inside = list(
+	var/static/items_inside = list(
 		/obj/item/card/emag=1,
 		/obj/item/construction/rcd/combat/admin=1,
 		/obj/item/disk/tech_disk/debug=1,
@@ -81,3 +81,20 @@
 /obj/item/storage/box/stickers/chief_engineer/PopulateContents()
 	for(var/i in 1 to 3)
 		new /obj/item/sticker/chief_engineer(src)
+
+/// EXOBYTECHNOVA UPD: Regen core and anomaly neutralizers/cores boxes
+/obj/item/storage/box/cables
+	name = "cable coil box"
+	desc = "A box made for electrical-loving FREAKS who can't figure out how to use an electrical toolbox instead."
+	icon_state = "engibox"
+	illustration = "cable_coil"
+
+/obj/item/storage/box/cables/PopulateContents()
+	for(var/i in 1 to 7)
+		new /obj/item/stack/cable_coil/thirty(src)
+
+/obj/item/storage/box/powercells
+	name = "battery box"
+	desc = "Power cells and batteries for all your machine-powering needs."
+	illustration = "cell"
+/// EXOBYTECHNOVA UPD END

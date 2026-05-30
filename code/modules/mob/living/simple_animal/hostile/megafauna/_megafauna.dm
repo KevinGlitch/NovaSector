@@ -112,7 +112,7 @@
 	set_health(0)
 	return ..()
 
-/mob/living/simple_animal/hostile/megafauna/dust(just_ash, drop_items, give_moodlet, force)
+/mob/living/simple_animal/hostile/megafauna/dust(just_ash, drop_items, force)
 	if(!force && health > 0)
 		return
 	loot.Cut()
@@ -147,7 +147,7 @@
 		qdel(victim.get_organ_slot(ORGAN_SLOT_LUNGS))
 		qdel(victim.get_organ_slot(ORGAN_SLOT_HEART))
 		qdel(victim.get_organ_slot(ORGAN_SLOT_LIVER))
-	victim.adjust_brute_loss(500)
+	victim.adjustBruteLoss(500)
 	victim.death() //make sure they die
 	victim.apply_status_effect(/datum/status_effect/gutted)
 	LoseTarget()
@@ -170,13 +170,13 @@
 /mob/living/simple_animal/hostile/megafauna/ex_act(severity, target)
 	switch (severity)
 		if (EXPLODE_DEVASTATE)
-			adjust_brute_loss(250)
+			adjustBruteLoss(250)
 
 		if (EXPLODE_HEAVY)
-			adjust_brute_loss(100)
+			adjustBruteLoss(100)
 
 		if (EXPLODE_LIGHT)
-			adjust_brute_loss(50)
+			adjustBruteLoss(50)
 
 	return TRUE
 

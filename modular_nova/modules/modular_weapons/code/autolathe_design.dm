@@ -2,7 +2,7 @@
 	design_ids += list(
 		"kineticballs",
 		"pepperballs",
-		"mag_nt20",
+		"mag_c20r",
 		"mag_katyusha",
 	)
 	return ..()

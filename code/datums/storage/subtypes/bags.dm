@@ -30,6 +30,16 @@
 	max_total_storage = 60
 	max_slots = 60
 
+///Singularity trash bag
+/datum/storage/bag/trash/singularity
+	max_total_storage = 99999999
+	max_slots = 80
+
+/datum/storage/bag/trash/singularity/unrestricted
+	max_total_storage = 999999999
+	max_slots = 999999999
+	max_specific_storage = WEIGHT_CLASS_GIGANTIC
+
 ///Ore Bag
 /datum/storage/bag/ore
 	max_specific_storage = WEIGHT_CLASS_HUGE
@@ -84,7 +94,7 @@
 	allow_big_nesting = TRUE
 	max_slots = 99
 	max_specific_storage = WEIGHT_CLASS_GIGANTIC
-	max_total_storage = 5000
+	max_total_storage = 500000
 
 /datum/storage/bag/sheet_snatcher_debug/New(atom/parent, max_slots, max_specific_storage, max_total_storage, rustle_sound, remove_rustle_sound)
 	. = ..()
@@ -218,9 +228,8 @@
 		/obj/item/stack/ore/bluespace_crystal,
 		/obj/item/stock_parts,
 		/obj/item/wallframe/camera,
-		/obj/item/rcd_ammo,
-	), exception_hold_list = list(
 		/obj/item/stack/sheet,
+		/obj/item/rcd_ammo,
 		/obj/item/stack/rods,
 	))
 

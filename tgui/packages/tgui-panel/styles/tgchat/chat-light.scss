@@ -267,16 +267,6 @@ a:visited {
   background: yellow;
 }
 
-.Chat__highlight {
-  color: oklch(from var(--highlight-color) min(l, 0.45) c h);
-  background: oklch(from var(--highlight-color) min(l, 0.45) c h / 25%);
-}
-
-.ChatMessage--highlighted {
-  border-left-color: oklch(from var(--highlight-color) min(l, 0.45) c h);
-  background: oklch(from var(--highlight-color) min(l, 0.45) c h / 14%);
-}
-
 h1,
 h2,
 h3,
@@ -399,6 +389,10 @@ em {
 
 .centcomradio {
   color: hsl(0, 0%, 40.8%);
+}
+
+.phoenixradio { // exonova edit
+    color: hsl(21.88, 100.0%, 50.0%);
 }
 
 .aiprivradio {
@@ -923,13 +917,6 @@ h2.alert {
   font-size: 125%;
 }
 
-.policy {
-  text-align: center;
-  font-size: 125%;
-  color: hsl(276, 70%, 52%);
-  font-style: italic;
-}
-
 .abductor {
   color: hsl(300, 100%, 25.1%);
   font-style: italic;
@@ -967,11 +954,6 @@ h2.alert {
 .upside_down {
   transform: rotate(180deg);
   display: inline-block;
-}
-
-.cyan {
-  color: #95afac;
-  text-shadow: 0 0 6px #95afac;
 }
 
 .connectionClosed,
@@ -1329,11 +1311,11 @@ $border-width-px: $border-width * 1px;
   color: #8a2be2;
 }
 .looc {
-  color: #113788;
+  color: #6699cc;
   font-weight: bold;
 }
 .rlooc {
-  color: #113788;
+  color: #507294;
   font-weight: bold;
 }
 .subtle {
@@ -1373,7 +1355,7 @@ $border-width-px: $border-width * 1px;
   font-weight: bold;
 }
 
-.cyan_nova {
+.cyan {
   color: #0ea1e6;
   font-weight: bold;
 }

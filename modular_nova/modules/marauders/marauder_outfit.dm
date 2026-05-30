@@ -17,7 +17,7 @@
 		return
 	if(!uniform.has_sensor)
 		return
-	uniform.set_sensor_mode(SENSOR_OFF)
+	uniform.sensor_mode = NO_SENSORS
 
 /obj/structure/mannequin/operative_barracks/wildcard
 

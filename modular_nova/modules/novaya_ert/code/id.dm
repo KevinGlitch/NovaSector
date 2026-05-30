@@ -1,11 +1,11 @@
 /obj/item/card/id/advanced/centcom/ert/nri
-	name = "\improper HC ID"
-	desc = "An ID straight from the HC."
+	name = "\improper NRI ID"
+	desc = "An ID straight from the NRI."
 	icon_state = "card_black"
 	assigned_icon_state = "assigned_centcom"
 
 /datum/id_trim/nri
-	assignment = "HC Soldier"
+	assignment = "NRI Soldier"
 	trim_icon = 'modular_nova/master_files/icons/obj/card.dmi'
 	trim_state = "trim_nri"
 	department_color = COLOR_RED_LIGHT
@@ -19,33 +19,33 @@
 
 
 /datum/id_trim/nri/commander
-	assignment = "HC Platoon Commander"
+	assignment = "NRI Platoon Commander"
 	trim_state = "trim_nri_commander"
 	department_color = COLOR_RED_LIGHT
 	subdepartment_color = COLOR_COMMAND_BLUE
 	sechud_icon_state = "hud_nri_commander"
 
 /datum/id_trim/nri/heavy
-	assignment = "HC Heavy Soldier"
+	assignment = "NRI Heavy Soldier"
 
 /datum/id_trim/nri/medic
-	assignment = "HC Corpsman"
+	assignment = "NRI Corpsman"
 
 /datum/id_trim/nri/engineer
-	assignment = "HC Combat Engineer"
+	assignment = "NRI Combat Engineer"
 
 /datum/id_trim/nri/diplomat
-	assignment = "HC Diplomat"
+	assignment = "NRI Diplomat"
 	trim_state = "trim_nri_commander"
 	department_color = COLOR_RED_LIGHT
 	subdepartment_color = COLOR_COMMAND_BLUE
 	sechud_icon_state = "hud_nri_commander"
 
 /datum/id_trim/nri/diplomat/major
-	assignment = "HC Major"
+	assignment = "NRI Major"
 
 /datum/id_trim/nri/diplomat/scientist
-	assignment = "HC Research Inspector"
+	assignment = "NRI Research Inspector"
 
 /datum/id_trim/nri/diplomat/doctor
-	assignment = "HC Medical Inspector"
+	assignment = "NRI Medical Inspector"

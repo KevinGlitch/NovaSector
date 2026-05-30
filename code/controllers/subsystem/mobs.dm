@@ -1,7 +1,7 @@
 SUBSYSTEM_DEF(mobs)
 	name = "Mobs"
 	priority = FIRE_PRIORITY_MOBS
-	ss_flags = SS_KEEP_TIMING | SS_NO_INIT
+	flags = SS_KEEP_TIMING | SS_NO_INIT
 	runlevels = RUNLEVEL_GAME | RUNLEVEL_POSTGAME
 	wait = 2 SECONDS
 
@@ -32,12 +32,13 @@ SUBSYSTEM_DEF(mobs)
 
 	//cache for sanic speed (lists are references anyways)
 	var/list/currentrun = src.currentrun
+	var/times_fired = src.times_fired
 	var/seconds_per_tick = wait / (1 SECONDS)
 	while(currentrun.len)
 		var/mob/living/processing_mob = currentrun[currentrun.len]
 		currentrun.len--
 		if(processing_mob)
-			processing_mob.Life(seconds_per_tick)
+			processing_mob.Life(seconds_per_tick, times_fired)
 		else
 			GLOB.mob_living_list.Remove(processing_mob)
 		if (MC_TICK_CHECK)

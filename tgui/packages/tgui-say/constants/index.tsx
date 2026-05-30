@@ -79,4 +79,8 @@ export const RADIO_PREFIXES = {
     id: 'centcom',
     label: 'CCom',
   },
+  ':6 ': {
+    id: 'phoenix',
+    label: 'Phnx',
+  },
 } as const;

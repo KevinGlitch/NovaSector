@@ -1,9 +1,9 @@
 // Contains:
-// Gavel
-// Sound Block
+// Gavel Hammer
+// Gavel Block
 
 /obj/item/gavelhammer
-	name = "gavel"
+	name = "gavel hammer"
 	desc = "Order, order! No bombs in my courthouse."
 	icon = 'icons/obj/weapons/hammer.dmi'
 	icon_state = "gavelhammer"
@@ -14,7 +14,6 @@
 	attack_verb_continuous = list("bashes", "batters", "judges", "whacks")
 	attack_verb_simple = list("bash", "batter", "judge", "whack")
 	resistance_flags = FLAMMABLE
-	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT * 2)
 
 /obj/item/gavelhammer/Initialize(mapload)
 	. = ..()
@@ -26,15 +25,14 @@
 	return BRUTELOSS
 
 /obj/item/gavelblock
-	name = "sound block"
-	desc = "Smack it with a gavel when the assistants get rowdy."
+	name = "gavel block"
+	desc = "Smack it with a gavel hammer when the assistants get rowdy."
 	icon = 'icons/obj/weapons/hammer.dmi'
 	icon_state = "gavelblock"
 	force = 2
 	throwforce = 2
 	w_class = WEIGHT_CLASS_TINY
 	resistance_flags = FLAMMABLE
-	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT)
 
 /obj/item/gavelblock/attackby(obj/item/I, mob/user, list/modifiers, list/attack_modifiers)
 	if(istype(I, /obj/item/gavelhammer))

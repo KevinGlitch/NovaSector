@@ -6,7 +6,6 @@
 	inhand_icon_state = "electronic"
 	lefthand_file = 'icons/mob/inhands/items/devices_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/items/devices_righthand.dmi'
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 1.05, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 1.05)
 	/// MOD unit we are powering.
 	var/obj/item/mod/control/mod
 
@@ -52,7 +51,7 @@
 
 /// Returns what icon state to display on the HUD for the charge level of this core
 /obj/item/mod/core/proc/get_charge_icon_state()
-	return SPACESUIT_NO_ICON
+	return "0"
 
 /// Gets what the UI should use for the charge bar color.
 /obj/item/mod/core/proc/get_chargebar_color()
@@ -90,7 +89,7 @@
 	return TRUE
 
 /obj/item/mod/core/infinite/get_charge_icon_state()
-	return SPACESUIT_CELL_HIGH
+	return "high"
 
 /obj/item/mod/core/infinite/get_chargebar_color()
 	return "teal"
@@ -171,19 +170,19 @@
 
 /obj/item/mod/core/standard/get_charge_icon_state()
 	if(isnull(charge_source()))
-		return SPACESUIT_CELL_MISSING
+		return "missing"
 
 	switch(round(charge_amount() / max_charge_amount(), 0.01))
 		if(0.75 to INFINITY)
-			return SPACESUIT_CELL_HIGH
+			return "high"
 		if(0.5 to 0.75)
-			return SPACESUIT_CELL_MID
+			return "mid"
 		if(0.25 to 0.5)
-			return SPACESUIT_CELL_LOW
+			return "low"
 		if(0.02 to 0.25)
-			return SPACESUIT_CELL_VERY_LOW
+			return "very_low"
 
-	return SPACESUIT_CELL_EMPTY
+	return "empty"
 
 /obj/item/mod/core/standard/get_chargebar_color()
 	if(isnull(charge_source()))
@@ -227,7 +226,7 @@
 /obj/item/mod/core/standard/proc/on_attack_hand(datum/source, mob/living/user)
 	SIGNAL_HANDLER
 
-	if(mod.seconds_electrified && charge_amount() && mod.shock(user, 100))
+	if(mod.seconds_electrified && charge_amount() && mod.shock(user))
 		return COMPONENT_CANCEL_ATTACK_CHAIN
 	if(mod.open && mod.loc == user)
 		INVOKE_ASYNC(src, PROC_REF(mod_uninstall_cell), user)
@@ -302,7 +301,6 @@
 		liquid electricity, this core makes it much more efficient, running all soft, hard, and wetware with several \
 		times less energy usage."
 	/// A modifier to all charge we use, ethereals don't need to spend as much energy as normal suits.
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 1.15, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 1.05)
 	var/charge_modifier = 0.1
 
 /obj/item/mod/core/ethereal/charge_source()
@@ -335,7 +333,7 @@
 	return charge_amount() >= amount * charge_modifier
 
 /obj/item/mod/core/ethereal/get_charge_icon_state()
-	return isnull(charge_source()) ? SPACESUIT_CELL_MISSING : SPACESUIT_NO_ICON
+	return isnull(charge_source()) ? "missing" : "0"
 
 /obj/item/mod/core/ethereal/get_chargebar_color()
 	if(isnull(charge_source()))
@@ -405,15 +403,15 @@
 /obj/item/mod/core/plasma/get_charge_icon_state()
 	switch(round(charge_amount() / max_charge_amount(), 0.01))
 		if(0.75 to INFINITY)
-			return SPACESUIT_CELL_HIGH
+			return "high"
 		if(0.5 to 0.75)
-			return SPACESUIT_CELL_MID
+			return "mid"
 		if(0.25 to 0.5)
-			return SPACESUIT_CELL_LOW
+			return "low"
 		if(0.02 to 0.25)
-			return SPACESUIT_CELL_VERY_LOW
+			return "very_low"
 
-	return SPACESUIT_CELL_EMPTY
+	return "empty"
 
 /obj/item/mod/core/plasma/get_chargebar_color()
 	switch(round(charge_amount() / max_charge_amount(), 0.01))
@@ -457,11 +455,18 @@
 	// Not super sure if this should just be the same, but will see.
 	maxcharge = 15 * STANDARD_CELL_CHARGE
 	charge = 15 * STANDARD_CELL_CHARGE
+	/// The mob to be spawned by the core
+	var/mob/living/spawned_mob_type = /mob/living/basic/butterfly/lavaland/temporary
+	/// Max number of mobs it can spawn
+	var/max_spawns = 3
+	/// Mob spawner for the core
+	var/datum/component/spawner/mob_spawner
 	/// Particle holder for pollen particles
 	var/obj/effect/abstract/particle_holder/particle_effect
 
 /obj/item/mod/core/plasma/lavaland/Destroy()
 	QDEL_NULL(particle_effect)
+	QDEL_NULL(mob_spawner)
 	return ..()
 
 /obj/item/mod/core/plasma/lavaland/install(obj/item/mod/control/mod_unit)
@@ -475,12 +480,28 @@
 /obj/item/mod/core/plasma/lavaland/proc/on_toggle()
 	SIGNAL_HANDLER
 	if(mod.active)
-		particle_effect = new(mod.wearer, /particles/pollen/modsuit, PARTICLE_ATTACH_MOB)
+		particle_effect = new(mod.wearer, /particles/pollen, PARTICLE_ATTACH_MOB)
+		mob_spawner = mod.wearer.AddComponent(/datum/component/spawner, \
+			spawn_types = list(spawned_mob_type), \
+			spawn_time = 5 SECONDS, \
+			max_spawned = 3, \
+			faction = mod.wearer.faction, \
+		)
+		RegisterSignal(mob_spawner, COMSIG_SPAWNER_SPAWNED, PROC_REF(new_mob))
 		RegisterSignal(mod.wearer, COMSIG_MOVABLE_MOVED, PROC_REF(spread_flowers))
 		return
 
 	QDEL_NULL(particle_effect)
+	UnregisterSignal(mob_spawner, COMSIG_SPAWNER_SPAWNED)
 	UnregisterSignal(mod.wearer, COMSIG_MOVABLE_MOVED)
+	for(var/datum/mob in mob_spawner.spawned_things)
+		qdel(mob)
+	QDEL_NULL(mob_spawner)
+
+/obj/item/mod/core/plasma/lavaland/proc/new_mob(spawner, mob/living/basic/butterfly/lavaland/temporary/spawned)
+	SIGNAL_HANDLER
+	if(spawned)
+		spawned.source = src
 
 /obj/item/mod/core/plasma/lavaland/proc/spread_flowers(atom/source, atom/oldloc, dir, forced)
 	SIGNAL_HANDLER
@@ -625,15 +646,15 @@
 /obj/item/mod/core/soul/get_charge_icon_state()
 	switch(round(charge_amount() / max_charge_amount(), 0.01))
 		if(0.75 to INFINITY)
-			return SPACESUIT_CELL_HIGH
+			return "high"
 		if(0.5 to 0.75)
-			return SPACESUIT_CELL_MID
+			return "mid"
 		if(0.25 to 0.5)
-			return SPACESUIT_CELL_LOW
+			return "low"
 		if(0.02 to 0.25)
-			return SPACESUIT_CELL_VERY_LOW
+			return "very_low"
 
-	return SPACESUIT_CELL_EMPTY
+	return "empty"
 
 /obj/item/mod/core/soul/vv_edit_var(vname, vval)
 	. = ..()

@@ -16,52 +16,19 @@ const HEALTH_COLOR_BY_LEVEL = [
   '#801308',
 ];
 
+const SORT_NAMES = {
+  ijob: 'Job',
+  name: 'Name',
+  area: 'Position',
+  health: 'Vitals',
+};
+
 const STAT_LIVING = 0;
 const STAT_DEAD = 4;
 
+const SORT_OPTIONS = ['health', 'ijob', 'name', 'area'];
+
 const jobIsHead = (jobId: number) => jobId % 10 === 0;
-
-const SORT_OPTIONS = [
-  {
-    name: 'Job',
-    sort: (a: CrewSensor, b: CrewSensor) => {
-      return a.ijob - b.ijob;
-    }
-  },
-  {
-    name: 'Name',
-    sort: (a: CrewSensor, b: CrewSensor) => {
-      if (a.name > b.name) return 1;
-      if (a.name < b.name) return -1;
-      return 0;
-    }
-  },
-  {
-    name: 'Area',
-    sort: (a: CrewSensor, b: CrewSensor) => {
-      if (a.area === undefined) return 1;
-      if (b.area === undefined) return -1;
-      if (a.area > b.area) return 1;
-      if (a.area < b.area) return -1;
-      return 0;
-    }
-  },
-  {
-    name: 'Vitals',
-    sort: (a: CrewSensor, b: CrewSensor) => {
-      if (a.life_status > b.life_status) return -1;
-      if (a.life_status < b.life_status) return 1;
-
-      if (b.oxydam === undefined) return -1;
-      if (a.oxydam === undefined) return 1;
-
-      if (a.health < b.health) return -1;
-      if (a.health > b.health) return 1;
-
-      return 0;
-    }
-  }
-];
 
 const jobToColor = (jobId: number) => {
   if (jobId === 0) {
@@ -85,14 +52,9 @@ const jobToColor = (jobId: number) => {
   if (jobId >= 60 && jobId < 200) {
     return COLORS.department.service;
   }
-  if (jobId >= 200 && jobId < 240) { // NOVA EDIT CHANGE - ORIGINAL: jobID < if (jobId >= 200 && jobId < 230)
+  if (jobId >= 200 && jobId < 230) {
     return COLORS.department.centcom;
   }
-  // NOVA EDIT ADDITION START
-  if (jobId >= 401 && jobId < 409) {
-    return COLORS.department.prisoner;
-  }
-  // NOVA EDIT ADDITION END
   return COLORS.department.other;
 };
 
@@ -104,6 +66,22 @@ const statToIcon = (life_status: number) => {
       return 'skull';
   }
   return 'heartbeat';
+};
+
+const healthSort = (a: CrewSensor, b: CrewSensor) => {
+  if (a.life_status > b.life_status) return -1;
+  if (a.life_status < b.life_status) return 1;
+  if (a.health < b.health) return -1;
+  if (a.health > b.health) return 1;
+  return 0;
+};
+
+const areaSort = (a: CrewSensor, b: CrewSensor) => {
+  a.area ??= '~';
+  b.area ??= '~';
+  if (a.area < b.area) return -1;
+  if (a.area > b.area) return 1;
+  return 0;
 };
 
 const healthToAttribute = (
@@ -156,8 +134,6 @@ type CrewSensor = {
   area: string | undefined;
   health: number;
   ref: string;
-  is_robot: BooleanLike; // NOVA EDIT ADDITION
-  can_track: BooleanLike; // NOVA EDIT ADDITION
 };
 
 type CrewConsoleData = {
@@ -171,25 +147,36 @@ const CrewTable = () => {
 
   const [sortAsc, setSortAsc] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [indexOfSortingOption, setIndexOfSortingOption] = useState(0);
+  const [sortBy, setSortBy] = useState(SORT_OPTIONS[0]);
 
   const cycleSortBy = () => {
-    setIndexOfSortingOption((indexOfSortingOption + 1) % SORT_OPTIONS.length);
+    let idx = SORT_OPTIONS.indexOf(sortBy) + 1;
+    if (idx === SORT_OPTIONS.length) idx = 0;
+    setSortBy(SORT_OPTIONS[idx]);
   };
 
   const nameSearch = createSearch(searchQuery, (crew: CrewSensor) => crew.name);
 
-  const sorted = sensors.filter(nameSearch).sort((a, b) =>
-    sortAsc
-      ? SORT_OPTIONS[indexOfSortingOption].sort(a, b)
-      : SORT_OPTIONS[indexOfSortingOption].sort(b, a)
-  );
+  const sorted = sensors.filter(nameSearch).sort((a, b) => {
+    switch (sortBy) {
+      case 'name':
+        return sortAsc ? +(a.name > b.name) : +(b.name > a.name);
+      case 'ijob':
+        return sortAsc ? a.ijob - b.ijob : b.ijob - a.ijob;
+      case 'health':
+        return sortAsc ? healthSort(a, b) : healthSort(b, a);
+      case 'area':
+        return sortAsc ? areaSort(a, b) : areaSort(b, a);
+      default:
+        return 0;
+    }
+  });
 
   return (
     <Section
       title={
         <>
-          <Button onClick={cycleSortBy}>{SORT_OPTIONS[indexOfSortingOption].name}</Button>
+          <Button onClick={cycleSortBy}>{SORT_NAMES[sortBy]}</Button>
           <Button onClick={() => setSortAsc(!sortAsc)}>
             <Icon
               style={{ marginLeft: '2px' }}
@@ -246,8 +233,6 @@ const CrewTableEntry = (props: CrewTableEntryProps) => {
     burndam,
     brutedam,
     area,
-    is_robot, // NOVA EDIT ADDITION
-    can_track // NOVA EDIT ADDITION
   } = sensor_data;
 
   return (
@@ -256,11 +241,6 @@ const CrewTableEntry = (props: CrewTableEntryProps) => {
         {name}
         {assignment !== undefined ? ` (${assignment})` : ''}
       </Table.Cell>
-      { /* NOVA EDIT ADDITION START */}
-      <Table.Cell collapsing textAlign="center">
-        {is_robot ? <Icon name="wrench" color="#B7410E" size={1} /> : ''}
-      </Table.Cell>
-      { /* NOVA EDIT ADDITION END */}
       <Table.Cell collapsing textAlign="center">
         {oxydam !== undefined ? (
           <Icon
@@ -307,7 +287,6 @@ const CrewTableEntry = (props: CrewTableEntryProps) => {
       {!!link_allowed && (
         <Table.Cell collapsing>
           <Button
-            disabled={!can_track} // NOVA EDIT ADDITION
             onClick={() =>
               act('select_person', {
                 name: name,

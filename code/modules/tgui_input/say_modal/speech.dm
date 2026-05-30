@@ -9,11 +9,9 @@
  */
 /datum/tgui_say/proc/alter_entry(payload)
 	var/entry = payload["entry"]
-	var/list/phrases = alter_phrases || hurt_phrases
-
 	/// No OOC leaks
-	if(!entry || payload["channel"] == OOC_CHANNEL || payload["channel"] == ME_CHANNEL || payload["channel"] == PRAY_CHANNEL || payload["channel"] == LOOC_CHANNEL) // NOVA EDIT CHANGE - ORIGINAL: if(!entry || payload["channel"] == OOC_CHANNEL || payload["channel"] == ME_CHANNEL || payload["channel"] == PRAY_CHANNEL)
-		return pick(phrases)
+	if(!entry || payload["channel"] == OOC_CHANNEL || payload["channel"] == ME_CHANNEL || payload["channel"] == LOOC_CHANNEL) // NOVA EDIT CHANGE - CUSTOMIZATION
+		return pick(hurt_phrases)
 	/// Random trimming for larger sentences
 	if(length(entry) > 50)
 		entry = trim(entry, rand(40, 50))
@@ -21,7 +19,7 @@
 		/// Otherwise limit trim to just last letter
 		if(length(entry) > 1)
 			entry = trim(entry, length(entry))
-	return entry + "-" + pick(phrases)
+	return entry + "-" + pick(hurt_phrases)
 
 /**
  * Delegates the speech to the proper channel.
@@ -44,18 +42,14 @@
 			client.mob.me_verb(entry)
 			return TRUE
 		if(OOC_CHANNEL)
-			ASYNC
-				client.ooc(entry)
+			client.ooc(entry)
 			return TRUE
 		if(ADMIN_CHANNEL)
-			INVOKE_ASYNC(SSadmin_verbs, TYPE_PROC_REF(/datum/controller/subsystem/admin_verbs, dynamic_invoke_verb), client, /datum/admin_verb/cmd_admin_say, entry)
-			return TRUE
-		if(PRAY_CHANNEL)
-			client.mob.pray(entry)
+			SSadmin_verbs.dynamic_invoke_verb(client, /datum/admin_verb/cmd_admin_say, entry)
 			return TRUE
 		// NOVA EDIT ADDITION START - CUSTOMIZATION
 		if(LOOC_CHANNEL)
-			INVOKE_ASYNC(client, TYPE_PROC_REF(/client, looc_message), entry)
+			client.looc(entry)
 			return TRUE
 		if(WHIS_CHANNEL)
 			client.mob.whisper_verb(entry)
@@ -68,23 +62,9 @@
 /**
  * Force say handler.
  * Sends a message to the say modal to send its current value.
- * Arguments:
- * 	alter_phrases - Optional list of alternate suffixes to blurt out
- * 	immediate - If [TRUE], the say must be invoked inline due to side effects that may cause the mob to be unable to speak
  */
-/datum/tgui_say/proc/force_say(list/alter_phrases = null, immediate = FALSE)
-	src.alter_phrases = alter_phrases
-	if(immediate)
-		if(!saved_text)
-			saved_text = ""
-			if(!saved_channel)
-				saved_channel = SAY_CHANNEL
-
-		handle_entry("force", list("type" = "force", "entry" = saved_text, "channel" = saved_channel))
-		window.send_message("close")
-	else
-		window.send_message("force")
-
+/datum/tgui_say/proc/force_say()
+	window.send_message("force")
 	stop_typing()
 
 /**
@@ -96,14 +76,11 @@
 
 /**
  * Makes the player force say what's in their current input box.
- * Arguments:
- * 	alter_phrases - Optional list of alternate suffixes to blurt out
- * 	immediate - If [TRUE], the say must be invoked inline due to side effects that may cause the mob to be unable to speak
  */
-/mob/living/carbon/human/proc/force_say(list/alter_phrases = null, immediate = FALSE)
+/mob/living/carbon/human/proc/force_say()
 	if(stat != CONSCIOUS || !client?.tgui_say?.window_open)
 		return FALSE
-	client.tgui_say.force_say(alter_phrases, immediate)
+	client.tgui_say.force_say()
 	if(client.typing_indicators)
 		log_speech_indicators("[key_name(client)] FORCED to stop typing, indicators enabled.")
 	else
@@ -133,7 +110,7 @@
  *  boolean - success or failure
  */
 /datum/tgui_say/proc/handle_entry(type, payload)
-	if(!payload?["channel"] || isnull(payload["entry"]))
+	if(!payload?["channel"] || !payload["entry"])
 		CRASH("[usr] entered in a null payload to the chat window.")
 	if(length(payload["entry"]) > max_length)
 		CRASH("[usr] has entered more characters than allowed into a TGUI-Say")
@@ -142,7 +119,7 @@
 		return TRUE
 	if(type == "force")
 		var/target_channel = payload["channel"]
-		if(target_channel == ME_CHANNEL || target_channel == OOC_CHANNEL || target_channel == PRAY_CHANNEL)
+		if(target_channel == ME_CHANNEL || target_channel == OOC_CHANNEL)
 			target_channel = SAY_CHANNEL // No ooc leaks
 		delegate_speech(alter_entry(payload), target_channel)
 		return TRUE
@@ -151,6 +128,5 @@
 		var/target_channel = payload["channel"]
 		if(target_channel == SAY_CHANNEL || target_channel == RADIO_CHANNEL)
 			saved_text = payload["entry"] // only save IC text
-			saved_channel = target_channel
 		return TRUE
 	return FALSE

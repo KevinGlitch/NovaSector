@@ -13,4 +13,3 @@
 // The categories of reagent packaging
 #define CAT_HYPOS "hypos"
 #define CAT_DARTS "darts"
-#define CAT_PEN_INJECTORS "pen injectors"

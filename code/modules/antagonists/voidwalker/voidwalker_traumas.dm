@@ -7,7 +7,6 @@
 	lose_text = ""
 	resilience = TRAUMA_RESILIENCE_LOBOTOMY
 	random_gain = FALSE
-	known_trauma = FALSE
 	/// Type for the bodypart texture we add
 	var/bodypart_overlay_type = /datum/bodypart_overlay/texture/spacey
 	/// Color in which we paint the space texture
@@ -45,7 +44,7 @@
 	RegisterSignal(owner, COMSIG_CARBON_ATTACH_LIMB, PROC_REF(texture_limb)) //also catch new limbs being attached
 	RegisterSignal(owner, COMSIG_CARBON_REMOVE_LIMB, PROC_REF(untexture_limb)) //and remove it from limbs if they go away
 
-	for(var/obj/item/bodypart as anything in owner.get_bodyparts())
+	for(var/obj/item/bodypart as anything in owner.bodyparts)
 		texture_limb(owner, bodypart)
 
 	if(ishuman(owner))
@@ -75,11 +74,11 @@
 		var/mob/living/carbon/human/human = owner
 		human.physiology.brute_mod /= brute_mod
 
-	for(var/obj/item/bodypart/bodypart as anything in owner.get_bodyparts())
+	for(var/obj/item/bodypart/bodypart as anything in owner.bodyparts)
 		untexture_limb(owner, bodypart)
 	owner.update_body()
 
-/datum/brain_trauma/voided/on_life(seconds_per_tick)
+/datum/brain_trauma/voided/on_life(seconds_per_tick, times_fired)
 	. = ..()
 
 	if(prob(vomit_frequency))

@@ -335,8 +335,7 @@ GLOBAL_LIST_EMPTY(gravity_generators)
 	soundloop.start()
 	var/old_gravity = gravity_in_level()
 	complete_state_update()
-	if (isnull(gravity_field))	// because if it isn't null, we have just overwritten it
-		gravity_field = new(src, 2, TRUE, 6)
+	gravity_field = new(src, 2, TRUE, 6)
 
 	if (!old_gravity)
 		if(SSticker.current_state == GAME_STATE_PLAYING)
@@ -489,14 +488,6 @@ GLOBAL_LIST_EMPTY(gravity_generators)
 /obj/machinery/gravity_generator/main/shuttleRotate(rotation, params)
 	params = NONE
 	return ..()
-
-/// Admin proc that causes gravity to fully restart, via the secrets panel's fix gravity.
-/obj/machinery/gravity_generator/main/proc/kickstart()
-	charge_count = 100
-	breaker = TRUE
-	set_power()
-	enable()
-	investigate_log("was turned re-enabled by admin event.", INVESTIGATE_GRAVITY)
 
 // Misc
 

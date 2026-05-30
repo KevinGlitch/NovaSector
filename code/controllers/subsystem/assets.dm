@@ -5,7 +5,7 @@ SUBSYSTEM_DEF(assets)
 		/datum/controller/subsystem/persistent_paintings,
 		/datum/controller/subsystem/greyscale_previews,
 	)
-	ss_flags = SS_NO_FIRE
+	flags = SS_NO_FIRE
 	var/list/datum/asset_cache_item/cache = list()
 	var/list/preload = list()
 	var/datum/asset_transport/transport = new()
@@ -25,8 +25,10 @@ SUBSYSTEM_DEF(assets)
 	transport.Load()
 
 /datum/controller/subsystem/assets/Initialize()
-	for(var/datum/asset/asset_type as anything in valid_subtypesof(/datum/asset))
-		load_asset_datum(asset_type)
+	for(var/type in typesof(/datum/asset))
+		var/datum/asset/A = type
+		if (type != initial(A._abstract))
+			load_asset_datum(type)
 
 	transport.Initialize(cache)
 

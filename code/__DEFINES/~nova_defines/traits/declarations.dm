@@ -108,6 +108,9 @@
 /// trait that lets you do flips with a style meter
 #define TRAIT_STYLISH "stylish"
 
+/// trait that lets you do xenoarch magnification
+#define TRAIT_XENOARCH_QUALIFIED "trait_xenoarch_qualified"
+
 /// Traits granted by glassblowing
 #define TRAIT_GLASSBLOWING "glassblowing"
 
@@ -163,6 +166,7 @@
 #define TRAIT_LEWDQUIRK "lewdquirks"
 ///traits gained by chemicals, you get the idea
 #define TRAIT_LEWDCHEM "lewdchem"
+#define TRAIT_LEWDCHEM_RETROVIRUS "edenretrovirus" // EXOBYTECHNOVA UPD: 3d3n retrovirus version of this source
 
 #define TRAIT_STRAPON "strapon"
 
@@ -180,14 +184,5 @@
 
 ///Insanity trait for Reality Dissociation Syndrome (to make it easier to work with)
 #define TRAIT_INSANITY "insanity"
-
-/// Skillchip trait that lets the player expertly brush or cut hair faster
-#define TRAIT_HAIR_EXPERT "hair_expert"
-
-/// Trait for quirk: Illuminated
-#define TRAIT_COSGLOW "cosmetic_glow"
-
-/// The trait for Holosynths
-#define TRAIT_HOLOSYNTH "holosynthetic"
 
 // END TRAIT DEFINES

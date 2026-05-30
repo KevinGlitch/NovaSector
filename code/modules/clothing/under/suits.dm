@@ -5,6 +5,14 @@
 	female_sprite_flags = FEMALE_UNIFORM_NO_BREASTS
 	inhand_icon_state = null
 
+/obj/item/clothing/under/suit/green
+	name = "green suit"
+	desc = "A green suit and yellow necktie. Baller."
+	icon = 'icons/obj/clothing/under/captain.dmi'
+	icon_state = "green_suit"
+	inhand_icon_state = "dg_suit"
+	worn_icon = 'icons/mob/clothing/under/captain.dmi'
+
 /obj/item/clothing/under/suit/red //Also used by the Curator's suit, /obj/item/clothing/under/rank/civilian/curator
 	name = "red suit"
 	desc = "A red suit and blue tie. Somewhat formal."
@@ -101,7 +109,7 @@
 
 /obj/item/clothing/under/suit/tuxedo/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, 4) //You aren't going to fish with this are you?
+	AddComponent(/datum/component/adjust_fishing_difficulty, 4) //You aren't going to fish with this are you?
 
 /obj/item/clothing/under/suit/carpskin
 	name = "carpskin suit"
@@ -112,4 +120,4 @@
 
 /obj/item/clothing/under/suit/carpskin/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, -4)
+	AddComponent(/datum/component/adjust_fishing_difficulty, -4)

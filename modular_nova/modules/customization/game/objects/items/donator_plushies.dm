@@ -259,57 +259,6 @@
 		)
 	squeak_override = list('sound/machines/beep/twobeep.ogg' = 1)
 
-//Donation reward for wivernshy
-/obj/item/toy/plush/nova/donator/plush_hemlock
-	name = "silly snuppy plushie"
-	desc = "This synthetic snake-dog is weighted for comfort! Or harm, nothing says you can't use it for evil."
-	icon_state = "plush_hemlock"
-	attack_verb_continuous = list(
-		"beeps",
-		"hisses",
-		"woofs",
-		"bites",
-	)
-	attack_verb_simple = list(
-		"beep",
-		"hiss",
-		"woof",
-		"bite",
-	)
-	squeak_override = list('modular_nova/modules/emotes/sound/voice/arf.ogg'= 1)
-
-//Donation rewards for PyriteChimera
-/obj/item/toy/plush/nova/donator/plush_celica
-	name = "researcher serpent plushie"
-	desc = "A deceptively soft plushie of a familiar slime scientist. It seems far too tired for existence and smells oddly of vanilla."
-	icon_state = "plushie_celica"
-	throw_range = 1
-	throw_speed = 1
-	attack_verb_continuous = list(
-		"glomps",
-	)
-	attack_verb_simple = list(
-		"glomp",
-	)
-	squeak_override = list('modular_nova/modules/emotes/sound/voice/slime_bubble.ogg' = 1)
-	gender = FEMALE
-
-/obj/item/toy/plush/nova/donator/plush_lasti
-	name = "\improper Espatier Captain fox plushie"
-	desc = "A marketable plushie of a veteran, white-furred fox created by the Espatiers to try and boost recruitment numbers. \
-			Strangely, while holding this you feel like someone's got your back."
-	icon_state = "plushie_lasti"
-	attack_verb_continuous = list(
-		"barks an order at",
-		"issues an NJP to",
-	)
-	attack_verb_simple = list(
-		"bark an order at",
-		"issue an NJP to",
-	)
-	squeak_override = list('modular_nova/modules/emotes/sound/voice/fox_squeak.ogg' = 1)
-	gender = MALE
-
 /*
 * Plushies beyond this did not have "Donation reward for:" when moved to this file.
 * Please do not put anything else into this mess, and organize your plushie like the rest above.
@@ -987,31 +936,4 @@
 		"hug",
 		"squish",
 		"bap",
-	)
-
-// Donation reward for vethonker
-/obj/item/toy/plush/nova/donator/vethonk
-	name = "\improper Veteran Clown plushie"
-	desc = "What sits before you is a plushie of what looks like a crippled veteran dressed as a clown. <i>What sort of monster would do this to a man?</i> ...Sponsored by the <b>Comedy Council!</b>"
-	icon_state = "plushie_vethonk"
-	squeak_override = list(
-		'sound/effects/roll.ogg' = 1,
-	)
-
-/obj/item/toy/plush/nova/donator/percy
-	name = "\improper Dr. Percival plushie"
-	desc = "Looks like a competent enough surgeon. Just don’t ask for too much paperwork or bedside manners."
-	icon_state = "percival-1"
-	squeak_override = list(
-		'sound/items/handling/surgery/saw.ogg' = 1,
-	)
-
-// Donation reward for bonbyte
-/obj/item/toy/plush/nova/donator/bon
-	name = "\improper Bon plushie"
-	desc = "Bonnie Bon, your favorite hot bully in plush! Push her belly to make it pop! Bonbonbonbonbon..."
-	icon_state = "plushie_bon"
-	gender = FEMALE
-	squeak_override = list(
-		'modular_nova/modules/emotes/sound/voice/slime_pop.ogg' = 1,
 	)

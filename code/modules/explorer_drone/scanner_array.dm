@@ -190,10 +190,9 @@ GLOBAL_LIST_INIT(scan_conditions,init_scan_conditions())
 		config_flags = EXPERIMENT_CONFIG_ALWAYS_ACTIVE)
 
 /obj/machinery/exoscanner
-	name = "scanner array"
+	name = "Scanner array"
 	icon = 'icons/obj/exploration.dmi'
 	icon_state = "scanner_off"
-	base_icon_state = "scanner"
 	desc = "A sophisticated scanning array. Easily influenced by its environment."
 	circuit = /obj/item/circuitboard/machine/exoscanner
 	///the scan power of this array to supply to scanner_controller
@@ -213,24 +212,16 @@ GLOBAL_LIST_INIT(scan_conditions,init_scan_conditions())
 	scan_power = power
 	GLOB.exoscanner_controller.update_scan_power()
 
-	// More generous power draw scaling. Sum the total energy ratings of all parts involved, divide by how many parts we have, use that as the multiplier.
-	// Otherwise it'd be hitting 81x power draw at T4 parts, which seems... unintended.
-	var/energy_rating = 0
-	for(var/datum/stock_part/part in component_parts)
-		energy_rating += part.energy_rating()
-
-	for(var/obj/item/stock_parts/part in component_parts)
-		energy_rating += part.energy_rating
-
-	idle_power_usage = initial(idle_power_usage) * (energy_rating/8)
-	active_power_usage = initial(active_power_usage) * (energy_rating/8)
-	update_current_power_usage()
-
 /obj/machinery/exoscanner/screwdriver_act(mob/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+	. = ..()
+	if(!.)
+		. = default_deconstruction_screwdriver(user, "scanner_open", "scanner_off", tool)
+		update_readiness()
 
 /obj/machinery/exoscanner/crowbar_act(mob/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+	..()
+	if(default_deconstruction_crowbar(tool))
+		return TRUE
 
 /obj/machinery/exoscanner/proc/scan_change()
 	SIGNAL_HANDLER
@@ -256,15 +247,13 @@ GLOBAL_LIST_INIT(scan_conditions,init_scan_conditions())
 
 /obj/machinery/exoscanner/update_icon_state()
 	. = ..()
-	if(panel_open)
-		icon_state = "[base_icon_state]_open"
-	else if(is_ready())
+	if(is_ready())
 		if(GLOB.exoscanner_controller.current_scan)
-			icon_state = "[base_icon_state]_on"
+			icon_state = "scanner_on"
 		else
-			icon_state = "[base_icon_state]_ready"
+			icon_state = "scanner_ready"
 	else
-		icon_state = "[base_icon_state]_off"
+		icon_state = "scanner_off"
 
 /obj/machinery/exoscanner/wrench_act(mob/living/user, obj/item/tool)
 	. = ..()
@@ -277,9 +266,6 @@ GLOBAL_LIST_INIT(scan_conditions,init_scan_conditions())
 
 /obj/machinery/exoscanner/on_set_is_operational(old_value)
 	. = ..()
-	update_readiness()
-
-/obj/machinery/exoscanner/on_set_panel_open(old_value)
 	update_readiness()
 
 ///Helper datum to calculate and store scanning power and track in progress scans

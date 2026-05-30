@@ -17,15 +17,13 @@
 	///Plumbing machinery is always gonna need reagents, so we might aswell put it here
 	var/buffer = 50
 	///Flags for reagents, like INJECTABLE, TRANSPARENT bla bla everything thats in DEFINES/reagents.dm
-	var/reagent_flags = TRANSPARENT | NO_REACT
+	var/reagent_flags = TRANSPARENT
 
-/obj/machinery/plumbing/Initialize(mapload)
+/obj/machinery/plumbing/Initialize(mapload, bolt = TRUE)
 	. = ..()
-	set_anchored(mapload)
-	if(mapload)
-		begin_processing()
+	set_anchored(bolt)
 	create_reagents(buffer, reagent_flags)
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(/datum/component/simple_rotation)
 	register_context()
 
 /obj/machinery/plumbing/create_reagents(max_vol, flags)
@@ -40,7 +38,7 @@
 		return
 
 	if(held_item.tool_behaviour == TOOL_WRENCH)
-		context[SCREENTIP_CONTEXT_LMB] = "[anchored ? "Unan" : "An"]chor"
+		context[SCREENTIP_CONTEXT_LMB] = "[anchored ? "Un" : ""]Anchor"
 		return CONTEXTUAL_SCREENTIP_SET
 	else if(held_item.tool_behaviour == TOOL_WELDER && !anchored)
 		context[SCREENTIP_CONTEXT_LMB] = "Deconstruct"

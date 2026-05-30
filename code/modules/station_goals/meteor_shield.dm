@@ -20,20 +20,20 @@
 
 /datum/station_goal/station_shield/get_report()
 	return list(
-		"The station is located in a zone full of space debris.",
+		"<blockquote>The station is located in a zone full of space debris.",
 		"We have a prototype shielding system you must deploy to reduce collision-related accidents.",
 		"",
-		"You can order the satellites and control systems at cargo.",
+		"You can order the satellites and control systems at cargo.</blockquote>",
 	).Join("\n")
 
 
 /datum/station_goal/station_shield/on_report()
 	//Unlock
 	var/datum/supply_pack/P = SSshuttle.supply_packs[/datum/supply_pack/engineering/shield_sat]
-	P.order_flags |= ORDER_SPECIAL_ENABLED
+	P.special_enabled = TRUE
 
 	P = SSshuttle.supply_packs[/datum/supply_pack/engineering/shield_sat_control]
-	P.order_flags |= ORDER_SPECIAL_ENABLED
+	P.special_enabled = TRUE
 
 /datum/station_goal/station_shield/check_completion()
 	if(..())

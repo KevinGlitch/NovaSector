@@ -206,7 +206,7 @@
 	if(!istype(charger))
 		return
 
-	var/datum/material_container/mat_container = charger.materials.mat_container
+	var/datum/component/material_container/mat_container = charger.materials.mat_container
 	if(!mat_container || charger.materials.on_hold())
 		charger.sendmats = FALSE
 		return
@@ -222,7 +222,7 @@
 		if(!to_stock) //Nothing for us in the silo
 			continue
 
-		storage_datum.energy += charger.materials.use_materials(list(SSmaterials.get_material(storage_datum.mat_type) = to_stock), action = "restocked", name = "units", user_data = ID_DATA(robot))
+		storage_datum.energy += charger.materials.use_materials(list(GET_MATERIAL_REF(storage_datum.mat_type) = to_stock), action = "restocked", name = "units", user_data = ID_DATA(robot))
 		charger.balloon_alert(robot, "+ [to_stock]u [initial(storage_datum.mat_type.name)]")
 		playsound(charger, 'sound/items/weapons/gun/general/mag_bullet_insert.ogg', 50, vary = FALSE)
 		return
@@ -435,8 +435,6 @@
 		/obj/item/stack/rods/cyborg,
 		/obj/item/lightreplacer, // NOVA EDIT ADDITION - Surprised Engie borgs don't get these
 		/obj/item/construction/rtd/borg,
-		/obj/item/storage/part_replacer, // NOVA EDIT ADDITION - Borgs start with a basic RPD.
-		/obj/item/borg/apparatus/engineering, // NOVA EDIT ADDITION - Borgs start with one gripper, upgrade adds a second like mediborg beakers
 		/obj/item/stack/cable_coil,
 		/obj/item/airlock_painter/decal/cyborg,
 	)
@@ -686,9 +684,6 @@
 
 	if(reagents.has_reagent(amount = 1, chemical_flags = REAGENT_CLEANS))
 		our_turf.wash(CLEAN_SCRUB)
-		var/datum/component/bloodysoles/bot/trackfilth = robot_owner.GetComponent(/datum/component/bloodysoles/bot)
-		if(trackfilth)
-			trackfilth.change_blood_amount(-trackfilth.total_bloodiness)
 
 	reagents.expose(our_turf, TOUCH, min(1, 10 / reagents.total_volume))
 	// We use more water doing this then mopping
@@ -761,7 +756,7 @@
 		/obj/item/extinguisher/mini,
 		/obj/item/emergency_bed/silicon,
 		/obj/item/borg/cyborghug/medical,
-		/obj/item/stack/medical/wrap/gauze,
+		/obj/item/stack/medical/gauze,
 		/obj/item/stack/medical/bone_gel,
 		/obj/item/borg/apparatus/organ_storage,
 		/obj/item/borg/lollipop,
@@ -965,12 +960,12 @@
 /obj/item/robot_model/syndicate/rebuild_modules()
 	..()
 	var/mob/living/silicon/robot/cyborg = loc
-	cyborg.remove_faction(FACTION_SILICON) //ai turrets
+	cyborg.faction -= FACTION_SILICON //ai turrets
 
 /obj/item/robot_model/syndicate/remove_module(obj/item/removed_module)
 	..()
 	var/mob/living/silicon/robot/cyborg = loc
-	cyborg.add_faction(FACTION_SILICON) //ai is your bff now!
+	cyborg.faction |= FACTION_SILICON //ai is your bff now!
 
 /obj/item/robot_model/syndicate_medical
 	name = "Syndicate Medical"
@@ -987,7 +982,7 @@
 		/obj/item/crowbar/cyborg,
 		/obj/item/extinguisher/mini,
 		/obj/item/pinpointer/syndicate_cyborg,
-		/obj/item/stack/medical/wrap/gauze,
+		/obj/item/stack/medical/gauze,
 		/obj/item/stack/medical/bone_gel,
 		/obj/item/gun/medbeam,
 		/obj/item/borg/apparatus/organ_storage,

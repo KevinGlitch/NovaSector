@@ -36,7 +36,7 @@
 
 /datum/dimension_theme/New()
 	if (material)
-		var/datum/material/using_mat = SSmaterials.get_material(material)
+		var/datum/material/using_mat = GET_MATERIAL_REF(material)
 		window_colour = using_mat.color
 
 /**
@@ -117,7 +117,7 @@
 		return FALSE
 	if (isindestructiblewall(affected_turf))
 		return FALSE
-	affected_turf.ChangeTurf(replace_walls, flags = CHANGETURF_INHERIT_MOUNTS)
+	affected_turf.ChangeTurf(replace_walls)
 	return TRUE
 
 /**
@@ -131,7 +131,7 @@
 
 	if (replace_floors.len == 0)
 		return FALSE
-	affected_floor.replace_floor(pick_weight(replace_floors), flags = CHANGETURF_INHERIT_AIR | CHANGETURF_INHERIT_MOUNTS)
+	affected_floor.replace_floor(pick_weight(replace_floors), flags = CHANGETURF_INHERIT_AIR)
 	return TRUE
 
 /**
@@ -155,8 +155,7 @@
 	if(istype(object, /obj/machinery/door/airlock))
 		if(istype(new_object, /obj/machinery/door/airlock)) //carry over access-related and adjacent variables. The rest is not as important
 			var/obj/machinery/door/airlock/airlock = object
-			var/obj/machinery/door/airlock/new_airlock = new_object
-			new_airlock.closeOtherId = airlock.closeOtherId
+			var/obj/machinery/door/new_airlock = new_object
 			new_airlock.unres_sides = airlock.unres_sides
 			new_airlock.req_access = airlock.req_access?.Copy()
 			new_airlock.req_one_access = airlock.req_one_access?.Copy()
@@ -230,7 +229,7 @@
 /datum/dimension_theme/proc/apply_materials(turf/affected_turf)
 	PROTECTED_PROC(TRUE)
 
-	var/list/custom_materials = list(SSmaterials.get_material(material) = SHEET_MATERIAL_AMOUNT)
+	var/list/custom_materials = list(GET_MATERIAL_REF(material) = SHEET_MATERIAL_AMOUNT)
 
 	if (istype(affected_turf, /turf/open/floor/material) || istype(affected_turf, /turf/closed/wall/material))
 		affected_turf.set_custom_materials(custom_materials)

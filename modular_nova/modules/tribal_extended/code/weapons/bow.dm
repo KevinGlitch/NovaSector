@@ -19,7 +19,6 @@
 	worn_icon_state = "ashenbow"
 	force = 20
 	resistance_flags = FIRE_PROOF | LAVA_PROOF
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT * 4)
 
 /obj/item/gun/ballistic/bow/tribalbow/pipe
 	name = "pipe bow"
@@ -31,4 +30,3 @@
 	worn_icon_state = "pipebow"
 	force = 10
 	slot_flags = ITEM_SLOT_BACK | ITEM_SLOT_SUITSTORE
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5, /datum/material/plastic = SHEET_MATERIAL_AMOUNT * 5)

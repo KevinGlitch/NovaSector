@@ -22,7 +22,8 @@
 	default_priority = 94
 	secret = TRUE
 
-	mutual_understanding = list(
+/*	mutual_understanding = list(
 	/datum/language/common = 50,
 	/datum/language/uncommon = 33,
 	)
+*/

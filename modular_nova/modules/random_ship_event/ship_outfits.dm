@@ -24,7 +24,9 @@
 		outfit_id.update_icon()
 
 	var/obj/item/clothing/under/crew_uniform = equipped.w_uniform
-	crew_uniform?.set_sensor_mode(SENSOR_OFF)
+	if(crew_uniform)
+		crew_uniform.sensor_mode = SENSOR_OFF
+		crew_uniform.update_wearer_status()
 
 /datum/outfit/ship_crew/captain
 	name = "Ship Captain"
@@ -49,7 +51,7 @@
 
 /datum/outfit/ship_crew/rogue_trader/post_equip(mob/living/carbon/human/equipped)
 	. = ..()
-	equipped.add_faction(FACTION_PIRATE)
+	equipped.faction |= FACTION_PIRATE
 
 	var/obj/item/radio/outfit_radio = equipped.ears
 	if(outfit_radio)

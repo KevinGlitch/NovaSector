@@ -113,7 +113,8 @@
 					/obj/item/folder/red,
 					/obj/item/folder/yellow,
 					/obj/item/clipboard = 2,
-					/obj/item/storage/box/stamps,
+					/obj/item/stamp,
+					/obj/item/stamp/denied,
 					/obj/item/laser_pointer/purple,
 				)
 	crate_name = "bureaucracy crate"
@@ -155,11 +156,11 @@
 		Call today and we'll shoot over a demo unit for just 300 credits!"
 	cost = CARGO_CRATE_VALUE * 0.6 //Empty pod, so no crate refund
 	contains = list()
-	order_flags = ORDER_POD_ONLY
+	drop_pod_only = TRUE
 	crate_type = null
 	special_pod = /obj/structure/closet/supplypod/bluespacepod
 
-/datum/supply_pack/misc/empty/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/misc/empty/generate(atom/A, datum/bank_account/paying_account)
 	return
 
 /datum/supply_pack/misc/religious_supplies
@@ -210,7 +211,7 @@
 /datum/supply_pack/misc/syndicate
 	name = "Assorted Syndicate Gear"
 	desc = "Contains a random assortment of syndicate gear."
-	order_flags = ORDER_SPECIAL //Cannot be ordered via cargo
+	special = TRUE //Cannot be ordered via cargo
 	contains = list()
 	crate_name = "syndicate gear crate"
 	crate_type = /obj/structure/closet/crate
@@ -221,9 +222,10 @@
 	var/contents_uplink_type = UPLINK_TRAITORS
 
 ///Generate assorted uplink items, taking into account the same surplus modifiers used for surplus crates
-/datum/supply_pack/misc/syndicate/fill(obj/container)
+/datum/supply_pack/misc/syndicate/fill(obj/structure/closet/crate/C)
 	var/list/uplink_items = list()
-	for(var/datum/uplink_item/item as anything in SStraitor.uplink_items)
+	for(var/datum/uplink_item/item_path as anything in SStraitor.uplink_items_by_type)
+		var/datum/uplink_item/item = SStraitor.uplink_items_by_type[item_path]
 		if(item.purchasable_from & contents_uplink_type && item.item)
 			uplink_items += item
 
@@ -236,7 +238,7 @@
 		if(crate_value < uplink_item.cost)
 			continue
 		crate_value -= uplink_item.cost
-		new uplink_item.item(container)
+		new uplink_item.item(C)
 
 ///Syndicate supply crate that can have its contents value changed by admins, uses a seperate datum to avoid having admins touch the original one.
 /datum/supply_pack/misc/syndicate/custom_value

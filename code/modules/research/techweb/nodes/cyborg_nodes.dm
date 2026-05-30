@@ -125,7 +125,7 @@
 	description = "To slack even more."
 	prereq_ids = list(TECHWEB_NODE_BORG_MINING, TECHWEB_NODE_PARTS_UPG)
 	design_ids = list(
-		//"borg_upgrade_rped", // NOVA EDIT REMOVAL: Added to starting modules.
+		"borg_upgrade_rped",
 		"borg_upgrade_engineeringomnitool",
 		"borg_upgrade_engineeringapp",
 		"borg_upgrade_inducer",
@@ -183,7 +183,6 @@
 		"ci-reviver",
 		"ci-antidrop",
 		"ci-antistun",
-		"ci-tacvisor",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_4_POINTS)
 	announce_channels = list(RADIO_CHANNEL_SCIENCE, RADIO_CHANNEL_MEDICAL)
@@ -195,9 +194,8 @@
 	prereq_ids = list(TECHWEB_NODE_COMBAT_IMPLANTS, TECHWEB_NODE_EXP_TOOLS)
 	design_ids = list(
 		"ci-nutrimentplus",
-		"ci-surgery",
-		"ci-surgery-brain",
 		"ci-toolset",
+		"ci-surgery",
 	)
 	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_5_POINTS)
 	announce_channels = list(RADIO_CHANNEL_SCIENCE, RADIO_CHANNEL_MEDICAL)

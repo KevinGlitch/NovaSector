@@ -349,7 +349,6 @@
 // Ensures that lighter slimefolk look half-decent when wounded and bleeding
 /datum/blood_type/slime/get_wound_color(mob/living/carbon/victim)
 	return victim.dna?.features?[FEATURE_MUTANT_COLOR] || get_color()
-
 /datum/blood_type/slime/get_damage_color(mob/living/carbon/victim)
 	return victim.dna?.features?[FEATURE_MUTANT_COLOR] || get_color()
 
@@ -359,7 +358,7 @@
 	dna_string = "Plant DNA"
 	color = /datum/reagent/water::color
 	reagent_type = /datum/reagent/water
-	restoration_chem = /datum/reagent/plantnutriment/eznutriment
+	restoration_chem = null
 	blood_flags = BLOOD_ADD_DNA | BLOOD_TRANSFER_VIRAL_DATA
 
 // Prevents awkward grey wounds on the mob while keeping bleed overlays looking like water leaking from a balloon

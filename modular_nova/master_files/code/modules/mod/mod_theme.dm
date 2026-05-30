@@ -18,6 +18,7 @@
 	name = "deepspace"
 	default_skin = "deepspace"
 	ui_theme = "syndicate"
+	armor_type = /datum/armor/mod_theme_syndicate/deepspace
 	variants = list(
 		"deepspace" = list(
 			MOD_ICON_OVERRIDE = 'modular_nova/master_files/icons/obj/clothing/modsuit/mod_clothing.dmi',
@@ -161,9 +162,22 @@
 		),
 	)
 
+/datum/armor/mod_theme_syndicate/deepspace
+	melee = 65
+	bullet = 80
+	laser = 45
+	energy = 45
+	bomb = 35
+	bio = 100
+	fire = 50
+	acid = 90
+	wound = 25
+
 /datum/mod_theme/elite/admiral
 	name = "admiral"
 	default_skin = "admiral"
+	ui_theme = "syndicate"
+	armor_type = /datum/armor/mod_theme_elite/admiral
 	variants = list(
 		"admiral" = list(
 			MOD_ICON_OVERRIDE = 'modular_nova/master_files/icons/obj/clothing/modsuit/mod_clothing.dmi',
@@ -233,6 +247,17 @@
 			),
 		),
 	)
+
+/datum/armor/mod_theme_elite/admiral
+	melee = 85
+	bullet = 90
+	laser = 65
+	energy = 65
+	bomb = 55
+	bio = 100
+	fire = 100
+	acid = 100
+	wound = 25
 
 /datum/mod_theme/security
 	variants = list(
@@ -984,3 +1009,93 @@
 
 /datum/mod_theme/marines/noboost /// Marine modsuit that doenst allow you to put an armor booster in it. This makes it better than a base security hardsuit while worse than the HoS's and Captains- assuming those two have boosters in them.
 	desc = "Developed by Nanotrasen in collaboration with multiple high-profile contractors, this specialized suit was made for high-intensity combat. This one doesnt allow for an armor booster."
+
+
+
+// EXOBYTECHNOVA UPD: Phoenix Collective MOD suit themes, based off the elite modsuit
+/datum/mod_theme/phoenix
+	name = "phoenix"
+	desc = "An elite MOD suit modified and improved by the Phoenix Collective to serve a wider variety of purposes. \
+		Those who wear this do not fly with children of the dust."
+	extended_desc = "A retrofitting of the Syndicate elite suit, the Imperial Mk. IV model is meant as a general purpose MOD suit designed for \
+		application to a wide variety of possible roles. The design has been mass produced for the Phoenix Collective's imperial population \
+		to make use of, regardless of what their roles may be. Although primarily used by combat units such as security personnel, non-militant \
+		departments such as Engineering and Medical have still managed to get use out of this design, albeit with some modifications. \
+		<BR><BR>A label on the inside of the suit's panel reads as follows: 'Manufactured by the Phoenix Collective Department of \
+		Industry. Property of the Collective. For use by Imperial personnel only. Unauthorized usage is punishable by law.'"
+	default_skin = "phoenix"
+	armor_type = /datum/armor/mod_theme_phoenix
+	resistance_flags = LAVA_PROOF|FIRE_PROOF|ACID_PROOF|FREEZE_PROOF
+	atom_flags = PREVENT_CONTENTS_EXPLOSION_1
+	max_heat_protection_temperature = FIRE_IMMUNITY_MAX_TEMP_PROTECT
+	complexity_max = DEFAULT_MAX_COMPLEXITY + 10
+	siemens_coefficient = 0
+	slowdown_deployed = 0
+	ui_theme = "ntos_terminal"
+	inbuilt_modules = list(/obj/item/mod/module/welding/syndicate, /obj/item/mod/module/hearing_protection,
+		/obj/item/mod/module/springlock/contractor/no_complexity, /obj/item/mod/module/storage/phoenix)
+	allowed_suit_storage = list(
+		/obj/item/flashlight,
+		/obj/item/restraints/handcuffs,
+		/obj/item/healthanalyzer,
+		/obj/item/assembly/flash,
+		/obj/item/reagent_containers/cup/beaker,
+		/obj/item/reagent_containers/cup/bottle,
+		/obj/item/reagent_containers/cup/tube,
+		/obj/item/reagent_containers/dropper,
+		/obj/item/reagent_containers/hypospray,
+		/obj/item/reagent_containers/applicator/pill,
+		/obj/item/reagent_containers/syringe,
+		/obj/item/melee/baton,
+		/obj/item/knife/combat,
+		/obj/item/gun,
+		/obj/item/shield/energy,
+		/obj/item/shield/riot,
+		/obj/item/storage/medkit,
+	)
+	variants = list(
+		"phoenix" = list(
+			/obj/item/clothing/head/mod = list(
+				UNSEALED_CLOTHING = SNUG_FIT,
+				SEALED_CLOTHING = THICKMATERIAL|STOPSPRESSUREDAMAGE|BLOCK_GAS_SMOKE_EFFECT|HEADINTERNALS|LAVAPROTECT,
+				UNSEALED_INVISIBILITY = HIDEFACIALHAIR,
+				SEALED_INVISIBILITY = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDESNOUT,
+				SEALED_COVER = HEADCOVERSMOUTH|HEADCOVERSEYES|PEPPERPROOF,
+				UNSEALED_MESSAGE = HELMET_UNSEAL_MESSAGE,
+				SEALED_MESSAGE = HELMET_SEAL_MESSAGE,
+			),
+			/obj/item/clothing/suit/mod = list(
+				UNSEALED_CLOTHING = THICKMATERIAL,
+				SEALED_CLOTHING = STOPSPRESSUREDAMAGE|LAVAPROTECT,
+				SEALED_INVISIBILITY = HIDEJUMPSUIT,
+				UNSEALED_MESSAGE = CHESTPLATE_UNSEAL_MESSAGE,
+				SEALED_MESSAGE = PHOENIX_CHESTPLATE_SEAL_MESSAGE,
+			),
+			/obj/item/clothing/gloves/mod = list(
+				UNSEALED_CLOTHING = THICKMATERIAL,
+				SEALED_CLOTHING = STOPSPRESSUREDAMAGE,
+				CAN_OVERSLOT = TRUE,
+				UNSEALED_MESSAGE = PHOENIX_GAUNTLET_UNSEAL_MESSAGE,
+				SEALED_MESSAGE = PHOENIX_GAUNTLET_SEAL_MESSAGE,
+			),
+			/obj/item/clothing/shoes/mod = list(
+				UNSEALED_CLOTHING = THICKMATERIAL,
+				SEALED_CLOTHING = STOPSPRESSUREDAMAGE,
+				CAN_OVERSLOT = TRUE,
+				UNSEALED_MESSAGE = BOOT_UNSEAL_MESSAGE,
+				SEALED_MESSAGE = BOOT_SEAL_MESSAGE,
+			),
+		),
+	)
+
+/datum/armor/mod_theme_phoenix
+	melee = 50
+	bullet = 50
+	laser = 80
+	energy = 75
+	bomb = 50
+	bio = 100
+	fire = 100
+	acid = 100
+	wound = 40
+// EXOBYTECHNOVA UPDATE END

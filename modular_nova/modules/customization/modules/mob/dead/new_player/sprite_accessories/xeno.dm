@@ -8,8 +8,6 @@
 /datum/sprite_accessory/xenodorsal/none
 	name = SPRITE_ACCESSORY_NONE
 	icon_state = "none"
-	factual = FALSE
-	natural_spawn = FALSE
 
 /datum/sprite_accessory/xenodorsal/standard
 	name = "Standard"
@@ -24,22 +22,22 @@
 	icon_state = "down"
 
 /datum/sprite_accessory/xenodorsal/is_hidden(mob/living/carbon/human/wearer)
-	var/obj/item/clothing/suit/mod/worn_suit = wearer.wear_suit
-	if(!wearer.w_uniform && isnull(worn_suit))
+	if(!wearer.w_uniform && !wearer.wear_suit)
 		return FALSE
 	// Can hide if wearing uniform
 	if(key in wearer.try_hide_mutant_parts)
 		return TRUE
+	if(wearer.wear_suit)
 	// Exception for MODs
-	if(istype(worn_suit))
-		return FALSE
+		if(istype(wearer.wear_suit, /obj/item/clothing/suit/mod))
+			return FALSE
 
 //TAILS
 /datum/sprite_accessory/tails/mammal/wagging/xeno_tail
 	icon = 'modular_nova/master_files/icons/mob/sprite_accessory/xeno_parts.dmi'
 	name = "Xenomorph Tail"
 	icon_state = "xeno"
-	recommended_species = list(SPECIES_XENO = 1)
+	recommended_species = list(SPECIES_XENO)
 
 //HEADS
 /datum/sprite_accessory/xenohead
@@ -51,8 +49,6 @@
 /datum/sprite_accessory/xenohead/none
 	name = SPRITE_ACCESSORY_NONE
 	icon_state = "none"
-	factual = FALSE
-	natural_spawn = FALSE
 
 /datum/sprite_accessory/xenohead/standard
 	name = "Standard"

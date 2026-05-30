@@ -48,6 +48,7 @@
 	var/power_gen = 200 KILO WATTS
 	var/active = FALSE
 	var/power_output = 1
+	var/is_mapu = FALSE
 
 	interaction_flags_atom = INTERACT_ATOM_ATTACK_HAND
 
@@ -60,12 +61,20 @@
 	. = ..()
 	soundloop = new(src, active)
 	connect_to_network()
-	AddElement(/datum/element/tool_blocker, TOOL_SCREWDRIVER)
-	AddElement(/datum/element/tool_blocker, TOOL_CROWBAR)
 
 /obj/machinery/power/micro_reactor/Destroy()
 	QDEL_NULL(soundloop)
 	return ..()
+
+// formerly NO_DECONSTRUCTION
+/obj/machinery/power/micro_reactor/default_deconstruction_screwdriver(mob/user, icon_state_open, icon_state_closed, obj/item/screwdriver)
+	return NONE
+
+/obj/machinery/power/micro_reactor/default_deconstruction_crowbar(obj/item/crowbar, ignore_panel, custom_deconstruct)
+	return NONE
+
+/obj/machinery/power/micro_reactor/default_pry_open(obj/item/crowbar, close_after_pry, open_density, closed_density)
+	return NONE
 
 /obj/machinery/power/micro_reactor/update_icon_state()
 	icon_state = "[base_icon_state]_[active]"
@@ -73,11 +82,13 @@
 
 /obj/machinery/power/micro_reactor/attack_hand(mob/user, list/modifiers)
 	. = ..()
-	TogglePower()
+	if (!is_mapu)
+		TogglePower()
 
 /obj/machinery/power/micro_reactor/attack_robot(mob/user)
 	. = ..()
-	TogglePower()
+	if (!is_mapu)
+		TogglePower()
 
 /obj/machinery/power/micro_reactor/proc/handleInactive()
 	return
@@ -136,3 +147,6 @@
 	interaction_flags_atom = INTERACT_ATOM_ATTACK_HAND
 
 	light_color = LIGHT_COLOR_ELECTRIC_CYAN
+
+/// EXOBYTECHNOVA UPD: Phoenix Collective MAPU
+/// Moved to modular_nova/modules/eng_mapu_control.

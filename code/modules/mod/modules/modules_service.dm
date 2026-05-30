@@ -49,13 +49,17 @@
 		balloon_alert(mod.wearer, "not in storage!")
 		return
 	var/obj/item/microwave_target = target
-	do_sparks(2, TRUE, mod.wearer)
+	var/datum/effect_system/spark_spread/spark_effect = new()
+	spark_effect.set_up(2, 1, mod.wearer)
+	spark_effect.start()
 	mod.wearer.Beam(target,icon_state="lightning[rand(1,12)]", time = 5)
 	if(microwave_target.microwave_act(microwaver = mod.wearer) & COMPONENT_MICROWAVE_SUCCESS)
 		playsound(src, 'sound/machines/microwave/microwave-end.ogg', 50, FALSE)
 	else
 		balloon_alert(mod.wearer, "can't be microwaved!")
-	do_sparks(2, TRUE, microwave_target)
+	var/datum/effect_system/spark_spread/spark_effect_two = new()
+	spark_effect_two.set_up(2, 1, microwave_target)
+	spark_effect_two.start()
 	drain_power(use_energy_cost)
 
 //Waddle - Makes you waddle and squeak.
@@ -105,18 +109,3 @@
 	var/refill_add = min(volume - reagents.total_volume, 2 * seconds_per_tick)
 	if(refill_add > 0)
 		reagents.add_reagent(/datum/reagent/space_cleaner, refill_add)
-
-/obj/item/mod/module/selfcleaner
-	name = "MOD perfumer module"
-	desc = "A small spray to clean oneself up. Has a pleasant scent."
-	icon_state = "cleaner"
-	module_type = MODULE_USABLE
-	use_energy_cost = DEFAULT_CHARGE_DRAIN * 5
-	complexity = 1
-	incompatible_modules = list(/obj/item/mod/module/selfcleaner)
-	cooldown_time = 10 SECONDS
-
-/obj/item/mod/module/selfcleaner/on_use(mob/activator)
-	activator.wash(CLEAN_WASH)
-	drain_power(use_energy_cost)
-	playsound(activator, 'sound/effects/spray.ogg', 50, FALSE)

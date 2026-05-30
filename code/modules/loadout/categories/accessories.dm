@@ -71,10 +71,6 @@
 	name = "Waistcoat"
 	item_path = /obj/item/clothing/accessory/waistcoat
 
-/datum/loadout_item/accessory/sweatervest
-	name = "Sweater Vest"
-	item_path = /obj/item/clothing/accessory/sweatervest
-
 /datum/loadout_item/accessory/pocket_protector
 	name = "Pocket Protector"
 	item_path = /obj/item/clothing/accessory/pocketprotector
@@ -86,4 +82,4 @@
 /datum/loadout_item/accessory/pride
 	name = "Pride Pin"
 	item_path = /obj/item/clothing/accessory/pride
-	reskin_datum = /datum/atom_skin/pride_pin
+	loadout_flags = LOADOUT_FLAG_ALLOW_RESKIN

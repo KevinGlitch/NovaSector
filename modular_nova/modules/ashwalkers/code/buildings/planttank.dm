@@ -1,4 +1,3 @@
-#define MAX_OXYGEN_PRODUCED MOLES_CELLSTANDARD // Kind of a large amount, but realism vs fun tradeoff?
 /obj/structure/plant_tank
 	name = "plant tank"
 	desc = "A small little glass tank that is used to grow plants; this tank promotes the nitrogen and oxygen cycle."
@@ -6,7 +5,6 @@
 	icon_state = "plant_tank_e"
 	anchored = FALSE
 	density = TRUE
-	custom_materials = list(/datum/material/glass = SHEET_MATERIAL_AMOUNT * 4, /datum/material/iron = SHEET_MATERIAL_AMOUNT * 2)
 	///the amount of times the tank can produce-- can be increased through feeding the tank
 	var/operation_number = 0
 	/// the farm component (if it was added)
@@ -46,27 +44,19 @@
 		if(prob(user.mind?.get_skill_modifier(/datum/skill/primitive, SKILL_PROBS_MODIFIER)))
 			operation_number += 2
 
-		return ITEM_INTERACT_SUCCESS
+		return ITEM_INTERACT_BLOCKING
 
 	if(istype(tool, /obj/item/storage/bag/plants))
-		var/list/foods = list()
-		for(var/obj/item/food/food_item in tool)
-			foods += food_item
-
-		if(!length(foods))
-			balloon_alert(user, "no food to dump inside")
-			return ITEM_INTERACT_BLOCKING
-
-		balloon_alert(user, "dumped food inside!")
-
-		for(var/obj/item/food/food_item in foods)
-			qdel(food_item)
+		balloon_alert(user, "placing food inside")
+		for(var/obj/item/food/selected_food in tool.contents)
+			qdel(selected_food)
 			operation_number += 2
 			if(prob(user.mind?.get_skill_modifier(/datum/skill/primitive, SKILL_PROBS_MODIFIER)))
 				operation_number += 2
+
 			user.mind?.adjust_experience(/datum/skill/primitive, 2)
 
-		return ITEM_INTERACT_SUCCESS
+		return ITEM_INTERACT_BLOCKING
 
 	if(istype(tool, /obj/item/stack/ore/glass))
 		if(connected_farm)
@@ -79,7 +69,7 @@
 
 		connected_farm = AddComponent(/datum/component/simple_farm, TRUE, TRUE, list(0, 12))
 		icon_state = "plant_tank_f"
-		return ITEM_INTERACT_SUCCESS
+		return ITEM_INTERACT_BLOCKING
 
 	return ..()
 
@@ -87,42 +77,26 @@
 	if(operation_number <= 0) //we require "fuel" to actually produce stuff
 		return
 
-	var/turf/open/src_turf  = get_turf(src)
-	if(isnull(src_turf))
+	if(!locate(/obj/structure/simple_farm) in get_turf(src) && !locate(/obj/structure/simple_tree) in get_turf(src)) //we require a plant to process the "fuel"
 		return
 
+	operation_number--
+
+	var/turf/open/src_turf = get_turf(src)
 	if(!isopenturf(src_turf) || isspaceturf(src_turf) || src_turf.planetary_atmos) //must be open turf, can't be space turf, and can't be a turf that regenerates its atmos
 		return
 
-	var/has_plant = FALSE
-	for(var/obj/structure/structure in src_turf.contents)
-		if(istype(structure, /obj/structure/simple_farm) || istype(structure, /obj/structure/simple_tree))  //we require a plant to process the "fuel"
-			has_plant = TRUE
-			break
+	var/datum/gas_mixture/src_mixture = src_turf.return_air()
 
-	if(!has_plant)
-		return
+	src_mixture.assert_gases(/datum/gas/carbon_dioxide, /datum/gas/oxygen, /datum/gas/nitrogen)
 
-	//if there is carbon dioxide in the air, lets turn it into oxygen
-	var/datum/gas_mixture/env = src_turf.return_air()
-	var/co2 = env.gases[/datum/gas/carbon_dioxide]
-	if(!co2)
-		return
+	var/proportion = src_mixture.gases[/datum/gas/carbon_dioxide][MOLES]
+	if(proportion) //if there is carbon dioxide in the air, lets turn it into oxygen
+		proportion = min(src_mixture.gases[/datum/gas/carbon_dioxide][MOLES], MOLES_CELLSTANDARD)
+		src_mixture.gases[/datum/gas/carbon_dioxide][MOLES] -= proportion
+		src_mixture.gases[/datum/gas/oxygen][MOLES] += proportion
 
-	env.assert_gases(/datum/gas/carbon_dioxide, /datum/gas/oxygen, /datum/gas/nitrogen)
-
-	// how much CO2 is available
-	var/co2_amt = env.gases[/datum/gas/carbon_dioxide][MOLES]
-	if(co2_amt <= 0)
-		return
-
-	var/gas_amt = min(co2_amt * seconds_per_tick, (MAX_OXYGEN_PRODUCED /2) * seconds_per_tick)
-	env.gases[/datum/gas/carbon_dioxide][MOLES] -= min(co2_amt, gas_amt)
-	src_turf.atmos_spawn_air("[GAS_O2]=[gas_amt]")
-	var/add_n = gas_amt * 0.7 // 70% of CO2 becomes nitrogen
-	src_turf.atmos_spawn_air("[GAS_N2]=[add_n]") // the nitrogen cycle-- plants (and bacteria) participate in the nitrogen cycle
-
-	operation_number--
+	src_mixture.gases[/datum/gas/nitrogen][MOLES] += MOLES_CELLSTANDARD //the nitrogen cycle-- plants (and bacteria) participate in the nitrogen cycle
 
 /obj/structure/plant_tank/wrench_act(mob/living/user, obj/item/tool)
 	balloon_alert(user, "[anchored ? "un" : ""]bolting")
@@ -160,5 +134,3 @@
 		/obj/item/stack/rods = 4,
 	)
 	category = CAT_STRUCTURE
-
-	#undef MAX_OXYGEN_PRODUCED

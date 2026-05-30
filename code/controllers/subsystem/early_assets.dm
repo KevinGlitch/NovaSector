@@ -14,13 +14,16 @@ SUBSYSTEM_DEF(early_assets)
 		/datum/controller/subsystem/atoms,
 	)
 	init_stage = INITSTAGE_EARLY
-	ss_flags = SS_NO_FIRE
+	flags = SS_NO_FIRE
 
 /datum/controller/subsystem/early_assets/Initialize()
 	var/init_source = "early assets"
 	SSatoms.set_tracked_initalized(INITIALIZATION_INNEW_REGULAR, init_source)
 
-	for (var/datum/asset/asset_type as anything in valid_subtypesof(/datum/asset))
+	for (var/datum/asset/asset_type as anything in subtypesof(/datum/asset))
+		if (initial(asset_type._abstract) == asset_type)
+			continue
+
 		if (!initial(asset_type.early))
 			continue
 

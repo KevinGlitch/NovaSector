@@ -14,10 +14,11 @@
 	name = "tall glass of strawberry milk"
 	desc = "Delicious flavored strawberry syrup mixed with milk."
 
-/datum/reagent/consumable/pinkmilk/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
-	. = ..()
+/datum/reagent/consumable/pinkmilk/on_mob_life(mob/living/carbon/M)
 	if(prob(15))
-		to_chat(affected_mob, span_notice("[pick("You cant help to smile.","You feel nostalgia all of sudden.","You remember to relax.")]"))
+		to_chat(M, span_notice("[pick("You cant help to smile.","You feel nostalgia all of sudden.","You remember to relax.")]"))
+	..()
+	. = 1
 
 /datum/reagent/consumable/pinktea //Tiny Tim song
 	name = "Strawberry Tea"
@@ -33,10 +34,11 @@
 	name = "mug of strawberry tea"
 	desc = "Delicious traditional tea flavored with strawberries."
 
-/datum/reagent/consumable/pinktea/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
-	. = ..()
+/datum/reagent/consumable/pinktea/on_mob_life(mob/living/carbon/M)
 	if(prob(10))
-		to_chat(affected_mob, span_notice("[pick("Diamond skies where white deer fly.","Sipping strawberry tea.","Silver raindrops drift through timeless, Neverending June.","Crystal ... pearls free, with love!","Beaming love into me.")]"))
+		to_chat(M, span_notice("[pick("Diamond skies where white deer fly.","Sipping strawberry tea.","Silver raindrops drift through timeless, Neverending June.","Crystal ... pearls free, with love!","Beaming love into me.")]"))
+	..()
+	. = TRUE
 
 /datum/reagent/consumable/catnip_tea
 	name = "Catnip Tea"
@@ -51,17 +53,16 @@
 	name = "glass of catnip tea"
 	desc = "A purrfect drink for a cat."
 
-/datum/reagent/consumable/catnip_tea/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
-	. = ..()
-	if(affected_mob.adjust_stamina_loss(min(50 - affected_mob.get_stamina_loss(), 3)))
-		. = UPDATE_MOB_HEALTH
-	if(isfeline(affected_mob))
+/datum/reagent/consumable/catnip_tea/on_mob_life(mob/living/carbon/M)
+	M.adjustStaminaLoss(min(50 - M.getStaminaLoss(), 3))
+	if(isfeline(M))
 		if(prob(20))
-			affected_mob.emote("nya")
+			M.emote("nya")
 		if(prob(20))
-			to_chat(affected_mob, span_notice("[pick("Headpats feel nice.", "Backrubs would be nice.", "Mew")]"))
+			to_chat(M, span_notice("[pick("Headpats feel nice.", "Backrubs would be nice.", "Mew")]"))
 	else
-		to_chat(affected_mob, span_notice("[pick("I feel oddly calm.", "I feel relaxed.", "Mew?")]"))
+		to_chat(M, span_notice("[pick("I feel oddly calm.", "I feel relaxed.", "Mew?")]"))
+	..()
 
 /datum/reagent/consumable/ethanol/beerbatter
 	name = "Beer Batter"
@@ -78,11 +79,3 @@
 	icon_state = "chocolatepudding"
 	name = "glass of beer batter"
 	desc = "Used in cooking, pure cholesterol, Scottish people eat it."
-
-// Reagent metabolize: Nuka Cola
-/datum/reagent/consumable/nuka_cola/on_mob_metabolize(mob/living/affected_mob)
-	. = ..()
-
-	// Add mood bonus
-	if(HAS_TRAIT_FROM(affected_mob, TRAIT_RADIMMUNE, QUIRK_TRAIT))
-		affected_mob.add_mood_event("fav_food", /datum/mood_event/favorite_food)

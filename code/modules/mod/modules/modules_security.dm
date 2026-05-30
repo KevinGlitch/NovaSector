@@ -91,7 +91,12 @@
 
 /obj/item/mod/module/pepper_shoulders/on_use(mob/activator)
 	playsound(src, 'sound/effects/spray.ogg', 30, TRUE, -6)
-	do_chem_smoke(1, src, get_turf(src), /datum/reagent/consumable/condensedcapsaicin, 10, log = TRUE, smoke_type = /datum/effect_system/fluid_spread/smoke/chem/quick)
+	var/datum/reagents/capsaicin_holder = new(10)
+	capsaicin_holder.add_reagent(/datum/reagent/consumable/condensedcapsaicin, 10)
+	var/datum/effect_system/fluid_spread/smoke/chem/quick/smoke = new
+	smoke.set_up(1, holder = src, location = get_turf(src), carry = capsaicin_holder)
+	smoke.start(log = TRUE)
+	QDEL_NULL(capsaicin_holder) // Reagents have a ref to their holder which has a ref to them. No leaks please.
 
 /obj/item/mod/module/pepper_shoulders/proc/on_check_block()
 	SIGNAL_HANDLER
@@ -298,8 +303,8 @@
 	. = ..()
 	do_sparks(rand(3, 6), FALSE, src)
 	if(thrower)
-		var/mob/living/basic/illusion/mirage/mirage = new(get_turf(src))
-		mirage.mock_as(thrower, 15 SECONDS)
+		var/mob/living/simple_animal/hostile/illusion/mirage/mirage = new(get_turf(src))
+		mirage.Copy_Parent(thrower, 15 SECONDS)
 	qdel(src)
 
 ///Projectile Dampener - Weakens projectiles in range.
@@ -579,7 +584,7 @@
 	name = "superglued MOD bulwark module"
 	desc = "Layers upon layers of shock dampening plates, just to stop you from getting shoved into a wall by an angry mob. Good luck removing this one."
 	removable = FALSE
-	complexity = 0
+	complexity = 1
 
 /obj/item/mod/module/quick_cuff
 	name = "MOD restraint assist module"

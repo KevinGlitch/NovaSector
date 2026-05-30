@@ -9,9 +9,6 @@
 	var/haircut_duration = 1 MINUTES
 	// How long does it take to change someone's facial hair style?
 	var/facial_haircut_duration = 20 SECONDS
-	// Same as above, but for those with the hair expert trait
-	var/haircut_duration_expert = 45 SECONDS
-	var/facial_haircut_duration_expert = 15 SECONDS
 
 /obj/item/scissors/attack(mob/living/attacked_mob, mob/living/user, params)
 	if(!ishuman(attacked_mob))
@@ -52,15 +49,10 @@
 
 		playsound(target_human, 'modular_nova/modules/salon/sound/haircut.ogg', 100)
 
-		if(HAS_TRAIT(user, TRAIT_HAIR_EXPERT))
-			if(do_after(user, haircut_duration_expert, target_human))
-				target_human.set_hairstyle(hair_id, update = TRUE)
-				user.visible_message(span_notice("[user] expertly cuts [target_human]'s hair!"), span_notice("You expertly cut [target_human]'s hair!"))
-		else
-			if(do_after(user, haircut_duration, target_human))
-				target_human.set_hairstyle(hair_id, update = TRUE)
-				user.visible_message(span_notice("[user] successfully cuts [target_human]'s hair!"), span_notice("You successfully cut [target_human]'s hair!"))
-				new /obj/effect/decal/cleanable/hair(get_turf(src))
+		if(do_after(user, haircut_duration, target_human))
+			target_human.set_hairstyle(hair_id, update = TRUE)
+			user.visible_message(span_notice("[user] successfully cuts [target_human]'s hair!"), span_notice("You successfully cut [target_human]'s hair!"))
+			new /obj/effect/decal/cleanable/hair(get_turf(src))
 	else
 		if(!target_human.facial_hairstyle == "Shaved" && target_human.wear_mask)
 			balloon_alert(user, "no hair to cut!")
@@ -77,12 +69,7 @@
 
 		playsound(target_human, 'modular_nova/modules/salon/sound/haircut.ogg', 100)
 
-		if(HAS_TRAIT(user, TRAIT_HAIR_EXPERT))
-			if(do_after(user, facial_haircut_duration_expert, target_human))
-				target_human.set_facial_hairstyle(facial_hair_id, update = TRUE)
-				user.visible_message(span_notice("[user] expertly cuts [target_human]'s facial hair!"), span_notice("You expertly cut [target_human]'s facial hair!"))
-		else
-			if(do_after(user, facial_haircut_duration, target_human))
-				target_human.set_facial_hairstyle(facial_hair_id, update = TRUE)
-				user.visible_message(span_notice("[user] successfully cuts [target_human]'s facial hair!"), span_notice("You successfully cut [target_human]'s facial hair!"))
-				new /obj/effect/decal/cleanable/hair(get_turf(src))
+		if(do_after(user, facial_haircut_duration, target_human))
+			target_human.set_facial_hairstyle(facial_hair_id, update = TRUE)
+			user.visible_message(span_notice("[user] successfully cuts [target_human]'s facial hair!"), span_notice("You successfully cut [target_human]'s facial hair!"))
+			new /obj/effect/decal/cleanable/hair(get_turf(src))

@@ -7,6 +7,7 @@ GLOBAL_LIST_INIT(channel_tokens, list(
 	RADIO_CHANNEL_ENGINEERING = RADIO_TOKEN_ENGINEERING,
 	RADIO_CHANNEL_SECURITY = RADIO_TOKEN_SECURITY,
 	RADIO_CHANNEL_CENTCOM = RADIO_TOKEN_CENTCOM,
+	RADIO_CHANNEL_PHOENIX = RADIO_TOKEN_PHOENIX, // EXONOVA EDIT ADDITION - PHOENIX COLLECTIVE
 	RADIO_CHANNEL_FACTION = RADIO_TOKEN_FACTION, //NOVA EDIT ADDITION - Faction
 	RADIO_CHANNEL_CYBERSUN = RADIO_TOKEN_CYBERSUN, //NOVA EDIT ADDITION - Mapping
 	RADIO_CHANNEL_INTERDYNE = RADIO_TOKEN_INTERDYNE, //NOVA EDIT ADDITION - Mapping
@@ -189,6 +190,32 @@ GLOBAL_LIST_INIT(channel_tokens, list(
 	name = "team leader headset"
 	command = TRUE
 
+//EXOBYTECHNOVA UPD: phoenix collective headsets, originally "modded syndie tech" but now it's alt sec headset
+/obj/item/radio/headset/phoenix
+	name = "Phoenix Collective imperial headset"
+	desc = "A headset used by Phoenix Collective imperials. Protects ears from flashbangs."
+	icon_state = "sec_headset_alt"
+	worn_icon_state = "sec_headset_alt"
+	keyslot = /obj/item/encryptionkey/phoenix
+
+/obj/item/radio/headset/phoenix/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/wearertargeting/earprotection)
+
+/obj/item/radio/headset/phoenix/ert
+	keyslot = /obj/item/encryptionkey/phoenix/ert
+
+/obj/item/radio/headset/phoenix/ert/cmdr
+	keyslot = /obj/item/encryptionkey/phoenix/ert/cmdr
+	command = TRUE
+
+/obj/item/radio/headset/phoenix/cc
+	name = "Phoenix Collective CentCom headset"
+	desc = "A headset used by Phoenix Collective Central Command staff. Protects ears from flashbangs."
+	keyslot = /obj/item/encryptionkey/phoenix/centcom
+	command = TRUE
+// EXOBYTECHNOVA UPDATE END
+
 /obj/item/radio/headset/binary
 	keyslot = /obj/item/encryptionkey/binary
 
@@ -274,12 +301,12 @@ GLOBAL_LIST_INIT(channel_tokens, list(
 
 /obj/item/radio/headset/heads
 	command = TRUE
-	icon_state = "com_headset"
-	worn_icon_state = "com_headset"
 
 /obj/item/radio/headset/heads/captain
 	name = "\proper the captain's headset"
 	desc = "The headset of the king."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/captain
 
 /obj/item/radio/headset/heads/captain/alt
@@ -295,16 +322,22 @@ GLOBAL_LIST_INIT(channel_tokens, list(
 /obj/item/radio/headset/heads/rd
 	name = "\proper the research director's headset"
 	desc = "Headset of the fellow who keeps society marching towards technological singularity."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/rd
 
 /obj/item/radio/headset/heads/hos
 	name = "\proper the head of security's headset"
 	desc = "The headset of the man in charge of keeping order and protecting the station."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/hos
 
 /obj/item/radio/headset/heads/hos/advisor
 	name = "\proper the veteran security advisor headset"
 	desc = "The headset of the man who was in charge of keeping order and protecting the station..."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/hos
 	command = FALSE
 
@@ -321,21 +354,29 @@ GLOBAL_LIST_INIT(channel_tokens, list(
 /obj/item/radio/headset/heads/ce
 	name = "\proper the chief engineer's headset"
 	desc = "The headset of the guy in charge of keeping the station powered and undamaged."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/ce
 
 /obj/item/radio/headset/heads/cmo
 	name = "\proper the chief medical officer's headset"
 	desc = "The headset of the highly trained medical chief."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/cmo
 
 /obj/item/radio/headset/heads/hop
 	name = "\proper the head of personnel's headset"
 	desc = "The headset of the guy who will one day be captain."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/hop
 
 /obj/item/radio/headset/heads/qm
 	name = "\proper the quartermaster's headset"
 	desc = "The headset of the guy who runs the cargo department."
+	icon_state = "com_headset"
+	worn_icon_state = "com_headset"
 	keyslot = /obj/item/encryptionkey/heads/qm
 
 /obj/item/radio/headset/headset_cargo
@@ -439,50 +480,59 @@ GLOBAL_LIST_INIT(channel_tokens, list(
 	. = ..()
 	make_syndie()
 
-/obj/item/radio/headset/Exited(atom/movable/gone, direction)
-	. = ..()
-	if(gone == keyslot2)
-		keyslot2 = null
-		if(!QDELING(src))
-			recalculateChannels()
+/obj/item/radio/headset/screwdriver_act(mob/living/user, obj/item/tool)
+	if(keyslot || keyslot2)
+		for(var/ch_name in channels)
+			SSradio.remove_object(src, GLOB.default_radio_channels[ch_name])
+			secure_radio_connections[ch_name] = null
 
-/obj/item/radio/headset/remove_keys(mob/living/user)
-	. = ..()
-	if(!keyslot2)
-		return
+		if(keyslot)
+			user.put_in_hands(keyslot)
+			keyslot = null
+		if(keyslot2)
+			user.put_in_hands(keyslot2)
+			keyslot2 = null
 
-	. += keyslot2
-	user.put_in_hands(keyslot2) // null via Exited
+		recalculateChannels()
+		to_chat(user, span_notice("You pop out the encryption keys in the headset."))
 
-/obj/item/radio/headset/install_key(mob/living/user, obj/item/encryptionkey/key)
-	if(!keyslot)
+	else
+		to_chat(user, span_warning("This headset doesn't have any unique encryption keys! How useless..."))
+	tool.play_tool_sound(src, 10)
+	return TRUE
+
+/obj/item/radio/headset/attackby(obj/item/W, mob/user, list/modifiers, list/attack_modifiers)
+	if(istype(W, /obj/item/encryptionkey))
+		if(keyslot && keyslot2)
+			to_chat(user, span_warning("The headset can't hold another key!"))
+			return
+
+		if(!keyslot)
+			if(!user.transferItemToLoc(W, src))
+				return
+			keyslot = W
+
+		else
+			if(!user.transferItemToLoc(W, src))
+				return
+			keyslot2 = W
+
+
+		recalculateChannels()
+	else
 		return ..()
-
-	if(keyslot2)
-		loc.balloon_alert(user, "cannot hold a third key!")
-		return ITEM_INTERACT_BLOCKING
-
-	if(!user.transferItemToLoc(key, src))
-		loc.balloon_alert(user, "cannot install!")
-		return ITEM_INTERACT_BLOCKING
-
-	keyslot2 = key
-	recalculateChannels()
-	playsound(src, 'sound/machines/click.ogg', 50, TRUE)
-	loc.balloon_alert(user, "encryption key installed")
-	return ITEM_INTERACT_SUCCESS
 
 /obj/item/radio/headset/recalculateChannels()
 	. = ..()
 	if(keyslot2)
-		for(var/channel_name in keyslot2.channels)
-			if(!(channel_name in channels))
-				channels[channel_name] = keyslot2.channels[channel_name]
+		for(var/ch_name in keyslot2.channels)
+			if(!(ch_name in src.channels))
+				LAZYSET(channels, ch_name, keyslot2.channels[ch_name])
 
 		special_channels |= keyslot2.special_channels
 
 		for(var/ch_name in channels)
-			LAZYSET(secure_radio_connections, ch_name, add_radio(src, GLOB.default_radio_channels[ch_name]))
+			secure_radio_connections[ch_name] = add_radio(src, GLOB.default_radio_channels[ch_name])
 
 	// Updates radio languages entirely for the mob wearing the headset
 	var/mob/mob_loc = loc

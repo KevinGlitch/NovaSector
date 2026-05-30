@@ -13,5 +13,3 @@
 		/obj/item/pinpointer/crew = 1,
 	)
 
-/datum/job/detective
-	bounty_types = CIV_JOB_SEC

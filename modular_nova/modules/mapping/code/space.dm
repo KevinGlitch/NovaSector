@@ -154,7 +154,7 @@
 /datum/map_template/ruin/space/nova/turretfactory
 	id = "turretfactory"
 	suffix = "turretfactory.dmm"
-	name = "Space-Ruin Turret Factory"
+	name = "Turret Factory"
 	description = "A turret factory that was forgotten. Maybe abandoned. Idk. Goodluck."
 
 /datum/map_template/ruin/space/nova/spacegeosite

@@ -6,7 +6,6 @@
 
 	anchored = TRUE
 	density = TRUE
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 10)
 
 /obj/structure/reagent_anvil/Initialize(mapload)
 	. = ..()

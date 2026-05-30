@@ -15,6 +15,7 @@
 		CATEGORY_TOYS_DRONE,
 		CATEGORY_PKA,
 		CATEGORY_INTERDYNE,
+		CATEGORY_GOLEM,
 	)
 
 /obj/machinery/computer/order_console/mining/interdyne/Initialize(mapload)

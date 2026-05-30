@@ -63,7 +63,6 @@
 	var/datum/callback/post_birth_callback
 
 /datum/emote/cat
-	abstract_type = /datum/emote/cat
 	mob_type_allowed_typecache = /mob/living/basic/pet/cat
 	mob_type_blacklist_typecache = list()
 
@@ -103,21 +102,21 @@
 
 /mob/living/basic/pet/cat/early_melee_attack(atom/target, list/modifiers, ignore_cooldown)
 	. = ..()
-	if(.)
-		return
+	if(!.)
+		return FALSE
 
 	if(istype(target, /obj/machinery/oven/range) && can_interact_with_stove)
 		target.attack_hand(src)
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 	if(!can_hold_item)
-		return BASIC_MOB_CONTINUE_ATTACK_CHAIN
+		return TRUE
 
 	if(!is_type_in_list(target, huntable_items) || held_food)
-		return BASIC_MOB_CONTINUE_ATTACK_CHAIN
+		return TRUE
 	var/atom/movable/movable_target = target
 	movable_target.forceMove(src)
-	return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+	return FALSE
 
 /mob/living/basic/pet/cat/Exited(atom/movable/gone, direction)
 	. = ..()

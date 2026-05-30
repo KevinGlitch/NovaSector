@@ -1,11 +1,21 @@
 /obj/item/reagent_containers/Initialize(mapload, vol)
 	. = ..()
 
-	AddElement(/datum/element/liquids_interaction)
+	AddComponent(/datum/component/liquids_interaction, TYPE_PROC_REF(/obj/item/reagent_containers/cup/beaker, attack_on_liquids_turf))
 
-// Remove liquids from a turf using a reagent container.
-/obj/item/reagent_containers/attack_liquids_turf(turf/target_turf, mob/living/user, obj/effect/abstract/liquid_turf/liquids)
+/**
+ * Proc to remove liquids from a turf using a reagent container.
+ *
+ * Arguments:
+ * * tile - On which tile we're trying to absorb liquids
+ * * user - Who tries to absorb liquids with this?
+ * * liquids - Liquids we're trying to absorb.
+ */
+/obj/item/reagent_containers/proc/attack_on_liquids_turf(turf/target_turf, mob/living/user, obj/effect/abstract/liquid_turf/liquids)
 	if(user.combat_mode)
+		return FALSE
+
+	if(!spillable)
 		return FALSE
 
 	if(!user.Adjacent(target_turf))

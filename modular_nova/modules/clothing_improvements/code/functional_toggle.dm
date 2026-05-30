@@ -117,6 +117,3 @@ Use CTRL + SHIFT + LEFT CLICK to turn them on and off.
 
 /obj/item/clothing/suit/hooded/cloak/drake
 	only_functional = TRUE
-
-/obj/item/clothing/suit/hooded/cultrobes/eldritch
-	only_functional = TRUE

@@ -55,7 +55,7 @@
 	desc = "A module that uses a gravitational core to make the user completely weightless."
 	icon_state = "antigrav"
 	module_type = MODULE_TOGGLE
-	complexity = 2
+	complexity = 3
 	active_power_cost = DEFAULT_CHARGE_DRAIN * 0.7
 	incompatible_modules = list(/obj/item/mod/module/atrocinator, /obj/item/mod/module/anomaly_locked/antigrav)
 	accepted_anomalies = list(/obj/item/assembly/signaler/anomaly/grav)

@@ -27,7 +27,6 @@
 	head = /obj/item/clothing/head/helmet/space/plasmaman/syndie
 	uniform = /obj/item/clothing/under/plasmaman/syndicate
 	r_hand = /obj/item/tank/internals/plasmaman/belt/full
-	internals_slot = ITEM_SLOT_HANDS
 
 /datum/outfit/syndicate/leader
 	name = "Syndicate Leader - Basic"
@@ -40,7 +39,6 @@
 	head = /obj/item/clothing/head/helmet/space/plasmaman/syndie
 	uniform = /obj/item/clothing/under/plasmaman/syndicate
 	r_hand = /obj/item/tank/internals/plasmaman/belt/full
-	internals_slot = ITEM_SLOT_HANDS
 
 /datum/outfit/syndicate/post_equip(mob/living/carbon/human/nukie, visuals_only = FALSE)
 	if(visuals_only)
@@ -62,7 +60,7 @@
 	weapons_implant.implant(nukie)
 	var/obj/item/implant/explosive/explosive_implant = new/obj/item/implant/explosive(nukie)
 	explosive_implant.implant(nukie)
-	nukie.add_faction(ROLE_SYNDICATE)
+	nukie.faction |= ROLE_SYNDICATE
 	nukie.update_icons()
 
 /datum/outfit/syndicate/full
@@ -90,8 +88,7 @@
 	back = /obj/item/mod/control/pre_equipped/nuclear/plasmaman
 	uniform = /obj/item/clothing/under/plasmaman/syndicate
 	r_pocket = /obj/item/tank/internals/plasmaman/belt/full
-	internals_slot = ITEM_SLOT_RPOCKET
-	mask = /obj/item/clothing/mask/gas/syndicate/plasmaman
+	mask = null
 
 /datum/outfit/syndicate/full/plasmaman/New()
 	backpack_contents += /obj/item/clothing/head/helmet/space/plasmaman/syndie
@@ -122,7 +119,6 @@
 	head = /obj/item/clothing/head/helmet/space/plasmaman/syndie
 	uniform = /obj/item/clothing/under/plasmaman/syndicate
 	r_hand = /obj/item/tank/internals/plasmaman/belt/full
-	internals_slot = ITEM_SLOT_HANDS
 	tc = 0
 
 /datum/outfit/syndicate/support/plasmaman
@@ -132,7 +128,6 @@
 	uniform = /obj/item/clothing/under/plasmaman/syndicate
 	glasses = /obj/item/clothing/glasses/overwatch
 	r_hand = /obj/item/tank/internals/plasmaman/belt/full
-	internals_slot = ITEM_SLOT_HANDS
 
 /datum/outfit/syndicate/reinforcement/gorlex
 	name = "Syndicate Operative - Gorlex Reinforcement"
@@ -144,10 +139,11 @@
 
 /datum/outfit/syndicate/reinforcement/cybersun
 	name = "Syndicate Operative - Cybersun Reinforcement"
-	uniform = /obj/item/clothing/under/syndicate/cybersun
-	gloves = /obj/item/clothing/gloves/combat
-	shoes = /obj/item/clothing/shoes/laceup
-	mask = /obj/item/clothing/mask/gas/syndicate/cybersun
+	uniform = /obj/item/clothing/under/syndicate/combat
+	suit = /obj/item/clothing/suit/jacket/oversized
+	gloves = /obj/item/clothing/gloves/fingerless
+	glasses = /obj/item/clothing/glasses/sunglasses
+	mask = /obj/item/cigarette/cigar
 	faction = "Cybersun Industries"
 
 /datum/outfit/syndicate/reinforcement/donk

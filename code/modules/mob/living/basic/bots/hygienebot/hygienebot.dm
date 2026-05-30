@@ -21,8 +21,6 @@
 	additional_access = /datum/id_trim/job/janitor
 	hackables = "cleaning service protocols"
 	ai_controller = /datum/ai_controller/basic_controller/bot/hygienebot
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 3.3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
-
 
 	///are we currently washing someone?
 	var/washing = FALSE
@@ -68,7 +66,9 @@
 	RegisterSignal(src, COMSIG_HOSTILE_PRE_ATTACKINGTARGET, PROC_REF(on_attack))
 
 /mob/living/basic/bot/hygienebot/explode()
-	do_foam(2, src, loc)
+	var/datum/effect_system/fluid_spread/foam/foam = new
+	foam.set_up(2, holder = src, location = loc)
+	foam.start()
 	return ..()
 
 /mob/living/basic/bot/hygienebot/generate_speak_list()
@@ -115,7 +115,6 @@
 		target.fire_act()
 		return
 	target.wash(CLEAN_WASH)
-	target.extinguish()
 
 /mob/living/basic/bot/hygienebot/on_bot_movement(atom/movable/source, atom/oldloc, dir, forced)
 

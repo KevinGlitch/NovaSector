@@ -1,548 +1,516 @@
 //Subtype for most custom species that use GAGS.  Also provides Anthromorphs.
 /datum/augment_item/limb/head/species
-	abstract_type = /datum/augment_item/limb/head/species
 	cost = 0
+	uses_robotic_styles = FALSE
 	uses_greyscale = TRUE
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
 
 /datum/augment_item/limb/head/species/mutant
-	name = "Anthromorph head"
+	name = "anthromorph head"
 	path = /obj/item/bodypart/head/mutant
 
 /datum/augment_item/limb/chest/species
-	abstract_type = /datum/augment_item/limb/chest/species
 	cost = 0
+	uses_robotic_styles = FALSE
 	uses_greyscale = TRUE
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
 
 /datum/augment_item/limb/chest/species/mutant
-	name = "Anthromorph chest"
+	name = "anthromorph chest"
 	path = /obj/item/bodypart/chest/mutant
 
 /datum/augment_item/limb/l_arm/species
-	abstract_type = /datum/augment_item/limb/chest/species
 	cost = 0
+	uses_robotic_styles = FALSE
 	uses_greyscale = TRUE
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
 
 /datum/augment_item/limb/l_arm/species/mutant
-	name = "Anthromorph left arm"
+	name = "anthromorph left arm"
 	path = /obj/item/bodypart/arm/left/mutant
 
 /datum/augment_item/limb/r_arm/species
 	cost = 0
+	uses_robotic_styles = FALSE
 	uses_greyscale = TRUE
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
 
 /datum/augment_item/limb/r_arm/species/mutant
-	name = "Anthromorph right arm"
+	name = "anthromorph right arm"
 	path = /obj/item/bodypart/arm/right/mutant
 
 /datum/augment_item/limb/l_leg/species
-	abstract_type = /datum/augment_item/limb/l_leg/species
 	cost = 0
+	uses_robotic_styles = FALSE
 	uses_greyscale = TRUE
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
 
 /datum/augment_item/limb/l_leg/species/mutant
-	name = "Anthromorph left leg"
+	name = "anthromorph left leg"
 	path = /obj/item/bodypart/leg/left/mutant
 	supports_digitigrade = TRUE
 
 /datum/augment_item/limb/r_leg/species
-	abstract_type = /datum/augment_item/limb/r_leg/species
 	cost = 0
+	uses_robotic_styles = FALSE
 	uses_greyscale = TRUE
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
 
 /datum/augment_item/limb/r_leg/species/mutant
-	name = "Anthromorph right leg"
+	name = "anthromorph right leg"
 	path = /obj/item/bodypart/leg/right/mutant
 	supports_digitigrade = TRUE
+
+
 
 /// ACTUAL CONTENT ZONE BEGINS HERE
 //Akula
 /datum/augment_item/limb/head/species/akula
-	name = "Akula head"
+	name = "akula head"
 	path = /obj/item/bodypart/head/mutant/akula
 
 /datum/augment_item/limb/chest/species/akula
-	name = "Akula chest"
+	name = "akula chest"
 	path = /obj/item/bodypart/chest/mutant/akula
 
 /datum/augment_item/limb/l_arm/species/akula
-	name = "Akula left arm"
+	name = "akula left arm"
 	path = /obj/item/bodypart/arm/left/mutant/akula
 
 /datum/augment_item/limb/r_arm/species/akula
-	name = "Akula right arm"
+	name = "akula right arm"
 	path = /obj/item/bodypart/arm/right/mutant/akula
 
 /datum/augment_item/limb/l_leg/species/akula
-	name = "Akula left leg"
+	name = "akula left leg"
 	path = /obj/item/bodypart/leg/left/mutant/akula
 
 /datum/augment_item/limb/r_leg/species/akula
-	name = "Akula right leg"
+	name = "akula right leg"
 	path = /obj/item/bodypart/leg/right/mutant/akula
 
 //Aquatic
 /datum/augment_item/limb/head/species/mutant/aquatic
-	name = "Aquatic head"
+	name = "aquatic head"
 	path = /obj/item/bodypart/head/mutant/aquatic
 
 /datum/augment_item/limb/chest/species/mutant/aquatic
-	name = "Aquatic chest"
+	name = "aquatic chest"
 	path = /obj/item/bodypart/chest/mutant/aquatic
 
 /datum/augment_item/limb/l_arm/species/mutant/aquatic
-	name = "Aquatic left arm"
+	name = "aquatic left arm"
 	path = /obj/item/bodypart/arm/left/mutant/aquatic
 
 /datum/augment_item/limb/r_arm/species/mutant/aquatic
-	name = "Aquatic right arm"
+	name = "aquatic right arm"
 	path = /obj/item/bodypart/arm/right/mutant/aquatic
 
 /datum/augment_item/limb/l_leg/species/mutant/aquatic
-	name = "Aquatic left leg"
+	name = "aquatic left leg"
 	path = /obj/item/bodypart/leg/left/mutant/aquatic
 
 /datum/augment_item/limb/r_leg/species/mutant/aquatic
-	name = "Aquatic right leg"
+	name = "aquatic right leg"
 	path = /obj/item/bodypart/leg/right/mutant/aquatic
 
 //Insect
 /datum/augment_item/limb/head/species/insect
-	name = "Insect head"
+	name = "insect head"
 	path = /obj/item/bodypart/head/mutant/insect
 
 /datum/augment_item/limb/chest/species/insect
-	name = "Insect chest"
+	name = "insect chest"
 	path = /obj/item/bodypart/chest/mutant/insect
 
 /datum/augment_item/limb/l_arm/species/insect
-	name = "Insect left arm"
+	name = "insect left arm"
 	path = /obj/item/bodypart/arm/left/mutant/insect
 
 /datum/augment_item/limb/r_arm/species/insect
-	name = "Insect right arm"
+	name = "insect right arm"
 	path = /obj/item/bodypart/arm/right/mutant/insect
 
 /datum/augment_item/limb/l_leg/species/insect
-	name = "Insect left leg"
+	name = "insect left leg"
 	path = /obj/item/bodypart/leg/left/mutant/insect
 
 /datum/augment_item/limb/r_leg/species/insect
-	name = "Insect right leg"
+	name = "insect right leg"
 	path = /obj/item/bodypart/leg/right/mutant/insect
 
 //Lizard
 /datum/augment_item/limb/head/species/mutant/lizard
-	name = "Lizard head"
+	name = "lizard head"
 	path = /obj/item/bodypart/head/lizard
 
 /datum/augment_item/limb/chest/species/mutant/lizard
-	name = "Lizard chest"
+	name = "lizard chest"
 	path = /obj/item/bodypart/chest/lizard
 
 /datum/augment_item/limb/l_arm/species/mutant/lizard
-	name = "Lizard left arm"
+	name = "lizard left arm"
 	path = /obj/item/bodypart/arm/left/lizard
 
 /datum/augment_item/limb/r_arm/species/mutant/lizard
-	name = "Lizard right arm"
+	name = "lizard right arm"
 	path = /obj/item/bodypart/arm/right/lizard
 
 /datum/augment_item/limb/l_leg/species/mutant/lizard
-	name = "Lizard left leg"
+	name = "lizard left leg"
 	path = /obj/item/bodypart/leg/left/lizard
 
 /datum/augment_item/limb/r_leg/species/mutant/lizard
-	name = "Lizard right leg"
+	name = "lizard right leg"
 	path = /obj/item/bodypart/leg/right/lizard
 
 //Flies
 /datum/augment_item/limb/head/fly
-	name = "Fly head"
+	name = "fly head"
 	path = /obj/item/bodypart/head/fly
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/chest/fly
-	name = "Fly chest"
+	name = "fly chest"
 	path = /obj/item/bodypart/chest/fly
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/l_arm/fly
-	name = "Fly left arm"
+	name = "fly left arm"
 	path = /obj/item/bodypart/arm/left/fly
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/r_arm/fly
-	name = "Fly right arm"
+	name = "fly right arm"
 	path = /obj/item/bodypart/arm/right/fly
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/l_leg/fly
-	name = "Fly left leg"
+	name = "fly left leg"
 	path = /obj/item/bodypart/leg/left/fly
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/r_leg/fly
-	name = "Fly right leg"
+	name = "fly right leg"
 	path = /obj/item/bodypart/leg/right/fly
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 //Golems
 /datum/augment_item/limb/head/golem
-	name = "Golem head"
+	name = "golem head"
 	path = /obj/item/bodypart/head/golem
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/chest/golem
-	name = "Golem chest"
+	name = "golem chest"
 	path = /obj/item/bodypart/chest/golem
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/l_arm/golem
-	name = "Golem left arm"
+	name = "golem left arm"
 	path = /obj/item/bodypart/arm/left/golem
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/r_arm/golem
-	name = "Golem right arm"
+	name = "golem right arm"
 	path = /obj/item/bodypart/arm/right/golem
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/l_leg/golem
-	name = "Golem left leg"
+	name = "golem left leg"
 	path = /obj/item/bodypart/leg/left/golem
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 /datum/augment_item/limb/r_leg/golem
-	name = "Golem right leg"
+	name = "golem right leg"
 	path = /obj/item/bodypart/leg/right/golem
 	cost = 0
-	species_blacklist = list(SPECIES_HOLOSYNTH = 1)
+	uses_robotic_styles = FALSE
 
 //Slimes
 /datum/augment_item/limb/head/species/mutant/slime
-	name = "Slime head"
+	name = "slime head"
 	path = /obj/item/bodypart/head/jelly/slime/roundstart
 
 /datum/augment_item/limb/chest/species/mutant/slime
-	name = "Slime chest"
+	name = "slime chest"
 	path = /obj/item/bodypart/chest/jelly/slime/roundstart
 
 /datum/augment_item/limb/l_arm/species/mutant/slime
-	name = "Slime left arm"
+	name = "slime left arm"
 	path = /obj/item/bodypart/arm/left/jelly/slime/roundstart
 
 /datum/augment_item/limb/r_arm/species/mutant/slime
-	name = "Slime right arm"
+	name = "slime right arm"
 	path = /obj/item/bodypart/arm/right/jelly/slime/roundstart
 
 /datum/augment_item/limb/l_leg/species/mutant/slime
-	name = "Slime left leg"
+	name = "slime left leg"
 	path = /obj/item/bodypart/leg/left/jelly/slime/roundstart
 
 /datum/augment_item/limb/r_leg/species/mutant/slime
-	name = "Slime right leg"
+	name = "slime right leg"
 	path = /obj/item/bodypart/leg/right/jelly/slime/roundstart
 
 //Moths
 /datum/augment_item/limb/head/species/moth
-	name = "Moth head"
+	name = "moth head"
 	path = /obj/item/bodypart/head/moth
 
 /datum/augment_item/limb/chest/species/moth
-	name = "Moth chest"
+	name = "moth chest"
 	path = /obj/item/bodypart/chest/moth
 
 /datum/augment_item/limb/l_arm/species/moth
-	name = "Moth left arm"
+	name = "moth left arm"
 	path = /obj/item/bodypart/arm/left/moth
 
 /datum/augment_item/limb/r_arm/species/moth
-	name = "Moth right arm"
+	name = "moth right arm"
 	path = /obj/item/bodypart/arm/right/moth
 
 /datum/augment_item/limb/l_leg/species/moth
-	name = "Moth left leg"
+	name = "moth left leg"
 	path = /obj/item/bodypart/leg/left/moth
 
 /datum/augment_item/limb/r_leg/species/moth
-	name = "Moth right leg"
+	name = "moth right leg"
 	path = /obj/item/bodypart/leg/right/moth
 
 //Mushroompeople
 /datum/augment_item/limb/head/species/mushroom
-	name = "Mushroom head"
+	name = "mushroom head"
 	path = /obj/item/bodypart/head/mushroom
 
 /datum/augment_item/limb/chest/species/mushroom
-	name = "Mushroom chest"
+	name = "mushroom chest"
 	path = /obj/item/bodypart/chest/mushroom
 
 /datum/augment_item/limb/l_arm/species/mushroom
-	name = "Mushroom left arm"
+	name = "mushroom left arm"
 	path = /obj/item/bodypart/arm/left/mushroom
 
 /datum/augment_item/limb/r_arm/species/mushroom
-	name = "Mushroom right arm"
+	name = "mushroom right arm"
 	path = /obj/item/bodypart/arm/right/mushroom
 
 /datum/augment_item/limb/l_leg/species/mushroom
-	name = "Mushroom left leg"
+	name = "mushroom left leg"
 	path = /obj/item/bodypart/leg/left/mushroom
 
 /datum/augment_item/limb/r_leg/species/mushroom
-	name = "Mushroom right leg"
+	name = "mushroom right leg"
 	path = /obj/item/bodypart/leg/right/mushroom
 
 //Podpeople
 /datum/augment_item/limb/head/species/pod
-	name = "Pod head"
+	name = "pod head"
 	path = /obj/item/bodypart/head/pod
 
 /datum/augment_item/limb/chest/species/pod
-	name = "Pod chest"
+	name = "pod chest"
 	path = /obj/item/bodypart/chest/pod
 
 /datum/augment_item/limb/l_arm/species/pod
-	name = "Pod left arm"
+	name = "pod left arm"
 	path = /obj/item/bodypart/arm/left/pod
 
 /datum/augment_item/limb/r_arm/species/pod
-	name = "Pod right arm"
+	name = "pod right arm"
 	path = /obj/item/bodypart/arm/right/pod
 
 /datum/augment_item/limb/l_leg/species/pod
-	name = "Pod left leg"
+	name = "pod left leg"
 	path = /obj/item/bodypart/leg/left/pod
 
 /datum/augment_item/limb/r_leg/species/pod
-	name = "Pod right leg"
+	name = "pod right leg"
 	path = /obj/item/bodypart/leg/right/pod
 
 //STINKIN' ZOGGIN' 'UMIES!!
 /datum/augment_item/limb/head/species/human
-	name = "Human head"
+	name = "human head"
 	path = /obj/item/bodypart/head
 
 /datum/augment_item/limb/chest/species/human
-	name = "Human chest"
+	name = "human chest"
 	path = /obj/item/bodypart/chest
 
 /datum/augment_item/limb/l_arm/species/human
-	name = "Human left arm"
+	name = "human left arm"
 	path = /obj/item/bodypart/arm/left
 
 /datum/augment_item/limb/r_arm/species/human
-	name = "Human right arm"
+	name = "human right arm"
 	path = /obj/item/bodypart/arm/right
 
 /datum/augment_item/limb/l_leg/species/human
-	name = "Human left leg"
+	name = "human left leg"
 	path = /obj/item/bodypart/leg/left
 
 /datum/augment_item/limb/r_leg/species/human
-	name = "Human right leg"
+	name = "human right leg"
 	path = /obj/item/bodypart/leg/right
 
-/datum/augment_item/limb/l_leg/species/human_digi_capable
-	name = "Skintone mutant left leg"
-	path = /obj/item/bodypart/leg/left/human_digi_capable
+/datum/augment_item/limb/l_leg/species/human_digi
+	name = "skintone mutant left leg"
+	path = /obj/item/bodypart/leg/left/human_digi
 	supports_digitigrade = TRUE
 
-/datum/augment_item/limb/r_leg/species/human_digi_capable
-	name = "Skintone mutant right leg"
-	path = /obj/item/bodypart/leg/right/human_digi_capable
+/datum/augment_item/limb/r_leg/species/human_digi
+	name = "skintone mutant right leg"
+	path = /obj/item/bodypart/leg/right/human_digi
 	supports_digitigrade = TRUE
 
 //Ethereals
 /datum/augment_item/limb/head/species/ethereal
-	name = "Ethereal head"
+	name = "ethereal head"
 	path = /obj/item/bodypart/head/ethereal
 
 /datum/augment_item/limb/chest/species/ethereal
-	name = "Ethereal chest"
+	name = "ethereal chest"
 	path = /obj/item/bodypart/chest/ethereal
 
 /datum/augment_item/limb/l_arm/species/ethereal
-	name = "Ethereal left arm"
+	name = "ethereal left arm"
 	path = /obj/item/bodypart/arm/left/ethereal
 
 /datum/augment_item/limb/r_arm/species/ethereal
-	name = "Ethereal right arm"
+	name = "ethereal right arm"
 	path = /obj/item/bodypart/arm/right/ethereal
 
 /datum/augment_item/limb/l_leg/species/ethereal
-	name = "Ethereal left leg"
+	name = "ethereal left leg"
 	path = /obj/item/bodypart/leg/left/ethereal
 
 /datum/augment_item/limb/r_leg/species/ethereal
-	name = "Ethereal right leg"
+	name = "ethereal right leg"
 	path = /obj/item/bodypart/leg/right/ethereal
 
 //Skrell
 /datum/augment_item/limb/head/species/skrell
-	name = "Skrell head"
+	name = "skrell head"
 	path = /obj/item/bodypart/head/mutant/skrell
 
 /datum/augment_item/limb/chest/species/skrell
-	name = "Skrell chest"
+	name = "skrell chest"
 	path = /obj/item/bodypart/chest/mutant/skrell
 
 /datum/augment_item/limb/l_arm/species/skrell
-	name = "Skrell left arm"
+	name = "skrell left arm"
 	path = /obj/item/bodypart/arm/left/mutant/skrell
 
 /datum/augment_item/limb/r_arm/species/skrell
-	name = "Skrell right arm"
+	name = "skrell right arm"
 	path = /obj/item/bodypart/arm/right/mutant/skrell
 
 /datum/augment_item/limb/l_leg/species/skrell
-	name = "Skrell left leg"
+	name = "skrell left leg"
 	path = /obj/item/bodypart/leg/left/mutant/skrell
 
 /datum/augment_item/limb/r_leg/species/skrell
-	name = "Skrell right leg"
+	name = "skrell right leg"
 	path = /obj/item/bodypart/leg/right/mutant/skrell
 
 //Standard Vox
 /datum/augment_item/limb/head/species/mutant/vox
-	name = "Vox head"
+	name = "vox head"
 	path = /obj/item/bodypart/head/mutant/vox
 
 /datum/augment_item/limb/chest/species/mutant/vox
-	name = "Vox chest"
+	name = "vox chest"
 	path = /obj/item/bodypart/chest/mutant/vox
 
 /datum/augment_item/limb/l_arm/species/mutant/vox
-	name = "Vox left arm"
+	name = "vox left arm"
 	path = /obj/item/bodypart/arm/left/mutant/vox
 
 /datum/augment_item/limb/r_arm/species/mutant/vox
-	name = "Vox right arm"
+	name = "vox right arm"
 	path = /obj/item/bodypart/arm/right/mutant/vox
 
 /datum/augment_item/limb/l_leg/species/mutant/vox
-	name = "Vox left leg"
+	name = "vox left leg"
 	path = /obj/item/bodypart/leg/left/mutant/vox
 
 /datum/augment_item/limb/r_leg/species/mutant/vox
-	name = "Vox right leg"
+	name = "vox right leg"
 	path = /obj/item/bodypart/leg/right/mutant/vox
 
 //Xenomorph Hybrids
 /datum/augment_item/limb/head/species/mutant/xenohybrid
-	name = "Xenohybrid head"
+	name = "xenohybrid head"
 	path = /obj/item/bodypart/head/mutant/xenohybrid
 
 /datum/augment_item/limb/chest/species/mutant/xenohybrid
-	name = "Xenohybrid chest"
+	name = "xenohybrid chest"
 	path = /obj/item/bodypart/chest/mutant/xenohybrid
 
 /datum/augment_item/limb/l_arm/species/mutant/xenohybrid
-	name = "Xenohybrid left arm"
+	name = "xenohybrid left arm"
 	path = /obj/item/bodypart/arm/left/mutant/xenohybrid
 
 /datum/augment_item/limb/r_arm/species/mutant/xenohybrid
-	name = "Xenohybrid right arm"
+	name = "xenohybrid right arm"
 	path = /obj/item/bodypart/arm/right/mutant/xenohybrid
 
 /datum/augment_item/limb/l_leg/species/mutant/xenohybrid
-	name = "Xenohybrid left leg"
+	name = "xenohybrid left leg"
 	path = /obj/item/bodypart/leg/left/digitigrade/xenohybrid
-	supports_digitigrade = TRUE
 
 /datum/augment_item/limb/r_leg/species/mutant/xenohybrid
-	name = "Xenohybrid right leg"
+	name = "xenohybrid right leg"
 	path = /obj/item/bodypart/leg/right/digitigrade/xenohybrid
-	supports_digitigrade = TRUE
 
 //Ramatan Limbs (slugcats)
 /datum/augment_item/limb/head/species/mutant/ramatae
-	name = "Small-eyes ramatae head"
+	name = "small-eyes ramatae head"
 	path = /obj/item/bodypart/head/mutant/ramatae
 
 /datum/augment_item/limb/head/species/mutant/ramatae/eyes
-	name = "Big-eyes ramatae head"
+	name = "big-eyes ramatae head"
 	path = /obj/item/bodypart/head/mutant/ramatae/eyes
 
 /datum/augment_item/limb/chest/species/mutant/ramatae
-	name = "Ramatae chest"
+	name = "ramatae chest"
 	path = /obj/item/bodypart/chest/mutant/ramatae
 
 /datum/augment_item/limb/l_arm/species/mutant/ramatae
-	name = "Ramatae left arm"
+	name = "ramatae left arm"
 	path = /obj/item/bodypart/arm/left/mutant/ramatae
 
 /datum/augment_item/limb/r_arm/species/mutant/ramatae
-	name = "Ramatae right arm"
+	name = "ramatae right arm"
 	path = /obj/item/bodypart/arm/right/mutant/ramatae
 
 /datum/augment_item/limb/l_leg/species/mutant/ramatae
-	name = "Ramatae left leg"
+	name = "ramatae left leg"
 	path = /obj/item/bodypart/leg/left/mutant/ramatae
 
 /datum/augment_item/limb/r_leg/species/mutant/ramatae
-	name = "Ramatae right leg"
+	name = "ramatae right leg"
 	path = /obj/item/bodypart/leg/right/mutant/ramatae
-
-// Shadekin
-/datum/augment_item/limb/head/species/shadekin
-	name = "Shadekin head"
-	path = /obj/item/bodypart/head/mutant/shadekin
-
-/datum/augment_item/limb/chest/species/shadekin
-	name = "Shadekin chest"
-	path = /obj/item/bodypart/chest/mutant/shadekin
-
-/datum/augment_item/limb/l_arm/species/shadekin
-	name = "Shadekin left arm"
-	path = /obj/item/bodypart/arm/left/mutant/shadekin
-
-/datum/augment_item/limb/r_arm/species/shadekin
-	name = "Shadekin right arm"
-	path = /obj/item/bodypart/arm/right/mutant/shadekin
-
-/datum/augment_item/limb/l_leg/species/shadekin
-	name = "Shadekin left leg"
-	path = /obj/item/bodypart/leg/left/mutant/shadekin
-	supports_digitigrade = TRUE
-
-/datum/augment_item/limb/r_leg/species/shadekin
-	name = "Shadekin right leg"
-	path = /obj/item/bodypart/leg/right/mutant/shadekin
-	supports_digitigrade = TRUE
 
 //==SPECIAL NON-SPECIES LIMBS==
 /datum/augment_item/limb/l_leg/species/mutant/harpy
-	name = "Harpy left leg"
+	name = "harpy left leg"
 	path = /obj/item/bodypart/leg/left/mutant/harpy
 
 /datum/augment_item/limb/r_leg/species/mutant/harpy
-	name = "Harpy right leg"
+	name = "harpy right leg"
 	path = /obj/item/bodypart/leg/right/mutant/harpy
 
 /datum/augment_item/limb/l_leg/species/harpy
-	name = "Harpy skintone left leg"
+	name = "harpy skintone left leg"
 	path = /obj/item/bodypart/leg/left/mutant/harpy_skin
 	supports_digitigrade = TRUE
 
 /datum/augment_item/limb/r_leg/species/harpy
-	name = "Harpy skintone right leg"
+	name = "harpy skintone right leg"
 	path = /obj/item/bodypart/leg/right/mutant/harpy_skin
 	supports_digitigrade = TRUE

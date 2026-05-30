@@ -21,12 +21,12 @@
 	VAR_FINAL/atom/real_location
 
 	/// List of all the mobs currently viewing the contents of this storage.
-	VAR_PRIVATE/list/mob/is_using
+	VAR_PRIVATE/list/mob/is_using = list()
 
 	///The type of storage interface this datum uses.
 	var/datum/storage_interface/storage_type = /datum/storage_interface
 	/// Associated list that keeps track of all storage UI datums per person.
-	VAR_PRIVATE/list/datum/storage_interface/storage_interfaces
+	VAR_PRIVATE/list/datum/storage_interface/storage_interfaces = null
 
 	/// Typecache of items that can be inserted into this storage.
 	/// By default, all item types can be inserted (assuming other conditions are met).
@@ -158,7 +158,7 @@
 	for(var/mob/person as anything in is_using)
 		hide_contents(person)
 
-	LAZYCLEARLIST(is_using)
+	is_using.Cut()
 	QDEL_LIST_ASSOC_VAL(storage_interfaces)
 
 	parent = null
@@ -375,7 +375,7 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	SET_PLANE_IMPLICIT(thing, initial(thing.plane))
 	thing.mouse_opacity = initial(thing.mouse_opacity)
 	thing.screen_loc = null
-	if(numerical_stacking)
+	if(thing.maptext)
 		thing.maptext = ""
 
 /**
@@ -489,21 +489,14 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 		return FALSE
 	if(SEND_SIGNAL(parent, COMSIG_ATOM_PRE_STORED_ITEM, to_insert, user, force, messages) & BLOCK_STORAGE_INSERT)
 		return FALSE
-	if(SEND_SIGNAL(to_insert, COMSIG_ITEM_PRE_STORAGE_INSERTION, parent, user, force, messages) & BLOCK_STORAGE_INSERT)
-		return FALSE
 
 	SEND_SIGNAL(parent, COMSIG_ATOM_STORED_ITEM, to_insert, user, force)
 	SEND_SIGNAL(src, COMSIG_STORAGE_STORED_ITEM, to_insert, user, force)
-	if(ismob(to_insert.loc))
-		var/mob/item_carrier = to_insert.loc
-		item_carrier.transferItemToLoc(to_insert, real_location, animated = FALSE) // This allows has_unequipped() to be properly called.
-	else
-		to_insert.forceMove(real_location)
+	to_insert.forceMove(real_location)
+	item_insertion_feedback(user, to_insert, override)
+	parent.update_appearance()
 	if(get(real_location, /mob) != user)
 		to_insert.do_pickup_animation(real_location, user)
-	if (messages)
-		item_insertion_feedback(user, to_insert, override)
-	parent.update_appearance()
 	return TRUE
 
 /// Since items inside storages ignore transparency for QOL reasons, we're tracking when things are dropped onto them instead of our UI elements
@@ -721,12 +714,9 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	SIGNAL_HANDLER
 
 	for(var/mob/user as anything in is_using)
-		if (user.hud_used?.screen_groups[HUD_GROUP_STORAGE])
-			user.hud_used.screen_groups[HUD_GROUP_STORAGE] -= gone
-
+		user.hud_used?.open_containers -= gone
 		if(!user.client)
 			continue
-
 		var/client/cuser = user.client
 		cuser.screen -= gone
 
@@ -751,6 +741,8 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 		return
 
 	if(collection_mode == COLLECT_ONE)
+		if(thing.loc == user)
+			user.dropItemToGround(thing, silent = TRUE) //this is nessassary to update any inventory slot it is attached to
 		attempt_insert(thing, user)
 		return COMPONENT_CANCEL_ATTACK_CHAIN
 
@@ -1070,10 +1062,10 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	if(to_show.active_storage != src && (to_show.stat == CONSCIOUS))
 		for(var/obj/item/thing in real_location)
 			if(thing.on_found(to_show))
-				to_show.active_storage?.hide_contents(to_show)
-				return FALSE
+				to_show.active_storage.hide_contents(to_show)
 
-	to_show.active_storage?.hide_contents(to_show)
+	if(to_show.active_storage)
+		to_show.active_storage.hide_contents(to_show)
 
 	to_show.active_storage = src
 
@@ -1090,12 +1082,11 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 
 	orient_storage()
 
-	LAZYOR(is_using, to_show)
+	is_using |= to_show
 
-	// Don't add to screen_objects as that one gets its contents actually deleted
-	LAZYOR(to_show.hud_used.screen_groups[HUD_GROUP_STORAGE], storage_interfaces[to_show].list_ui_elements())
+	to_show.hud_used.open_containers |= storage_interfaces[to_show].list_ui_elements()
 	to_show.client.screen |= storage_interfaces[to_show].list_ui_elements()
-	LAZYOR(to_show.hud_used.screen_groups[HUD_GROUP_STORAGE], real_location.contents)
+	to_show.hud_used.open_containers |= real_location.contents
 	to_show.client.screen |= real_location.contents
 
 	return TRUE
@@ -1110,22 +1101,21 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	if(to_hide.active_storage == src)
 		to_hide.active_storage = null
 
-	if(!LAZYLEN(is_using) && ismovable(real_location))
+	if(!length(is_using) && ismovable(real_location))
 		var/atom/movable/movable_loc = real_location
 		movable_loc.lose_active_storage(src)
 
-	if (!LAZYLEN(storage_interfaces) || isnull(storage_interfaces[to_hide]))
+	if (!length(storage_interfaces) || isnull(storage_interfaces[to_hide]))
 		return TRUE
 
-	if(LAZYLEN(is_using))
-		is_using -= to_hide
+	is_using -= to_hide
 
 	if(to_hide.client)
 		to_hide.client.screen -= storage_interfaces[to_hide].list_ui_elements()
 		to_hide.client.screen -= real_location.contents
-	if(to_hide.hud_used.screen_groups[HUD_GROUP_STORAGE])
-		to_hide.hud_used.screen_groups[HUD_GROUP_STORAGE] -= storage_interfaces[to_hide].list_ui_elements()
-		to_hide.hud_used.screen_groups[HUD_GROUP_STORAGE] -= real_location.contents
+	if(to_hide.hud_used)
+		to_hide.hud_used.open_containers -= storage_interfaces[to_hide].list_ui_elements()
+		to_hide.hud_used.open_containers -=  real_location.contents
 	QDEL_NULL(storage_interfaces[to_hide])
 	storage_interfaces -= to_hide
 
@@ -1156,7 +1146,7 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 	var/additional_row = (!(adjusted_contents % screen_max_columns) && adjusted_contents < max_slots)
 
 	var/columns = clamp(max_slots, 1, screen_max_columns)
-	var/rows = clamp(ceil(adjusted_contents / columns) + additional_row, 1, screen_max_rows)
+	var/rows = clamp(CEILING(adjusted_contents / columns, 1) + additional_row, 1, screen_max_rows)
 
 	for (var/mob/ui_user as anything in storage_interfaces)
 		if (isnull(storage_interfaces[ui_user]))

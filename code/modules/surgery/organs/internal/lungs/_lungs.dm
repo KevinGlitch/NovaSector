@@ -22,8 +22,6 @@
 	cells_minimum = 1
 	cells_maximum = 2
 
-	visual = FALSE
-
 	var/failed = FALSE
 	var/operated = FALSE //whether we can still have our damages fixed through surgery
 
@@ -265,7 +263,7 @@
 	breathe_gas_volume(breath, /datum/gas/oxygen, /datum/gas/carbon_dioxide)
 	// Heal mob if not in crit.
 	if(breather.health >= breather.crit_threshold && breather.oxyloss)
-		breather.adjust_oxy_loss(-5)
+		breather.adjustOxyLoss(-5)
 
 /// Maximum Oxygen effects. "Too much O2!"
 /obj/item/organ/lungs/proc/too_much_oxygen(mob/living/carbon/breather, datum/gas_mixture/breath, o2_pp, old_o2_pp)
@@ -312,7 +310,7 @@
 	breathe_gas_volume(breath, /datum/gas/nitrogen, /datum/gas/carbon_dioxide)
 	// Heal mob if not in crit.
 	if(breather.health >= breather.crit_threshold && breather.oxyloss)
-		breather.adjust_oxy_loss(-5)
+		breather.adjustOxyLoss(-5)
 
 /// Maximum CO2 effects. "Too much CO2!"
 /obj/item/organ/lungs/proc/too_much_co2(mob/living/carbon/breather, datum/gas_mixture/breath, co2_pp, old_co2_pp)
@@ -366,7 +364,7 @@
 	breathe_gas_volume(breath, /datum/gas/plasma, /datum/gas/carbon_dioxide)
 	// Heal mob if not in crit.
 	if(breather.health >= breather.crit_threshold && breather.oxyloss)
-		breather.adjust_oxy_loss(-5)
+		breather.adjustOxyLoss(-5)
 
 /// Maximum Plasma effects. "Too much Plasma!"
 /obj/item/organ/lungs/proc/too_much_plasma(mob/living/carbon/breather, datum/gas_mixture/breath, plasma_pp, old_plasma_pp)
@@ -392,7 +390,7 @@
 	if(bz_pp > BZ_trip_balls_min)
 		breather.reagents.add_reagent(/datum/reagent/bz_metabolites, clamp(bz_pp, 1, 5))
 	if(bz_pp > BZ_brain_damage_min && prob(33))
-		breather.adjust_organ_loss(ORGAN_SLOT_BRAIN, 3, 150, ORGAN_ORGANIC)
+		breather.adjustOrganLoss(ORGAN_SLOT_BRAIN, 3, 150, ORGAN_ORGANIC)
 
 /// Breathing in refridgerator coolent, shit's caustic
 /obj/item/organ/lungs/proc/too_much_freon(mob/living/carbon/breather, datum/gas_mixture/breath, freon_pp, old_freon_pp)
@@ -404,12 +402,12 @@
 		to_chat(breather, span_alert("Your mouth feels like it's burning!"))
 	if (freon_pp > 40)
 		breather.emote("gasp")
-		breather.adjust_fire_loss(15)
+		breather.adjustFireLoss(15)
 		if (prob(freon_pp / 2))
 			to_chat(breather, span_alert("Your throat closes up!"))
 			breather.set_silence_if_lower(6 SECONDS)
 	else
-		breather.adjust_fire_loss(freon_pp / 4)
+		breather.adjustFireLoss(freon_pp / 4)
 
 /// Breathing in halon, convert it to a reagent
 /obj/item/organ/lungs/proc/too_much_halon(mob/living/carbon/breather, datum/gas_mixture/breath, halon_pp, old_halon_pp)
@@ -417,7 +415,7 @@
 	breathe_gas_volume(breath, /datum/gas/halon)
 	// Metabolize to reagent.
 	if(halon_pp > gas_stimulation_min)
-		breather.adjust_oxy_loss(5)
+		breather.adjustOxyLoss(5)
 		breather.reagents.add_reagent(/datum/reagent/halon, max(0, 1 - breather.reagents.get_reagent_amount(/datum/reagent/halon)))
 
 /// Sleeping gas with healing properties.
@@ -557,7 +555,7 @@
 	// Random chance to inflict side effects increases with pressure.
 	if((prob(nitrium_pp) && (nitrium_pp > 15)))
 		// Nitrium side-effect.
-		breather.adjust_organ_loss(ORGAN_SLOT_LUNGS, nitrium_pp * 0.1)
+		breather.adjustOrganLoss(ORGAN_SLOT_LUNGS, nitrium_pp * 0.1)
 		to_chat(breather, span_notice("You feel a burning sensation in your chest"))
 	// Metabolize to reagents.
 	if (nitrium_pp > 5)
@@ -574,7 +572,7 @@
 	// Tritium side-effects.
 	if(gas_breathed > moles_visible)
 		var/ratio = gas_breathed * 15
-		breather.adjust_tox_loss(clamp(ratio, MIN_TOXIC_GAS_DAMAGE, MAX_TOXIC_GAS_DAMAGE))
+		breather.adjustToxLoss(clamp(ratio, MIN_TOXIC_GAS_DAMAGE, MAX_TOXIC_GAS_DAMAGE))
 	// If you're breathing in half an atmosphere of radioactive gas, you fucked up.
 	if((trit_pp > tritium_irradiation_moles_min) && SSradiation.can_irradiate_basic(breather))
 		var/lerp_scale = min(tritium_irradiation_moles_max, trit_pp - tritium_irradiation_moles_min) / (tritium_irradiation_moles_max - tritium_irradiation_moles_min)
@@ -637,7 +635,7 @@
 		breather.failed_last_breath = FALSE
 		// Vacuum-adapted lungs regenerate oxyloss even when breathing nothing.
 		if(breather.health >= breather.crit_threshold && breather.oxyloss)
-			breather.adjust_oxy_loss(-5)
+			breather.adjustOxyLoss(-5)
 	else
 		// Can't breathe!
 		breather.failed_last_breath = TRUE
@@ -853,7 +851,7 @@
 
 	QDEL_IN(holder, breath_particle.lifespan)
 
-/obj/item/organ/lungs/on_life(seconds_per_tick)
+/obj/item/organ/lungs/on_life(seconds_per_tick, times_fired)
 	. = ..()
 	if(failed && !(organ_flags & ORGAN_FAILING))
 		failed = FALSE
@@ -883,35 +881,6 @@
 	if(self_aware)
 		return span_boldwarning("Your lungs feel extremely tight[HAS_TRAIT(owner, TRAIT_NOBREATH) ?  "" : ", and every breath is a struggle"].")
 	return span_boldwarning("It feels extremely tight[HAS_TRAIT(owner, TRAIT_NOBREATH) ?  "" : ", and every breath is a struggle"].")
-
-/obj/item/organ/lungs/get_status_appendix(advanced, add_tooltips)
-	var/initial_pressure_mult = initial(received_pressure_mult)
-	if (received_pressure_mult == initial_pressure_mult)
-		return
-
-	var/tooltip
-	var/dilation_text
-	var/beginning_text = "Lung Dilation: "
-	if (received_pressure_mult > initial_pressure_mult) // higher than usual
-		beginning_text = span_blue("<b>[beginning_text]</b>")
-		dilation_text = span_blue("[(received_pressure_mult * 100) - 100]%")
-		tooltip = "Subject's lungs are dilated and breathing more air than usual. \
-			Increases the effectiveness of healium and other gases."
-
-	else
-		beginning_text = span_alert("<b>[beginning_text]</b>")
-		if (received_pressure_mult <= 0) // lethal
-			dilation_text = span_alert("<b>[received_pressure_mult * 100]%</b>")
-			tooltip = "Subject's lungs are completely shut. Subject is unable to breathe and requires emergency surgery. \
-				If asthmatic, perform asthmatic bypass surgery and adminster albuterol inhalant. \
-				Otherwise, replace lungs."
-		else
-			dilation_text = span_alert("[received_pressure_mult * 100]%")
-			tooltip = "Subject's lungs are partially shut. \
-				If unable to breathe, administer a high-pressure internals tank or replace lungs. \
-				If asthmatic, inhaled albuterol or bypass surgery will likely help."
-
-	return beginning_text + conditional_tooltip(dilation_text, tooltip, add_tooltips)
 
 /// by default, returns the lungs' breath_noise var as a notice. called when stethoscope is used on chest, uses the return as a message for stethoscope user.
 /obj/item/organ/lungs/proc/hear_breath_noise(mob/living/hearer)
@@ -948,7 +917,7 @@
 	. = ..()
 	if (breath?.gases[/datum/gas/plasma])
 		var/plasma_pp = breath.get_breath_partial_pressure(breath.gases[/datum/gas/plasma][MOLES])
-		breather_slime.adjust_blood_volume(0.2 * plasma_pp) // 10/s when breathing literally nothing but plasma, which will suffocate you.
+		breather_slime.blood_volume += (0.2 * plasma_pp) // 10/s when breathing literally nothing but plasma, which will suffocate you.
 
 /obj/item/organ/lungs/smoker_lungs
 	name = "smoker lungs"
@@ -1035,13 +1004,13 @@
 #define GAS_TOLERANCE 5
 
 /obj/item/organ/lungs/lavaland/Initialize(mapload)
-	var/datum/gas_mixture/volumed_mix = new(BREATH_VOLUME * 1000) // to be safe
-	var/datum/gas_mixture/immutable/planetary/mix = SSair.parse_gas_string(LAVALAND_DEFAULT_ATMOS, /datum/gas_mixture/immutable/planetary)
+	var/datum/gas_mixture/immutable/planetary/mix = SSair.planetary[LAVALAND_DEFAULT_ATMOS]
 
-	volumed_mix.copy_from(mix)
+	if(!mix?.total_moles()) // this typically means we didn't load lavaland, like if we're using the LOWMEMORYMODE define
+		return ..()
 
 	// Take a "breath" of the air
-	var/datum/gas_mixture/breath = volumed_mix.remove(volumed_mix.total_moles() * BREATH_PERCENTAGE)
+	var/datum/gas_mixture/breath = mix.remove(mix.total_moles() * BREATH_PERCENTAGE)
 
 	var/list/breath_gases = breath.gases
 
@@ -1141,9 +1110,10 @@
 /// H2O electrolysis
 /obj/item/organ/lungs/ethereal/proc/consume_water(mob/living/carbon/breather, datum/gas_mixture/breath, h2o_pp, old_h2o_pp)
 	var/gas_breathed = breath.gases[/datum/gas/water_vapor][MOLES]
-	breath.adjust_gas(/datum/gas/water_vapor, -gas_breathed)
-	var/list/new_gases = list(/datum/gas/oxygen = gas_breathed, /datum/gas/hydrogen = gas_breathed * 2)
-	breath_out.adjust_multiple_gases(new_gases)
+	breath.gases[/datum/gas/water_vapor][MOLES] -= gas_breathed
+	breath_out.assert_gases(/datum/gas/oxygen, /datum/gas/hydrogen)
+	breath_out.gases[/datum/gas/oxygen][MOLES] += gas_breathed
+	breath_out.gases[/datum/gas/hydrogen][MOLES] += gas_breathed * 2
 
 
 /obj/item/organ/lungs/pod
@@ -1160,7 +1130,7 @@
 	icon_state = "lungs-evolved"
 
 	safe_plasma_max = 8
-	safe_co2_max = 20
+	safe_co2_max = 8
 	maxHealth = 1.2 * STANDARD_ORGAN_THRESHOLD
 	safe_oxygen_min = 8
 

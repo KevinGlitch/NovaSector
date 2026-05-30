@@ -15,37 +15,42 @@
 	name = "medical heal shot"
 	icon_state = "blue_laser"
 	damage = 0
-	var/healing_threshold = 20
-	var/base_disgust = 1
+
+/obj/projectile/energy/medical/oxygen
+	name = "oxygen heal shot"
+	var/amount_healed = 10
+
+/obj/projectile/energy/medical/oxygen/on_hit(mob/living/target, blocked = 0, pierce_hit)
+	. = ..()
+	if(!IsLivingHuman(target))
+		return FALSE
+
+	target.adjustOxyLoss(-amount_healed)
 
 /*
 *	PROCS
 */
 
-/// Applies additional digust based on how much nutrition they're missing under certain thresholds, increasingly multiplying it each stage beyond hungry they are.
-/obj/projectile/energy/medical/proc/nutrition_disgust(mob/living/target, base_disgust)
-	if(target.nutrition < NUTRITION_LEVEL_STARVING)
-		target.adjust_disgust(base_disgust * 4)
-	else if(target.nutrition >= NUTRITION_LEVEL_STARVING && target.nutrition <= NUTRITION_LEVEL_VERY_HUNGRY)
-		target.adjust_disgust(base_disgust * 3)
-	else if(target.nutrition > NUTRITION_LEVEL_VERY_HUNGRY && target.nutrition < NUTRITION_LEVEL_HUNGRY)
-		target.adjust_disgust(base_disgust * 2)
-	else
-		return
+/// Applies digust by damage thresholds.
+/obj/projectile/energy/medical/proc/DamageDisgust(mob/living/target, type_damage)
+	if(type_damage >= 100)
+		target.adjust_disgust(3)
 
-/// Checks to see if the patient is living and organic.
-/obj/projectile/energy/medical/proc/is_living_human(mob/living/target)
+	if(type_damage >=  50 && type_damage < 100)
+		target.adjust_disgust(1.5)
+
+/// Checks to see if the patient is living.
+/obj/projectile/energy/medical/proc/IsLivingHuman(mob/living/target)
 	if(!istype(target, /mob/living/carbon/human))
 		return FALSE
-	if(issynthetic(target))
-		return FALSE
+
 	if(target.stat == DEAD)
 		return FALSE
 	else
 		return TRUE
 
 /// Checks for non-medicine reagents in the bloodstream, used for the toxin medicell.
-/obj/projectile/energy/medical/proc/check_reagents(mob/living/target)
+/obj/projectile/energy/medical/proc/checkReagents(mob/living/target)
 	var/non_medicine_chems = 0 //Keeps track of how many chemicals in the bloodstream aren't medicine.
 
 	for(var/reagent in target.reagents.reagent_list)
@@ -55,61 +60,59 @@
 
 	return non_medicine_chems
 
-/// Heals Oxygen with no threshold, make them gain disgust.
-/obj/projectile/energy/medical/proc/heal_oxy(mob/living/target, amount_healed, base_disgust, healing_threshold)
-	if(!is_living_human(target))
+/// Heals Brute without safety
+/obj/projectile/energy/medical/proc/healBrute(mob/living/target, amount_healed, max_clone, base_disgust)
+	if(!IsLivingHuman(target))
+		return FALSE
+
+	DamageDisgust(target, target.getBruteLoss())
+	target.adjust_disgust(base_disgust)
+	target.adjustBruteLoss(-amount_healed)
+
+/// Heals Burn swithout safety
+/obj/projectile/energy/medical/proc/healBurn(mob/living/target, amount_healed, max_clone, base_disgust)
+	if(!IsLivingHuman(target))
+		return FALSE
+
+	DamageDisgust(target, target.getFireLoss())
+	target.adjust_disgust(base_disgust)
+	target.adjustFireLoss(-amount_healed)
+
+/// Heals Brute with safety
+/obj/projectile/energy/medical/proc/safeBrute(mob/living/target, amount_healed, base_disgust)
+	if(!IsLivingHuman(target))
+		return FALSE
+
+	if(target.getBruteLoss() >= 50 )
 		return FALSE
 
 	target.adjust_disgust(base_disgust)
-	nutrition_disgust(target, base_disgust)
-	target.adjust_nutrition(base_disgust * -2)
-	target.adjust_oxy_loss(-amount_healed)
+	target.adjustBruteLoss(-amount_healed)
 
-/// Heals Brute if it's at the threshold or less, make them gain disgust.
-/obj/projectile/energy/medical/proc/heal_brute(mob/living/target, amount_healed, base_disgust, healing_threshold)
-	if(!is_living_human(target))
+/// Heals Burn with safety.
+/obj/projectile/energy/medical/proc/safeBurn(mob/living/target, amount_healed, base_disgust)
+	if(!IsLivingHuman(target))
 		return FALSE
 
-	if(target.get_brute_loss() > healing_threshold)
-		return FALSE
-
-	target.adjust_disgust(base_disgust)
-	nutrition_disgust(target, base_disgust)
-	target.adjust_nutrition(base_disgust * -2)
-	target.adjust_brute_loss(-amount_healed)
-
-/// Heals Burn if it's at the threshold or less, make them gain disgust.
-/obj/projectile/energy/medical/proc/heal_burn(mob/living/target, amount_healed, base_disgust, healing_threshold)
-	if(!is_living_human(target))
-		return FALSE
-
-	if(target.get_fire_loss() > healing_threshold)
+	if(target.getFireLoss() >= 50 )
 		return FALSE
 
 	target.adjust_disgust(base_disgust)
-	nutrition_disgust(target, base_disgust)
-	target.adjust_nutrition(base_disgust * -2)
-	target.adjust_fire_loss(-amount_healed)
+	target.adjustFireLoss(-amount_healed)
 
-/// Heals Toxins if it's at the threshold or less, make them gain disgust.
-/obj/projectile/energy/medical/proc/heal_tox(mob/living/target, amount_healed, base_disgust, healing_threshold)
-	if(!is_living_human(target))
-		return FALSE
-
-	if(target.get_tox_loss() > healing_threshold)
+/// Heals Toxins
+/obj/projectile/energy/medical/proc/healTox(mob/living/target, amount_healed)
+	if(!IsLivingHuman(target))
 		return FALSE
 
 	var/healing_multiplier = 1.5
-	var/non_meds = check_reagents(target)
+	var/non_meds = checkReagents(target)
 	healing_multiplier = healing_multiplier - (non_meds / 4)
 
 	if(healing_multiplier < 0.25)
 		healing_multiplier = 0.25
 
-	target.adjust_disgust(base_disgust)
-	nutrition_disgust(target, base_disgust)
-	target.adjust_nutrition(base_disgust * -2)
-	target.adjust_tox_loss(-(amount_healed * healing_multiplier))
+	target.adjustToxLoss(-(amount_healed * healing_multiplier))
 
 /*
 *	HEALING PROJECTILES
@@ -119,7 +122,7 @@
 *	TIER ONE
 */
 
-//Basic Brute Heal Projectile
+//The Basic Brute Heal Projectile
 /obj/item/ammo_casing/energy/medical/brute1
 	projectile_type = /obj/projectile/energy/medical/brute
 	select_name = "brute"
@@ -129,12 +132,14 @@
 	name = "brute heal shot"
 	icon_state = "red_laser"
 	var/amount_healed = 7.5
+	var/max_clone = 2/3
+	var/base_disgust = 3
 
 /obj/projectile/energy/medical/brute/on_hit(mob/living/target, blocked = 0, pierce_hit)
 	. = ..()
-	heal_brute(target, amount_healed, base_disgust, healing_threshold)
+	healBrute(target, amount_healed, max_clone, base_disgust)
 
-//Basic Burn Heal Projectile
+//The Basic Burn Heal//
 /obj/item/ammo_casing/energy/medical/burn1
 	projectile_type = /obj/projectile/energy/medical/burn
 	select_name = "burn"
@@ -144,21 +149,14 @@
 	name = "burn heal shot"
 	icon_state = "yellow_laser"
 	var/amount_healed = 7.5
+	var/max_clone = 2/3
+	var/base_disgust = 3
 
 /obj/projectile/energy/medical/burn/on_hit(mob/living/target, blocked = 0, pierce_hit)
 	. = ..()
-	heal_burn(target, amount_healed, base_disgust, healing_threshold)
+	healBurn(target, amount_healed, max_clone, base_disgust)
 
-//Basic Oxygen Heal Projectile. Doesn't get a casing because the base medical projectile is already oxygen.
-/obj/projectile/energy/medical/oxygen
-	name = "oxygen heal shot"
-	var/amount_healed = 10
-
-/obj/projectile/energy/medical/oxygen/on_hit(mob/living/target, blocked = 0, pierce_hit)
-	. = ..()
-	heal_oxy(target, amount_healed, base_disgust)
-
-//Basic Toxin Heal Projectile
+//Basic Toxin Heal//
 /obj/item/ammo_casing/energy/medical/toxin1
 	projectile_type = /obj/projectile/energy/medical/toxin
 	select_name = "toxin"
@@ -171,7 +169,34 @@
 
 /obj/projectile/energy/medical/toxin/on_hit(mob/living/target, blocked = 0, pierce_hit)
 	. = ..()
-	heal_tox(target, amount_healed, base_disgust, healing_threshold)
+	healTox(target, amount_healed)
+
+//SAFE MODES
+/obj/item/ammo_casing/energy/medical/brute1/safe
+	projectile_type = /obj/projectile/energy/medical/safe/brute
+
+/obj/projectile/energy/medical/safe/brute
+	name = "safe brute heal shot"
+	icon_state = "red_laser"
+	var/amount_healed = 7.5
+	var/base_disgust = 3
+
+/obj/projectile/energy/medical/safe/brute/on_hit(mob/living/target, blocked = 0, pierce_hit)
+	. = ..()
+	safeBrute(target, amount_healed, base_disgust)
+
+/obj/item/ammo_casing/energy/medical/burn1/safe
+	projectile_type = /obj/projectile/energy/medical/safe/burn
+
+/obj/projectile/energy/medical/safe/burn
+	name = "safe burn heal shot"
+	icon_state = "yellow_laser"
+	var/amount_healed = 7.5
+	var/base_disgust = 3
+
+/obj/projectile/energy/medical/safe/burn/on_hit(mob/living/target, blocked = 0, pierce_hit)
+	. = ..()
+	safeBurn(target, amount_healed, base_disgust)
 
 /*
 *	TIER TWO
@@ -187,8 +212,8 @@
 	name = "strong brute heal shot"
 	pass_flags =  UPGRADED_MEDICELL_PASSFLAGS
 	amount_healed = 11.25
+	max_clone = 1/3
 	base_disgust = 2
-	healing_threshold = 30
 
 //Tier II Burn Projectile
 /obj/item/ammo_casing/energy/medical/burn2
@@ -200,10 +225,10 @@
 	name = "strong burn heal shot"
 	pass_flags =  UPGRADED_MEDICELL_PASSFLAGS
 	amount_healed = 11.25
+	max_clone = 1/3
 	base_disgust = 2
-	healing_threshold = 30
 
-//Tier II Oxygen Projectile
+//Tier II Oxy Projectile
 /obj/item/ammo_casing/energy/medical/oxy2
 	projectile_type = /obj/projectile/energy/medical/oxygen/better
 	select_name = "oxygen II"
@@ -213,7 +238,6 @@
 	name = "strong oxygen heal shot"
 	pass_flags =  UPGRADED_MEDICELL_PASSFLAGS
 	amount_healed = 20
-	base_disgust = 2
 
 //Tier II Toxin Projectile
 /obj/item/ammo_casing/energy/medical/toxin2
@@ -225,8 +249,26 @@
 	name = "strong toxin heal shot"
 	pass_flags =  UPGRADED_MEDICELL_PASSFLAGS
 	amount_healed = 7.5
+
+//SAFE MODES
+/obj/item/ammo_casing/energy/medical/brute2/safe
+	projectile_type = /obj/projectile/energy/medical/safe/brute/better
+
+/obj/projectile/energy/medical/safe/brute/better
+	name = "safe strong brute heal shot"
+	pass_flags =  UPGRADED_MEDICELL_PASSFLAGS
+	amount_healed = 11.25
 	base_disgust = 2
-	healing_threshold = 30
+
+/obj/item/ammo_casing/energy/medical/burn2/safe
+	projectile_type = /obj/projectile/energy/medical/safe/burn/better
+
+/obj/projectile/energy/medical/safe/burn/better
+	name = "safe strong burn heal shot"
+	pass_flags =  UPGRADED_MEDICELL_PASSFLAGS
+	amount_healed = 11.25
+	base_disgust = 2
+
 
 /*
 *	TIER THREE
@@ -241,8 +283,8 @@
 /obj/projectile/energy/medical/brute/better/best
 	name = "powerful brute heal shot"
 	amount_healed = 15
-	base_disgust = 3
-	healing_threshold = 40
+	max_clone = 1/9
+	base_disgust = 1
 
 //Tier III Burn Projectile
 /obj/item/ammo_casing/energy/medical/burn3
@@ -253,10 +295,10 @@
 /obj/projectile/energy/medical/burn/better/best
 	name = "powerful burn heal shot"
 	amount_healed = 15
-	base_disgust = 3
-	healing_threshold = 40
+	max_clone = 1/9
+	base_disgust = 1
 
-//Tier III Oxygen Projectile
+//Tier III Oxy Projectile
 /obj/item/ammo_casing/energy/medical/oxy3
 	projectile_type = /obj/projectile/energy/medical/oxygen/better/best
 	select_name = "oxygen III"
@@ -265,7 +307,6 @@
 /obj/projectile/energy/medical/oxygen/better/best
 	name = "powerful oxygen heal shot"
 	amount_healed = 30
-	base_disgust = 3
 
 //Tier III Toxin Projectile
 /obj/item/ammo_casing/energy/medical/toxin3
@@ -276,8 +317,27 @@
 /obj/projectile/energy/medical/toxin/better/best
 	name = "powerful toxin heal shot"
 	amount_healed = 10
-	base_disgust = 3
-	healing_threshold = 40
+
+/obj/projectile/energy/medical/upgraded/toxin3/on_hit(mob/living/target, blocked = 0, pierce_hit)
+	. = ..()
+	healTox(target, 10)
+
+//SAFE MODES
+/obj/item/ammo_casing/energy/medical/brute3/safe
+	projectile_type = /obj/projectile/energy/medical/safe/brute/better/best
+
+/obj/projectile/energy/medical/safe/brute/better/best
+	name = "safe powerful brute heal shot"
+	amount_healed = 15
+	base_disgust = 1
+
+/obj/item/ammo_casing/energy/medical/burn3/safe
+	projectile_type = /obj/projectile/energy/medical/safe/burn/better/best
+
+/obj/projectile/energy/medical/safe/burn/better/best
+	name = "safe powerful burn heal shot"
+	amount_healed = 15
+	base_disgust = 1
 
 /*
 *	UTILITY CELLS
@@ -299,7 +359,7 @@
 
 /obj/projectile/energy/medical/utility/clotting/on_hit(mob/living/target, blocked = 0, pierce_hit)
 	. = ..()
-	if(!is_living_human(target))
+	if(!IsLivingHuman(target))
 		return FALSE
 
 	if(target.reagents.get_reagent_amount(/datum/reagent/medicine/coagulant/fabricated) < 5) //injects the target with a weaker coagulant agent
@@ -319,7 +379,7 @@
 
 /obj/projectile/energy/medical/utility/temperature/on_hit(mob/living/target, blocked = 0, pierce_hit)
 	. = ..()
-	if(!is_living_human(target))
+	if(!IsLivingHuman(target))
 		return FALSE
 
 	var/ideal_temp = target.get_body_temp_normal(apply_change=FALSE) //Gets the temperature we should be aiming for.
@@ -349,10 +409,10 @@
 	var/obj/item/clothing/gown = new /obj/item/clothing/suit/toggle/labcoat/nova/surgical_gown/hardlight
 
 	if(wearer.equip_to_slot_if_possible(gown, ITEM_SLOT_OCLOTHING, 1, 1, 1))
-		wearer.visible_message(span_notice("[gown] covers [wearer]'s body."), span_notice("[gown] wraps around your body, covering you."))
+		wearer.visible_message(span_notice("The [gown] covers [wearer] body"), span_notice("The [gown] wraps around your body, covering you"))
 		return
 	else
-		wearer.visible_message(span_warning("[gown] fails to fit on [wearer], instantly disintegrating away!"), span_warning("[gown], unable to fit on you, disintegrates into nothing!"))
+		wearer.visible_message(span_notice("The [gown] fails to fit on [wearer], instantly disentagrating away"), span_notice("The [gown] unable to fit on you, disentagrates into nothing"))
 		return FALSE
 
 //Salve Medicell
@@ -365,7 +425,7 @@
 	name = "salve globule"
 	icon_state = "glob_projectile"
 	shrapnel_type = /obj/item/mending_globule/hardlight
-	embed_type = /datum/embedding/salve_globule/hardlight
+	embed_type = /datum/embedding/salve_globule
 	damage = 0
 
 /datum/embedding/salve_globule
@@ -375,15 +435,9 @@
 	jostle_pain_mult = 0
 	fall_chance = 0
 
-/obj/projectile/energy/medical/utility/salve/on_hit(mob/living/target, blocked = 0, pierce_hit, item_impact_zone, hit_zone)
-	if(!is_living_human(target)) //No using this on the dead or synths.
+/obj/projectile/energy/medical/utility/salve/on_hit(mob/living/target, blocked = 0, pierce_hit)
+	if(!IsLivingHuman(target)) //No using this on the dead or synths.
 		return FALSE
-	return ..()
-
-/datum/embedding/salve_globule/hardlight/remove_embedding()
-	var/obj/item/mending_globule/globule = parent
-	owner.visible_message(span_warning("[globule]'s hardlight field disintigrates upon being removed from [owner], fizzling away into nothingness with the remaining salve!"))
-	qdel(globule)
 	return ..()
 
 //Hardlight Rollerbed Medicell
@@ -437,53 +491,50 @@
 	body.visible_message(span_notice("[body]'s body teleports to [firer]!"))
 
 /obj/projectile/energy/medical/utility/body_teleporter/proc/teleport_effect(location)
-	do_sparks(5, TRUE, get_turf(location), spark_type = /datum/effect_system/basic/spark_spread/quantum) //uses the teleport effect from quantum pads
+	var/datum/effect_system/spark_spread/quantum/sparks = new /datum/effect_system/spark_spread/quantum //uses the teleport effect from quantum pads
+	sparks.set_up(5, 1, get_turf(location))
+	sparks.start()
 
 //Objects Used by medicells.
 /obj/item/clothing/suit/toggle/labcoat/nova/surgical_gown/hardlight
 	name = "hardlight surgical gown"
-	desc = "A hospital gown made out of hardlight. You can barely feel it on your body, especially with all the anesthetics."
+	desc = "A hospital gown made out of hardlight - you can barely feel it on your body, especially with all the anesthetics."
 	icon_state = "lgown"
-	item_flags = parent_type::item_flags | DROPDEL
 
 /obj/item/clothing/suit/toggle/labcoat/nova/surgical_gown/hardlight/dropped(mob/user)
-	user.update_held_items()
-	if(!QDELETED(src))
-		user.visible_message(span_warning("[src] disappears after being removed!"))
-	return ..()
+	. = ..()
+	var/mob/living/carbon/wearer = user
+
+	if((wearer.get_item_by_slot(ITEM_SLOT_OCLOTHING)) == src && !QDELETED(src))
+		to_chat(wearer, span_notice("The [src] disappeared after being removed"))
+		qdel(src)
+		return
 
 //Salve Globule
 /obj/item/mending_globule/hardlight
 	name = "salve globule"
-	desc = "A ball of regenerative, synthetic plant matter, contained within a soft hardlight field."
+	desc = "A ball of regenerative synthetic plant matter, contained within a soft hardlight field."
 	embed_type = /datum/embedding/salve_globule/hardlight
 	icon = 'modular_nova/modules/cellguns/icons/obj/guns/mediguns/misc.dmi'
 	icon_state = "globule"
-	heals_left = 40 //This means it'll be heaing 10 damage per type max.
-
-//Ensures that you can't stack multiple globules on the same limb
-/datum/embedding/salve_globule/hardlight/on_successful_embed(mob/living/carbon/target, obj/item/bodypart/target_limb)
-	. = ..()
-	for(var/obj/item/mending_globule/hardlight/existing in target_limb.embedded_objects)
-		if ((existing != parent))
-			target.visible_message(span_warning("[parent] slides right off of [target]'s [target_limb.plaintext_zone], already having a globule attached there!"))
-			qdel(parent)
-			return
-		else
-			continue
+	heals_left = 40 //This means it'll be heaing 15 damage per type max.
 
 /datum/embedding/salve_globule/hardlight/process(seconds_per_tick)
-	. = ..()
-	var/obj/item/mending_globule/hardlight/globule = parent
-	owner_limb.heal_damage(0.25 * seconds_per_tick, 0.25 * seconds_per_tick) //Reduced healing rate over original
+	if(!owner_limb.get_damage()) //Makes it poof as soon as the body part is fully healed, no keeping this on forever.
+		qdel(src)
+		return FALSE
+
+	var/obj/item/mending_globule/globule = parent
+	owner_limb.heal_damage(0.125 * seconds_per_tick, 0.125 * seconds_per_tick) //Reduced healing rate over original
 	globule.heals_left--
+
 	if(globule.heals_left <= 0)
-		qdel(globule)
+		qdel(src)
 
 //Hardlight Emergency Bed.
 /obj/structure/bed/medical/medigun
 	name = "hardlight medical bed"
-	desc = "A medical bed made out of hardlight."
+	desc = "A medical bed made out of Hardlight"
 	icon = 'modular_nova/modules/cellguns/icons/obj/guns/mediguns/misc.dmi'
 	icon_state = "hardlight_down"
 	base_icon_state = "hardlight"
@@ -494,7 +545,10 @@
 /obj/structure/bed/medical/medigun/Initialize(mapload)
 	. = ..()
 	addtimer(CALLBACK(src, PROC_REF(check_bed)), deploy_time)
-	AddElement(/datum/element/tool_blocker, TOOL_WRENCH, TOOL_ACT_SECONDARY)
+
+// formerly NO_DECONSTRUCTION
+/obj/structure/bed/medical/medigun/wrench_act_secondary(mob/living/user, obj/item/weapon)
+	return NONE
 
 /obj/structure/bed/medical/medigun/proc/check_bed() //Checks to see if anyone is buckled to the bed, if not the bed will qdel itself.
 	if(!has_buckled_mobs())

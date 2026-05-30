@@ -18,7 +18,6 @@
 	anchored = TRUE
 	armor_type = /datum/armor/half_wall
 	material_flags = MATERIAL_EFFECTS | MATERIAL_AFFECT_STATISTICS
-	custom_materials = list(/datum/material/iron = PLATFORM_BASE_MATERIAL_AMOUNT)
 	/// Icon used for the frame
 	var/frame_icon = 'icons/obj/smooth_structures/platform/frame_faces/window_frame_normal.dmi'
 	/// Material used in our construction
@@ -45,12 +44,12 @@
 
 	register_context()
 	update_appearance(UPDATE_OVERLAYS)
-	AddElement(/datum/element/climb_walkable)
+	AddComponent(/datum/component/climb_walkable)
 	AddElement(/datum/element/climbable)
 	AddElement(/datum/element/elevation, pixel_shift = 12)
 	AddElement(/datum/element/give_turf_traits, string_list(turf_traits))
 	AddElement(/datum/element/footstep_override, footstep = footstep, priority = STEP_SOUND_TABLE_PRIORITY)
-	AddElement(/datum/element/table_smash)
+	AddComponent(/datum/component/table_smash)
 
 /obj/structure/platform/add_context(atom/source, list/context, obj/item/held_item, mob/living/user)
 	. = ..()

@@ -17,7 +17,6 @@
 	anchored = TRUE
 	buckle_lying = 0
 	pass_flags_self = PASSTABLE | LETPASSTHROW
-	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT * 10)
 	/// is the bonfire lit?
 	var/burning = FALSE
 	/// icon for the bonfire while on. for a softer more burning embers icon, use "bonfire_warm"
@@ -61,7 +60,7 @@
 				add_overlay("bonfire_grill")
 			else
 				return ..()
-	if(used_item.get_temperature() >= FIRE_MINIMUM_TEMPERATURE_TO_EXIST)
+	if(used_item.get_temperature())
 		start_burning()
 	if(grill)
 		if(istype(used_item, /obj/item/melee/roastingstick))

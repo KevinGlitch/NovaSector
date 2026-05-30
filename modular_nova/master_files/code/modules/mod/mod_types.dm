@@ -214,7 +214,7 @@
 	)
 
 /obj/item/mod/control/pre_equipped/interdyne/nerfed
-	theme = /datum/mod_theme/interdyne/nerfed
+	theme = /datum/mod_theme/interdyne
 	starting_frequency = MODLINK_FREQ_SYNDICATE
 	applied_cell = /obj/item/stock_parts/power_store/cell/super
 	applied_modules = list(
@@ -225,3 +225,207 @@
 		/obj/item/mod/module/tether,
 		/obj/item/mod/module/thread_ripper,
 	)
+
+/obj/item/mod/control/pre_equipped/marine
+	theme = /datum/mod_theme/marines
+	applied_cell = /obj/item/stock_parts/power_store/cell/bluespace
+	applied_modules = list(
+		/obj/item/mod/module/storage/large_capacity,
+		/obj/item/mod/module/emp_shield,
+		/obj/item/mod/module/magnetic_harness,
+		/obj/item/mod/module/holster,
+		/obj/item/mod/module/flashlight,
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/noslip,
+		/obj/item/mod/module/power_kick,
+		/obj/item/mod/module/megaphone,
+		/obj/item/mod/module/springlock/contractor,
+		/obj/item/mod/module/dna_lock, //in lieu of req_access
+		/obj/item/mod/module/visor/sechud, //for identifying teammates also in suits
+	)
+	default_pins = list(
+		/obj/item/mod/module/holster,
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/power_kick,
+	)
+
+/obj/item/mod/control/pre_equipped/marine/engineer //smartgunner version of modsuit, with less versatile modules but the ALMIGHTY SMARTGUN
+	theme = /datum/mod_theme/marines
+	applied_cell = /obj/item/stock_parts/power_store/cell/bluespace
+	applied_modules = list(
+		/obj/item/mod/module/storage/large_capacity,
+		/obj/item/mod/module/emp_shield/advanced,
+		/obj/item/mod/module/flashlight,
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/noslip,
+		/obj/item/mod/module/dna_lock,
+		/obj/item/mod/module/visor/sechud,
+		/obj/item/mod/module/smartgun/marines,
+	)
+	default_pins = list(
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/smartgun/marines,
+	)
+
+/obj/item/mod/control/pre_equipped/marine/damaged //'worn down' version, with less armor and no ERT/antag modules
+	theme = /datum/mod_theme/marines/damaged
+	applied_cell = /obj/item/stock_parts/power_store/cell/hyper
+	//removed modules: noslip, powerkick, megaphone
+	applied_modules = list(
+		/obj/item/mod/module/storage/large_capacity,
+		/obj/item/mod/module/emp_shield,
+		/obj/item/mod/module/magnetic_harness,
+		/obj/item/mod/module/holster,
+		/obj/item/mod/module/flashlight,
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/springlock/contractor,
+		/obj/item/mod/module/dna_lock, //in lieu of req_access
+		/obj/item/mod/module/visor/sechud, //for identifying teammates also in suits
+	)
+	default_pins = list(
+		/obj/item/mod/module/holster,
+		/obj/item/mod/module/jetpack,
+	)
+
+
+
+// EXOBYTECHNOVA UPD: Phoenix Collective MOD suit types. OP as fuck most of the time. These are admin-only for a reason, you know...
+/obj/item/mod/control/pre_equipped/phoenix
+	theme = /datum/mod_theme/phoenix
+	starting_frequency = MODLINK_FREQ_NANOTRASEN
+	applied_cell = /obj/item/stock_parts/power_store/cell/infinite/nif_cell
+	applied_modules = list(
+		/obj/item/mod/module/emp_shield/advanced,
+		/obj/item/mod/module/flashlight,
+		/obj/item/mod/module/status_readout,
+		/obj/item/mod/module/dna_lock,
+		/obj/item/mod/module/longfall,
+		/obj/item/mod/module/gps,
+	)
+	default_pins = list(
+		/obj/item/mod/module/flashlight,
+	)
+	/// Copy/pasted from the Responsory modsuits.
+	/// The insignia type, insignias show what sort of member of the ERT you're dealing with.
+	var/insignia_type
+	/// Additional module (or modules if list) we add, as a treat.
+	var/additional_modules
+	/// Not copy/pasted, but still important. Additional default pins.
+	var/additional_pins
+
+/obj/item/mod/control/pre_equipped/empty/phoenix
+	theme = /datum/mod_theme/phoenix
+
+/obj/item/mod/control/pre_equipped/phoenix/Initialize(mapload, new_theme, new_skin, new_core)
+	if(insignia_type)
+		applied_modules.Insert(1, insignia_type)
+	if(additional_modules)
+		applied_modules += additional_modules
+	if(additional_pins)
+		default_pins += additional_pins
+	return ..()
+
+/obj/item/mod/control/pre_equipped/phoenix/engineer
+	insignia_type = /obj/item/mod/module/insignia/engineer
+	additional_modules = list(
+		/obj/item/mod/module/magboot/advanced,
+		/obj/item/mod/module/rad_protection,
+		/obj/item/mod/module/headprotector,
+		/obj/item/mod/module/jetpack/advanced,
+		/obj/item/mod/module/visor/meson,
+	)
+	additional_pins = list(
+		/obj/item/mod/module/jetpack/advanced,
+		/obj/item/mod/module/magboot/advanced,
+		/obj/item/mod/module/visor/meson,
+	)
+
+/obj/item/mod/control/pre_equipped/phoenix/engineer/cutefrisk
+	additional_modules = list(
+		/obj/item/mod/module/magboot/advanced,
+		/obj/item/mod/module/rad_protection,
+		/obj/item/mod/module/jetpack/advanced,
+		/obj/item/mod/module/visor/meson,
+		/obj/item/mod/module/health_analyzer,
+		/obj/item/mod/module/mister/cleaner,
+		/obj/item/mod/module/anomaly_locked/kinesis/plus,
+		/obj/item/mod/module/timeline_jumper,
+		/obj/item/mod/module/shove_blocker/locked,
+		/obj/item/defibrillator/compact/combat,
+		/obj/item/mod/module/quick_carry/advanced,
+	)
+	additional_pins = list(
+		/obj/item/mod/module/jetpack/advanced,
+		/obj/item/mod/module/magboot/advanced,
+		/obj/item/mod/module/visor/meson,
+		/obj/item/mod/module/health_analyzer,
+		/obj/item/mod/module/mister/cleaner,
+		/obj/item/mod/module/anomaly_locked/kinesis/plus,
+		/obj/item/mod/module/timeline_jumper,
+		/obj/item/defibrillator/compact/combat,
+	)
+
+/obj/item/mod/control/pre_equipped/phoenix/medical
+	insignia_type = /obj/item/mod/module/insignia/medic
+	additional_modules = list(
+		/obj/item/mod/module/health_analyzer,
+		/obj/item/mod/module/quick_carry,
+		/obj/item/mod/module/injector,
+		/obj/item/mod/module/criminalcapture/patienttransport,
+		/obj/item/mod/module/jetpack,
+	)
+	additional_pins = list(
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/health_analyzer,
+		/obj/item/mod/module/criminalcapture/patienttransport,
+	)
+
+/obj/item/mod/control/pre_equipped/phoenix/medical/surgical
+	insignia_type = /obj/item/mod/module/insignia/medic
+	additional_modules = list(
+		/obj/item/mod/module/health_analyzer,
+		/obj/item/mod/module/quick_carry,
+		/obj/item/mod/module/thread_ripper,
+		/obj/item/mod/module/surgical_processor/emergency,
+		/obj/item/mod/module/jetpack,
+	)
+	additional_pins = list(
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/health_analyzer,
+		/obj/item/mod/module/surgical_processor/emergency,
+	)
+
+/obj/item/mod/control/pre_equipped/phoenix/security
+	insignia_type = /obj/item/mod/module/insignia/security
+	additional_modules = list(
+		/obj/item/mod/module/magnetic_harness,
+		/obj/item/mod/module/criminalcapture,
+		/obj/item/mod/module/headprotector,
+		/obj/item/mod/module/holster,
+		/obj/item/mod/module/jetpack,
+	)
+	additional_pins = list(
+		/obj/item/mod/module/jetpack,
+		/obj/item/mod/module/criminalcapture,
+		/obj/item/mod/module/holster,
+	)
+
+/obj/item/mod/control/pre_equipped/phoenix/command
+	insignia_type = /obj/item/mod/module/insignia/commander
+	additional_modules = list(
+		/obj/item/mod/module/magnetic_harness,
+		/obj/item/mod/module/criminalcapture,
+		/obj/item/mod/module/health_analyzer,
+		/obj/item/mod/module/rad_protection,
+		/obj/item/mod/module/headprotector,
+		/obj/item/mod/module/jetpack/advanced,
+		/obj/item/mod/module/holster,
+		/obj/item/mod/module/hat_stabilizer,
+		/obj/item/mod/module/noslip,
+	)
+	additional_pins = list(
+		/obj/item/mod/module/jetpack/advanced,
+		/obj/item/mod/module/criminalcapture,
+		/obj/item/mod/module/holster,
+	)
+// EXOBYTECHNOVA UPDATE END

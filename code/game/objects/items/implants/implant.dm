@@ -6,7 +6,7 @@
 	icon = 'icons/hud/implants.dmi'
 	icon_state = "generic" //Shows up as the action button icon
 	item_flags = ABSTRACT | DROPDEL
-	resistance_flags = INDESTRUCTIBLE | UNACIDABLE
+	resistance_flags = INDESTRUCTIBLE
 	// This gives the user an action button that allows them to activate the implant.
 	// If the implant needs no action button, then null this out.
 	// Or, if you want to add a unique action button, then replace this.
@@ -24,10 +24,6 @@
 	///what icon state will we represent ourselves with on the hud?
 	var/hud_icon_state = null
 
-	/// What's the most important info that we really, really care about, e.g. name, lifespan-after-death, utility?
-	var/implant_info = "No information available."
-	/// What's the extended lore for this implant that we might not care that much about, e.g. descriptions, flavortext?
-	var/implant_lore = "No information available."
 
 /obj/item/implant/proc/activate()
 	SEND_SIGNAL(src, COMSIG_IMPLANT_ACTIVATED)
@@ -125,7 +121,7 @@
  * * silent - unused here
  * * special - Set to true if removed by admin panel, should bypass any side effects
  */
-/obj/item/implant/proc/removed(mob/living/source, silent = FALSE, special = FALSE)
+/obj/item/implant/proc/removed(mob/living/source, silent = FALSE, special = 0)
 	moveToNullspace()
 	imp_in = null
 	source.implants -= src
@@ -139,22 +135,16 @@
 	GLOB.tracked_implants -= src
 	return TRUE
 
-/obj/item/implant/Destroy(force)
+/obj/item/implant/Destroy()
 	if(imp_in)
-		removed(imp_in, silent = TRUE, special = TRUE)
+		removed(imp_in)
 	return ..()
 
 /**
- * Gets the implant's info, for the implant pad.
+ * Gets implant specifications for the implant pad
  */
 /obj/item/implant/proc/get_data()
-	return implant_info
-
-/**
- * Gets the implant's lore info, also for the implant pad.
- */
-/obj/item/implant/proc/get_lore()
-	return implant_lore
+	return "No information available"
 
 /obj/item/implant/dropped(mob/user)
 	. = TRUE

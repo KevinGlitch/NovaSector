@@ -25,10 +25,10 @@
 			"health" = creature.health,
 			"name" = creature.name,
 			"pilot" = pilot,
-			"brute" = creature.get_brute_loss(),
-			"burn" = creature.get_fire_loss(),
-			"tox" = creature.get_tox_loss(),
-			"oxy" = creature.get_oxy_loss(),
+			"brute" = creature.getBruteLoss(),
+			"burn" = creature.getFireLoss(),
+			"tox" = creature.getToxLoss(),
+			"oxy" = creature.getOxyLoss(),
 		))
 
 	return hosted_avatars
@@ -135,7 +135,9 @@
 /// Do some magic teleport sparks
 /obj/machinery/quantum_server/proc/spark_at_location(obj/cache)
 	playsound(cache, 'sound/effects/magic/blink.ogg', 50, vary = TRUE)
-	do_sparks(5, FALSE, get_turf(cache), spark_type = /datum/effect_system/basic/spark_spread/quantum)
+	var/datum/effect_system/spark_spread/quantum/sparks = new()
+	sparks.set_up(5, location = get_turf(cache))
+	sparks.start()
 
 
 /// Starts building a new avatar for the player.
@@ -149,7 +151,7 @@
 	// NOVA EDIT ADDITION BEGIN - PREFS!
 	var/datum/preferences/pref
 	var/load_loadout = FALSE
-	var/obj/item/disk/bitrunning/prefs/prefdisk = locate() in neo.get_contents()
+	var/obj/item/bitrunning_disk/prefs/prefdisk = locate() in neo.get_contents()
 	if(prefdisk)
 		load_loadout = prefdisk.include_loadout
 		pref = prefdisk.loaded_preference

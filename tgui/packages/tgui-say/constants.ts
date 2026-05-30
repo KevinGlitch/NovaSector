@@ -39,4 +39,7 @@ export const RADIO_PREFIXES = {
   ':i ': 'Guild',
   ':l ': 'SolFed',
   // NOVA EDIT ADDITION END
+  // EXONOVA EDIT ADDITIONS
+  ':6 ': 'Phnx',
+  // EXONOVA EDIT ADDITIONS END
 } as const;

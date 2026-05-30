@@ -89,6 +89,24 @@
 	item_flags = NO_MAT_REDEMPTION
 	storage_type = /datum/storage/bag/trash/bluespace
 
+/obj/item/storage/bag/trash/singularity
+	name = "singularity trash bag of holding"
+	desc = "A trash bag with truly infinite storage capacity. Designed by Arcanum."
+	icon_state = "blacktrashbag"
+	worn_icon_state = "blacktrashbag"
+	inhand_icon_state = "blacktrashbag"
+	item_flags = NO_MAT_REDEMPTION
+	storage_type = /datum/storage/bag/trash/singularity
+
+/obj/item/storage/bag/trash/singularity/unrestricted
+	name = "singularity trash bag of holding"
+	desc = "A trash bag with truly infinite storage capacity. Designed by Arcanum. This one has become truly infinite."
+	icon_state = "blacktrashbag"
+	worn_icon_state = "blacktrashbag"
+	inhand_icon_state = "blacktrashbag"
+	item_flags = NO_MAT_REDEMPTION
+	storage_type = /datum/storage/bag/trash/singularity/unrestricted
+
 /obj/item/storage/bag/trash/bluespace/cyborg
 	insertable = FALSE
 
@@ -161,8 +179,6 @@
 	INVOKE_ASYNC(src, PROC_REF(handle_move), user)
 
 /obj/item/storage/bag/ore/proc/handle_move(mob/living/user)
-	if(user.stat != CONSCIOUS)
-		return
 	var/turf/tile = get_turf(user)
 	var/obj/structure/ore_box/box = null
 	if(istype(user.pulling, /obj/structure/ore_box))
@@ -307,7 +323,7 @@
 // "Only 20 uranium 'cause of radiation"
 /obj/item/storage/bag/sheetsnatcher/debug/PopulateContents()
 	// amount should be null if it should spawn with the type's default amount
-	var/list/items_inside = list(
+	var/static/items_inside = list(
 		/obj/item/stack/sheet/iron/fifty = null,
 		/obj/item/stack/sheet/glass/fifty = null,
 		/obj/item/stack/sheet/rglass/fifty = null,
@@ -329,7 +345,6 @@
 		/obj/item/stack/rods/fifty = null,
 		/obj/item/stack/sheet/mineral/plastitanium = 50,
 		/obj/item/stack/sheet/mineral/abductor = 50,
-		/obj/item/stack/sheet/mineral/sandbags/fifty = null,
 		/obj/item/stack/sheet/cardboard/fifty = null,
 	)
 	for(var/obj/item/stack/stack_type as anything in items_inside)
@@ -516,7 +531,6 @@
 	slot_flags = ITEM_SLOT_BACK|ITEM_SLOT_SUITSTORE|ITEM_SLOT_NECK
 	resistance_flags = FLAMMABLE
 	storage_type = /datum/storage/bag/rebar_quiver
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 6.5, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 1.5)
 
 /obj/item/storage/bag/rebar_quiver/syndicate
 	icon_state = "syndie_quiver_0"
@@ -586,7 +600,6 @@
 
 /obj/item/storage/bag/quiver/lesser
 	storage_type = /datum/storage/bag/quiver/less
-	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT)
 
 /obj/item/storage/bag/quiver/full/PopulateContents()
 	. = ..()

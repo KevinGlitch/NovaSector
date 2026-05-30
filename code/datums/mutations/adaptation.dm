@@ -11,7 +11,6 @@
 	/// Icon used for the adaptation overlay
 	var/adapt_icon = "meow"
 
-/* // NOVA EDIT REMOVAL START - Removes the visual indicators.
 /datum/mutation/adaptation/New(datum/mutation/copymut)
 	..()
 	conflicts = typesof(/datum/mutation/adaptation)
@@ -20,8 +19,6 @@
 
 /datum/mutation/adaptation/get_visual_indicator()
 	return visual_indicators[type][1]
-
-*/ // NOVA EDIT REMOVAL END
 
 /datum/mutation/adaptation/cold
 	name = "Cold Adaptation"

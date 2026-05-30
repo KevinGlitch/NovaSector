@@ -48,14 +48,7 @@
 		/obj/item/claymore/highlander,
 		/obj/item/claymore/weak,
 		/obj/item/claymore/weak/ceremonial,
-		/obj/item/claymore/highlander/robot,
-		// NOVA ADDITION BEGIN - blacklisting our common weapons
-		// katana and sabres can be found in modular_nova/modules/modular_weapons/code/melee.dm
-		/obj/item/claymore/dragonslayer,
-		/obj/item/claymore/weak/weaker,
-		/obj/item/claymore/cutlass/luna,
-		/obj/item/claymore/bone,
-		// NOVA ADDITION END
+		/obj/item/claymore/highlander/robot
 	)
 	tool_behaviors = list(TOOL_WELDER)
 	time = 10 SECONDS
@@ -69,7 +62,6 @@
 		/obj/item/melee/baton/security = 1,
 	)
 	tool_behaviors = list(TOOL_WELDER)
-	crafting_flags = parent_type::crafting_flags | CRAFT_SKIP_MATERIALS_PARITY
 	time = 10 SECONDS
 	category = CAT_WEAPON_MELEE
 
@@ -81,7 +73,6 @@
 		/obj/item/melee/baton/telescopic/contractor_baton = 1,
 	)
 	tool_behaviors = list(TOOL_WELDER)
-	crafting_flags = parent_type::crafting_flags | CRAFT_SKIP_MATERIALS_PARITY
 	time = 10 SECONDS
 	category = CAT_WEAPON_MELEE
 
@@ -95,6 +86,7 @@
 	blacklist = list(/obj/item/organ/tail/lizard/fake)
 	time = 4 SECONDS
 	category = CAT_WEAPON_MELEE
+
 
 /datum/crafting_recipe/balloon_mallet
 	name = "Balloon Mallet"
@@ -150,16 +142,6 @@
 		/obj/item/stack/rods = 1,
 	)
 	time = 4 SECONDS
-	category = CAT_WEAPON_MELEE
-
-/datum/crafting_recipe/wireprod
-	name = "Wireprod assembly"
-	result = /obj/item/wireprod
-	reqs = list(
-		/obj/item/restraints/handcuffs/cable = 1,
-		/obj/item/stack/rods = 1,
-	)
-	time = 2 SECONDS
 	category = CAT_WEAPON_MELEE
 
 /datum/crafting_recipe/toysword
@@ -271,15 +253,3 @@
 	)
 	time = 120 SECONDS
 	category = CAT_WEAPON_MELEE
-
-/datum/crafting_recipe/dragonator_spear_untreated
-	name = "Untreated Giant-Killer Spear"
-	result = /obj/item/spear/dragonator_untreated
-	reqs = list(
-		/obj/item/stack/sheet/plasteel = 15,
-		/obj/item/stack/sheet/mineral/titanium = 5,
-		/obj/item/knife = 7,
-	)
-	time = 5 SECONDS
-	category = CAT_WEAPON_MELEE
-

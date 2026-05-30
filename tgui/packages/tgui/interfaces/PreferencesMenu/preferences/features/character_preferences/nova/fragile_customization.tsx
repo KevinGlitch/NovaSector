@@ -1,5 +1,5 @@
 // THIS IS A NOVA SECTOR UI FILE
-import { type Feature, FeatureNumberInput } from '../../base';
+import { Feature, FeatureNumberInput } from '../../base';
 
 export const fragile_brute: Feature<number> = {
   name: 'Brute Modifier',

@@ -47,10 +47,6 @@
 	equip_delay_other = 2 SECONDS
 	species_exception = null
 
-/obj/item/clothing/suit/costume/pirate/armored/Initialize(mapload)
-	. = ..()
-	allowed += GLOB.security_vest_allowed
-
 /obj/item/clothing/suit/costume/pirate/captain
 	name = "pirate captain coat"
 	desc = "Yarr."
@@ -180,7 +176,6 @@
 	body_parts_covered = CHEST|GROIN|LEGS
 	flags_inv = HIDEJUMPSUIT
 	dog_fashion = /datum/dog_fashion/back
-	custom_materials = list(/datum/material/cardboard = SHEET_MATERIAL_AMOUNT * 3)
 	var/in_use = FALSE
 
 /obj/item/clothing/suit/costume/cardborg/equipped(mob/living/user, slot)
@@ -280,7 +275,7 @@
 
 /obj/item/clothing/suit/hooded/carp_costume/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, -4)
+	AddComponent(/datum/component/adjust_fishing_difficulty, -4)
 
 /obj/item/clothing/head/hooded/carp_hood
 	name = "carp hood"
@@ -296,17 +291,17 @@
 
 /obj/item/clothing/head/hooded/carp_hood/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, -5)
+	AddComponent(/datum/component/adjust_fishing_difficulty, -5)
 
 /obj/item/clothing/head/hooded/carp_hood/equipped(mob/living/carbon/human/user, slot)
 	..()
 	if (slot & ITEM_SLOT_HEAD)
-		user.add_faction("carp")
+		user.faction |= "carp"
 
 /obj/item/clothing/head/hooded/carp_hood/dropped(mob/living/carbon/human/user)
 	..()
 	if (user.head == src)
-		user.remove_faction("carp")
+		user.faction -= "carp"
 
 /obj/item/clothing/suit/hooded/carp_costume/spaceproof
 	name = "carp space suit"
@@ -416,7 +411,7 @@
 
 /obj/item/clothing/suit/hooded/shark_costume/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, -4)
+	AddComponent(/datum/component/adjust_fishing_difficulty, -4)
 
 /obj/item/clothing/head/hooded/shark_hood
 	name = "shark hood"
@@ -430,7 +425,7 @@
 
 /obj/item/clothing/head/hooded/shark_hood/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, -5)
+	AddComponent(/datum/component/adjust_fishing_difficulty, -5)
 
 /obj/item/clothing/suit/hooded/shork_costume // Oh God Why
 	name = "shork costume"
@@ -445,7 +440,7 @@
 
 /obj/item/clothing/suit/hooded/shork_costume/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, 4)
+	AddComponent(/datum/component/adjust_fishing_difficulty, 4)
 
 /obj/item/clothing/head/hooded/shork_hood
 	name = "shork hood"
@@ -459,7 +454,7 @@
 
 /obj/item/clothing/head/hooded/shork_hood/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, 5)
+	AddComponent(/datum/component/adjust_fishing_difficulty, 5)
 
 /obj/item/clothing/suit/hooded/bloated_human //OH MY GOD WHAT HAVE YOU DONE!?!?!?
 	name = "bloated human suit"
@@ -573,7 +568,6 @@
 		/obj/item/toy/clockwork_watch,
 		)
 	armor_type = /datum/armor/costume_bronze
-	custom_materials = list(/datum/material/bronze = SHEET_MATERIAL_AMOUNT)
 
 /obj/item/clothing/suit/hooded/mysticrobe
 	name = "mystic's robe"
@@ -630,7 +624,7 @@
 
 /obj/item/clothing/suit/costume/hawaiian/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/adjust_fishing_difficulty, -5)
+	AddComponent(/datum/component/adjust_fishing_difficulty, -5)
 	allowed += GLOB.personal_carry_allowed
 
 /obj/item/clothing/suit/costume/football_armor
@@ -706,7 +700,7 @@
 	icon_state = "bear"
 	worn_icon_state = "bear"
 	inhand_icon_state = null
-	body_parts_covered = CHEST|GROIN|ARMS|LEGS|HANDS
+	body_parts_covered = CHEST|GROIN|ARMS|LEGS
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
 	///Are we friendly with bears (wearing the full head/suit combo)?
 	var/full_suit = FALSE
@@ -724,7 +718,7 @@
 	full_suit = FALSE
 	var/mob/living/carbon/human/human_user = user
 	UnregisterSignal(human_user.head, COMSIG_ITEM_DROPPED)
-	user.remove_faction(FACTION_BEAR)
+	user.faction -= FACTION_BEAR
 
 /obj/item/clothing/suit/costume/bear_suit/proc/make_friendly(mob/living/carbon/human/human_user, obj/item/clothing/head/costume/bearpelt/bear_head)
 	if(!istype(human_user))
@@ -733,10 +727,10 @@
 		return
 	RegisterSignal(bear_head, COMSIG_ITEM_DROPPED, PROC_REF(helmet_drop))
 	full_suit = TRUE
-	human_user.add_faction(FACTION_BEAR)
+	human_user.faction |= FACTION_BEAR
 
 /obj/item/clothing/suit/costume/bear_suit/proc/helmet_drop(datum/source, mob/living/user)
 	SIGNAL_HANDLER
 	UnregisterSignal(source, COMSIG_ITEM_DROPPED)
 	full_suit = FALSE
-	user.remove_faction(FACTION_BEAR)
+	user.faction -= FACTION_BEAR

@@ -1,23 +1,6 @@
 /obj/item/clothing/under/rank/medical
 	worn_icon_digi = 'modular_nova/master_files/icons/mob/clothing/under/medical_digi.dmi'
 
-/obj/item/clothing/under/rank/medical/doctor/nurse
-	can_adjust = FALSE
-	icon = 'modular_nova/master_files/icons/obj/clothing/under/medical.dmi'
-	worn_icon = 'modular_nova/master_files/icons/mob/clothing/under/medical.dmi'
-	worn_icon_digi = 'modular_nova/master_files/icons/mob/clothing/under/medical_digi.dmi'
-	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION
-	alternate_worn_layer = ABOVE_SHOES_LAYER
-
-/obj/item/clothing/under/rank/medical/doctor/nurse/seriouser
-	can_adjust = FALSE
-	icon_state = "nursesuit_alt"
-	icon = 'modular_nova/master_files/icons/obj/clothing/under/medical.dmi'
-	worn_icon = 'modular_nova/master_files/icons/mob/clothing/under/medical.dmi'
-	worn_icon_digi = 'modular_nova/master_files/icons/mob/clothing/under/medical_digi.dmi'
-	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION
-	alternate_worn_layer = ABOVE_SHOES_LAYER
-
 /obj/item/clothing/under/rank/medical/doctor/nova
 	icon = 'modular_nova/master_files/icons/obj/clothing/under/medical.dmi'
 	worn_icon = 'modular_nova/master_files/icons/mob/clothing/under/medical.dmi'
@@ -25,6 +8,7 @@
 /obj/item/clothing/under/syndicate/scrubs
 	worn_icon_digi = 'modular_nova/master_files/icons/mob/clothing/under/medical_digi.dmi'
 	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION
+
 
 /obj/item/clothing/under/rank/medical/scrubs/nova
 	icon = 'modular_nova/master_files/icons/obj/clothing/under/medical.dmi'
@@ -55,7 +39,7 @@
 	name = "medical utility uniform"
 	desc = "A utility uniform worn by Medical doctors."
 	icon_state = "util_med"
-	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION | CLOTHING_BIG_LEGS_MASK
+	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION
 	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 	alt_covers_chest = TRUE
 
@@ -90,7 +74,7 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
-	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION_NO_NEW_ICON | CLOTHING_BIG_LEGS_MASK
+	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION_NO_NEW_ICON
 	gets_cropped_on_taurs = FALSE
 
 /obj/item/clothing/under/rank/medical/chemist/skirt
@@ -112,23 +96,14 @@
 	body_parts_covered = CHEST|GROIN|ARMS
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
-	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION_NO_NEW_ICON | CLOTHING_BIG_LEGS_MASK
+	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION_NO_NEW_ICON
 	gets_cropped_on_taurs = FALSE
 
 /*
 *	CHIEF MEDICAL OFFICER
 */
 
-/obj/item/clothing/under/imperial/cmo
+/obj/item/clothing/under/rank/medical/chief_medical_officer/nova/imperial //Rank pins of the Brigadier General
 	desc = "A teal, sterile naval suit with a rank badge denoting the Officer of the Medical Corps. Doesn't protect against blaster fire."
 	name = "chief medical officer's naval jumpsuit"
-	icon_state = "/obj/item/clothing/under/imperial/cmo"
-	greyscale_colors = "#5EB8B8#5EB8B8#5EB8B8#373741#FFFFFF#2979cd#bc2626"
-	flags_1 = NONE
-
-/obj/item/clothing/under/imperialskirt/cmo
-	desc = "A teal, sterile naval skirt with a rank badge denoting the Officer of the Medical Corps. Doesn't protect against blaster fire."
-	name = "chief medical officer's naval skirt"
-	icon_state = "/obj/item/clothing/under/imperialskirt/cmo"
-	greyscale_colors = "#5EB8B8#5EB8B8#373741#FFFFFF#2979cd#bc2626"
-	flags_1 = NONE
+	icon_state = "impcmo"

@@ -11,8 +11,6 @@ at the cost of risking a vicious bite.**/
 	var/obj/item/hidden_item
 	///This var determines if there is a chance to receive a bite when sticking your hand into the water.
 	var/critter_infested = TRUE
-	///A subtle loop which plays a drop of water sound every once in a while
-	var/datum/looping_sound/drip/drip_sfx
 	///weighted loot table for what loot you can find inside the moisture trap.
 	///the actual loot isn't that great and should probably be improved and expanded later.
 	var/static/list/loot_table = list(
@@ -47,14 +45,11 @@ at the cost of risking a vicious bite.**/
 		fish_source.fish_table[picked_item] = 5
 		fish_source.fish_counts[picked_item] = 1;
 	AddComponent(/datum/component/fishing_spot, fish_source)
-	drip_sfx = new(src)
-	drip_sfx.start()
 
 
 /obj/structure/moisture_trap/Destroy()
 	if(hidden_item)
 		QDEL_NULL(hidden_item)
-	drip_sfx?.stop(TRUE)
 	return ..()
 
 
@@ -76,7 +71,6 @@ at the cost of risking a vicious bite.**/
 		to_chat(user, span_warning("You need to lie down to reach into [src]."))
 		return
 	to_chat(user, span_notice("You reach down into the cold water of the basin."))
-	playsound(src,'sound/effects/submerge.ogg', 25, TRUE)
 	if(!do_after(user, 2 SECONDS, target = src))
 		return
 	if(hidden_item)
@@ -115,7 +109,6 @@ at the cost of risking a vicious bite.**/
 		return
 	hidden_item = I
 	to_chat(user, span_notice("You hide [I] inside the basin."))
-	playsound(src,'sound/effects/splash.ogg', 55, TRUE)
 
 #define ALTAR_INACTIVE 0
 #define ALTAR_STAGEONE 1
@@ -155,7 +148,7 @@ at the cost of risking a vicious bite.**/
 	var/altar_result = show_radial_menu(user, src, altar_options, custom_check = CALLBACK(src, PROC_REF(check_menu), user), require_near = TRUE, tooltips = TRUE)
 	switch(altar_result)
 		if("Change Color")
-			var/chosen_color = tgui_color_picker(user, "", "Choose Color", pants_color)
+			var/chosen_color = input(user, "", "Choose Color", pants_color) as color|null
 			if(!isnull(chosen_color) && user.can_perform_action(src))
 				pants_color = chosen_color
 		if("Create Artefact")
@@ -257,7 +250,6 @@ at the cost of risking a vicious bite.**/
 	icon_state = "steam_vent"
 	anchored = TRUE
 	density = FALSE
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.3, /datum/material/plastic = SMALL_MATERIAL_AMOUNT * 2)
 	/// How often does the vent reset the blow_steam cooldown.
 	var/steam_speed = 20 SECONDS
 	/// Is the steam vent active?
@@ -325,7 +317,9 @@ at the cost of risking a vicious bite.**/
 		return
 	if(!ismob(leaving))
 		return
-	do_smoke(1, src, loc)
+	var/datum/effect_system/fluid_spread/smoke/smoke = new
+	smoke.set_up(range = 1, amount = 1, location = src)
+	smoke.start()
 	playsound(src, 'sound/machines/steam_hiss.ogg', 75, TRUE, -2)
 	COOLDOWN_START(src, steam_vent_interact, steam_speed)
 

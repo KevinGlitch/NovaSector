@@ -6,17 +6,16 @@ import { Window } from '../layouts';
 
 type Data = {
   straight: number;
-  left: number;
-  right: number;
+  side: number;
   max_transfer: number;
 };
 
 export const ChemSplitter = (props) => {
   const { act, data } = useBackend<Data>();
-  const { straight, left, right, max_transfer } = data;
+  const { straight, side, max_transfer } = data;
 
   return (
-    <Window width={270} height={140}>
+    <Window width={220} height={105}>
       <Window.Content>
         <Section>
           <LabeledList>
@@ -24,7 +23,7 @@ export const ChemSplitter = (props) => {
               <NumberInput
                 value={straight}
                 unit="u"
-                width="80px"
+                width="55px"
                 minValue={1}
                 maxValue={max_transfer}
                 format={(value) => toFixed(value, 2)}
@@ -38,11 +37,11 @@ export const ChemSplitter = (props) => {
                 }
               />
             </LabeledList.Item>
-            <LabeledList.Item label="Left">
+            <LabeledList.Item label="Side">
               <NumberInput
-                value={left}
+                value={side}
                 unit="u"
-                width="80px"
+                width="55px"
                 minValue={1}
                 maxValue={max_transfer}
                 format={(value) => toFixed(value, 2)}
@@ -50,25 +49,7 @@ export const ChemSplitter = (props) => {
                 stepPixelSize={4}
                 onChange={(value) =>
                   act('set_amount', {
-                    target: 'left',
-                    amount: value,
-                  })
-                }
-              />
-            </LabeledList.Item>
-            <LabeledList.Item label="Right">
-              <NumberInput
-                value={right}
-                unit="u"
-                width="80px"
-                minValue={1}
-                maxValue={max_transfer}
-                format={(value) => toFixed(value, 2)}
-                step={0.05}
-                stepPixelSize={4}
-                onChange={(value) =>
-                  act('set_amount', {
-                    target: 'right',
+                    target: 'side',
                     amount: value,
                   })
                 }

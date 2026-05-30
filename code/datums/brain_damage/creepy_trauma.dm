@@ -2,9 +2,6 @@
 	name = "Psychotic Schizophrenia"
 	desc = "Patient has a subtype of delusional disorder, becoming irrationally attached to someone."
 	scan_desc = "psychotic schizophrenic delusions"
-	symptoms = "Exhibits obsessive behaviors towards a specific individual, \
-		including frequent staring, intrusive thoughts, and an overwhelming desire to be near them. \
-		This obsession can lead to social withdrawal, anxiety, and impaired daily functioning."
 	gain_text = "If you see this message, make a github issue report. The trauma initialized wrong."
 	lose_text = span_warning("The voices in your head fall silent.")
 	can_gain = TRUE
@@ -37,9 +34,9 @@
 	antagonist.greet()
 	log_game("[key_name(antagonist)] has developed an obsession with [key_name(obsession)].")
 	RegisterSignal(owner, COMSIG_CARBON_HELPED, PROC_REF(on_hug))
-	owner.apply_status_effect(/datum/status_effect/desensitized, REF(src), DESENSITIZED_THRESHOLD)
+	ADD_TRAIT(owner, TRAIT_DESENSITIZED, REF(src))
 
-/datum/brain_trauma/special/obsessed/on_life(seconds_per_tick)
+/datum/brain_trauma/special/obsessed/on_life(seconds_per_tick, times_fired)
 	if(!obsession || obsession.stat == DEAD)
 		viewing = FALSE//important, makes sure you no longer stutter when happy if you murdered them while viewing
 		return
@@ -75,7 +72,7 @@
 	if(obsession)
 		log_game("[key_name(owner)] is no longer obsessed with [key_name(obsession)].")
 		UnregisterSignal(obsession, COMSIG_MOB_EYECONTACT)
-	owner.remove_status_effect(/datum/status_effect/desensitized, REF(src))
+	REMOVE_TRAIT(owner, TRAIT_DESENSITIZED, REF(src))
 
 /datum/brain_trauma/special/obsessed/handle_speech(datum/source, list/speech_args)
 	if(!viewing)
@@ -107,7 +104,7 @@
 		if(41 to 80)
 			INVOKE_ASYNC(owner, TYPE_PROC_REF(/mob, emote), "pale")
 			shake_camera(owner, 15, 1)
-			owner.adjust_stamina_loss(70)
+			owner.adjustStaminaLoss(70)
 			to_chat(owner, span_userdanger("You feel your heart lurching in your chest..."))
 		if(81 to 100)
 			INVOKE_ASYNC(owner, TYPE_PROC_REF(/mob, emote), "cough")

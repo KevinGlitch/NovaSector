@@ -63,12 +63,13 @@
 #define GAUNTLET_SEAL_MESSAGE "tighten around your fingers and wrists"
 #define BOOT_UNSEAL_MESSAGE "relax their grip on your legs"
 #define BOOT_SEAL_MESSAGE "seal around your feet"
-#define GLASSES_UNSEAL_MESSAGE "moves away from your eyes"
-#define GLASSES_SEAL_MESSAGE "settle onto your eyes"
-#define NECKWEAR_UNSEAL_MESSAGE "looses around your neck"
-#define NECKWEAR_SEAL_MESSAGE "tightens around your neck"
 
 /// Global list of all /datum/mod_theme
 GLOBAL_LIST_INIT(mod_themes, setup_mod_themes())
 /// Global list of all ids associated to a /datum/mod_link instance
 GLOBAL_LIST_EMPTY(mod_link_ids)
+
+/// EXOBYTECHNOVA UPDATE: Phoenix Collective modsuits are manufactured differently in-lore, so they get different seal/unseal text for some parts.
+#define PHOENIX_CHESTPLATE_SEAL_MESSAGE "seals around your chest, auto-adjusting to comfortably fit"
+#define PHOENIX_GAUNTLET_UNSEAL_MESSAGE "become loose around your fingers"
+#define PHOENIX_GAUNTLET_SEAL_MESSAGE "snap into place, comfortably encasing your fingers and wrists"

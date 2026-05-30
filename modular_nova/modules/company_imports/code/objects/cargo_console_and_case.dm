@@ -1,3 +1,7 @@
+/obj/machinery/computer/cargo/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/armament/company_imports, subtypesof(/datum/armament_entry/company_import), 0)
+
 /obj/item/storage/lockbox/order
 	/// Bool if this was departmentally ordered or not
 	var/department_purchase
@@ -7,4 +11,3 @@
 /obj/structure/closet/crate/large/import
 	name = "heavy-duty wooden crate"
 	icon = 'modular_nova/modules/company_imports/icons/import_crate.dmi'
-	material_drop_amount = 0

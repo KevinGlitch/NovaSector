@@ -73,21 +73,21 @@
 	)
 
 /datum/voucher_set/traitor/supplies/stealth/camera_app
-	name = /obj/item/disk/computer/syndicate/camera_app::name
-	description = /obj/item/disk/computer/syndicate/camera_app::desc
-	icon = /obj/item/disk/computer/syndicate/camera_app::icon
-	icon_state = /obj/item/disk/computer/syndicate/camera_app::icon_state
+	name = /obj/item/computer_disk/syndicate/camera_app::name
+	description = /obj/item/computer_disk/syndicate/camera_app::desc
+	icon = /obj/item/computer_disk/syndicate/camera_app::icon
+	icon_state = /obj/item/computer_disk/syndicate/camera_app::icon_state
 	set_items = list(
-		/obj/item/disk/computer/syndicate/camera_app,
+		/obj/item/computer_disk/syndicate/camera_app,
 	)
 
 /datum/voucher_set/traitor/supplies/stealth/frame
-	name = /obj/item/disk/computer/virus/frame::name
-	description = /obj/item/disk/computer/virus/frame::desc
-	icon = /obj/item/disk/computer/virus/frame::icon
-	icon_state = /obj/item/disk/computer/virus/frame::icon_state
+	name = /obj/item/computer_disk/virus/frame::name
+	description = /obj/item/computer_disk/virus/frame::desc
+	icon = /obj/item/computer_disk/virus/frame::icon
+	icon_state = /obj/item/computer_disk/virus/frame::icon_state
 	set_items = list(
-		/obj/item/disk/computer/virus/frame,
+		/obj/item/computer_disk/virus/frame,
 	)
 
 /datum/voucher_set/traitor/supplies/stealth/edagger

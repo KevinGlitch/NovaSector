@@ -16,3 +16,13 @@ Bay Magnum sprites/sounds taken from Baystation12/Baystation12
 bay_magnum_in
 bay_magnum_out
 bay_gunshot_magnum
+
+=============================================================
+========================== EXONOVA ==========================
+=============================================================
+
+Prototype AR2 fire and reload sounds taken from the game files of Entropy: Zero 2
+and mixed together to fit in-game actions.
+	par2_fire.ogg
+	par2_pull.ogg
+	par2_push.ogg

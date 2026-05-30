@@ -356,7 +356,7 @@
 	. = ..()
 	if (!.)
 		return
-	if(!LAZYLEN(check.dna.mutations))
+	if(!check.dna.mutations.len)
 		return FALSE
 	return TRUE
 
@@ -460,7 +460,7 @@
 		return
 	if (isandroid(check))
 		return TRUE
-	if (length(check.organs) < 6 || length(check.get_missing_limbs()) > 1)
+	if (length(check.organs) < 6 || length(check.bodyparts) < 6)
 		return FALSE
 
 	var/static/list/augmented_organ_slots = list(
@@ -476,8 +476,8 @@
 			continue
 		if (!IS_ROBOTIC_ORGAN(organ))
 			return FALSE
-	for (var/obj/item/bodypart/bodypart as anything in check.get_bodyparts())
-		if (!IS_ROBOTIC_LIMB(bodypart))
+	for (var/obj/item/bodypart/bodypart as anything in check.bodyparts)
+		if (bodypart.bodytype != BODYTYPE_ROBOTIC)
 			return FALSE
 	return TRUE
 

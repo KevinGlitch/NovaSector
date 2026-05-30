@@ -22,9 +22,6 @@
 
 /obj/item/grenade/chem_grenade/rust_sower/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/tool_blocker, TOOL_SCREWDRIVER, TOOL_ACT_PRIMARY)
-	AddElement(/datum/element/tool_blocker, TOOL_WRENCH, TOOL_ACT_PRIMARY)
-	AddElement(/datum/element/tool_blocker, TOOL_MULTITOOL, TOOL_ACT_PRIMARY)
 	RegisterSignal(src, COMSIG_ITEM_ON_GRIND, PROC_REF(on_try_grind))
 	var/obj/item/reagent_containers/cup/beaker/large/beaker_one = new(src)
 	var/obj/item/reagent_containers/cup/beaker/large/beaker_two = new(src)
@@ -41,6 +38,15 @@
 	. = ..()
 	playsound(src, 'sound/items/weapons/rust_sower_explode.ogg', 70, FALSE)
 	qdel(src)
+
+/obj/item/grenade/chem_grenade/rust_sower/screwdriver_act(mob/living/user, obj/item/tool)
+	return NONE
+
+/obj/item/grenade/chem_grenade/rust_sower/wrench_act(mob/living/user, obj/item/tool)
+	return NONE
+
+/obj/item/grenade/chem_grenade/rust_sower/multitool_act(mob/living/user, obj/item/tool)
+	return NONE
 
 /// Returns -1 so that you cant extract the chems
 /obj/item/grenade/chem_grenade/rust_sower/proc/on_try_grind()
@@ -66,7 +72,7 @@
 	. = ..()
 	if(!ishuman(exposed_mob))
 		if(issilicon(exposed_mob) || ismecha(exposed_mob) || isbot(exposed_mob))
-			exposed_mob.adjust_brute_loss(500)
+			exposed_mob.adjustBruteLoss(500)
 		return
 	if(IS_HERETIC(exposed_mob))
 		return
@@ -89,7 +95,7 @@
 			addtimer(CALLBACK(victim, TYPE_PROC_REF(/mob, remove_movespeed_modifier), /datum/movespeed_modifier/reagent/pepperspray), 10 SECONDS)
 		victim.update_damage_hud()
 		victim.adjust_disgust(5)
-		for(var/obj/item/bodypart/robotic_limb in victim.get_bodyparts())
+		for(var/obj/item/bodypart/robotic_limb in victim.bodyparts)
 			if(robotic_limb.biological_state & BIO_ROBOTIC)
 				robotic_limb.receive_damage(5, 5)
 	if(methods & INGEST)
@@ -105,9 +111,9 @@
 
 /datum/reagent/heretic_rust/expose_turf(turf/exposed_turf, reac_volume)
 	. = ..()
-	exposed_turf.rust_heretic_act(RUST_RESISTANCE_TITANIUM)
+	exposed_turf.rust_turf()
 
-/datum/reagent/heretic_rust/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, metabolization_ratio)
+/datum/reagent/heretic_rust/on_mob_life(mob/living/carbon/affected_mob, seconds_per_tick, times_fired)
 	. = ..()
 	if(!holder.has_reagent(/datum/reagent/consumable/milk))
 		if(SPT_PROB(5, seconds_per_tick))

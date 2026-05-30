@@ -13,17 +13,17 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 
 /datum/station_goal/bluespace_cannon/get_report()
 	return list(
-		"Our military presence is inadequate in your sector.",
+		"<blockquote>Our military presence is inadequate in your sector.",
 		"We need you to construct BSA-[rand(1,99)] Artillery position aboard your station.",
 		"",
 		"Base parts are available for shipping via cargo.",
-		"<i>- Nanotrasen Naval Command</i>",
+		"-Nanotrasen Naval Command</blockquote>",
 	).Join("\n")
 
 /datum/station_goal/bluespace_cannon/on_report()
 	//Unlock BSA parts
 	var/datum/supply_pack/engineering/bsa/P = SSshuttle.supply_packs[/datum/supply_pack/engineering/bsa]
-	P.order_flags |= ORDER_SPECIAL_ENABLED
+	P.special_enabled = TRUE
 
 /datum/station_goal/bluespace_cannon/check_completion()
 	if(..())
@@ -50,7 +50,7 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 
 /obj/machinery/bsa/back/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(/datum/component/simple_rotation)
 
 /obj/machinery/bsa/back/multitool_act(mob/living/user, obj/item/multitool/M)
 	M.set_buffer(src)
@@ -64,7 +64,7 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 
 /obj/machinery/bsa/front/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(/datum/component/simple_rotation)
 
 /obj/machinery/bsa/front/multitool_act(mob/living/user, obj/item/multitool/M)
 	M.set_buffer(src)
@@ -80,7 +80,7 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 
 /obj/machinery/bsa/middle/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(/datum/component/simple_rotation)
 
 /obj/machinery/bsa/middle/multitool_act(mob/living/user, obj/item/multitool/tool)
 	. = NONE
@@ -108,9 +108,6 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 	if(!has_space())
 		return "Not enough free space!"
 
-/**
- * Proc to check if the BSA has the required 10 x 1 block space to deploy.
- */
 /obj/machinery/bsa/middle/proc/has_space()
 	var/cannon_dir = get_cannon_direction()
 	var/width = 10
@@ -124,14 +121,9 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 			return FALSE
 
 	var/turf/base = get_turf(src)
-	var/blocked = FALSE
 	for(var/turf/T as anything in CORNER_BLOCK_OFFSET(base, width, 3, offset, -1))
 		if(T.density || isspaceturf(T))
-			blocked = TRUE
-			new /obj/effect/temp_visual/point(T)
-	if(blocked)
-		return FALSE
-
+			return FALSE
 	return TRUE
 
 /obj/machinery/bsa/middle/proc/get_cannon_direction()
@@ -153,6 +145,7 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 	var/static/mutable_appearance/top_layer
 	var/ex_power = 3
 	var/power_used_per_shot = 2000000 //enough to kil standard apc - todo : make this use wires instead and scale explosion power with it
+	var/ready
 	pixel_y = -32
 	pixel_x = -192
 	bound_width = 352
@@ -198,6 +191,7 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 			bound_x = -128
 			icon_state = "cannon_east"
 	get_layer()
+	reload()
 
 /obj/machinery/bsa/full/proc/get_layer()
 	top_layer = mutable_appearance(icon, layer = ABOVE_MOB_LAYER)
@@ -216,6 +210,8 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 	return ..()
 
 /obj/machinery/bsa/full/proc/fire(mob/user, turf/bullseye)
+	reload()
+
 	var/turf/point = get_front_turf()
 	var/turf/target = get_target_turf()
 	var/atom/blocker
@@ -251,6 +247,15 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 	else
 		message_admins("[ADMIN_LOOKUPFLW(user)] has launched a bluespace artillery strike targeting [ADMIN_VERBOSEJMP(bullseye)] but it was blocked by [blocker] at [ADMIN_VERBOSEJMP(target)].")
 		user.log_message("has launched a bluespace artillery strike targeting [AREACOORD(bullseye)] but it was blocked by [blocker] at [AREACOORD(target)].", LOG_GAME)
+
+
+/obj/machinery/bsa/full/proc/reload()
+	ready = FALSE
+	use_energy(power_used_per_shot)
+	addtimer(CALLBACK(src,"ready_cannon"), 1 MINUTES)
+
+/obj/machinery/bsa/full/proc/ready_cannon()
+	ready = TRUE
 
 /obj/structure/filler
 	name = "big machinery part"
@@ -289,6 +294,7 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 /obj/machinery/computer/bsa_control/ui_data()
 	var/obj/machinery/bsa/full/cannon = cannon_ref?.resolve()
 	var/list/data = list()
+	data["ready"] = cannon ? cannon.ready : FALSE
 	data["connected"] = cannon
 	data["notice"] = notice
 	data["unlocked"] = GLOB.bsa_unlock
@@ -306,11 +312,7 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 			cannon_ref = WEAKREF(deploy())
 			. = TRUE
 		if("fire")
-			var/obj/machinery/bsa/full/cannon = cannon_ref.resolve()
-			if(cannon.use_energy(cannon.power_used_per_shot, force = FALSE))
-				fire(ui.user)
-			else
-				to_chat(ui.user, span_warning("Insufficient power!"))
+			fire(usr)
 			. = TRUE
 		if("recalibrate")
 			calibrate(usr)
@@ -378,7 +380,9 @@ GLOBAL_VAR_INIT(bsa_unlock, FALSE)
 	if(notice)
 		return null
 	//Totally nanite construction system not an immersion breaking spawning
-	do_smoke(4, get_turf(centerpiece), get_turf(centerpiece))
+	var/datum/effect_system/fluid_spread/smoke/fourth_wall_guard = new
+	fourth_wall_guard.set_up(4, holder = src, location = get_turf(centerpiece))
+	fourth_wall_guard.start()
 	var/obj/machinery/bsa/full/cannon = new(get_turf(centerpiece),centerpiece.get_cannon_direction())
 	QDEL_NULL(centerpiece.front_ref)
 	QDEL_NULL(centerpiece.back_ref)

@@ -110,6 +110,11 @@
 	. = ..()
 	AddElement(/datum/element/web_walker, /datum/movespeed_modifier/fast_web)
 
+///Used in the caves away mission.
+/mob/living/basic/spider/giant/hunter/away_caves
+	minimum_survivable_temperature = 0
+	gold_core_spawnable = NO_SPAWN
+
 /**
  * ### Scout Spider
  * A subtype of the giant spider which is faster, has thermal vision, but less health and damage.
@@ -164,6 +169,11 @@
 	web_speed = 0.25
 	web_type = /datum/action/cooldown/mob_cooldown/lay_web/sealer
 	menu_description = "Avarage speed spider able to heal other spiders and itself together with a fast web laying capability, has low damage and health."
+
+///Used in the caves away mission.
+/mob/living/basic/spider/giant/nurse/away_caves
+	minimum_survivable_temperature = 0
+	gold_core_spawnable = NO_SPAWN
 
 /mob/living/basic/spider/giant/nurse/Initialize(mapload)
 	. = ..()
@@ -565,6 +575,7 @@
 	unsuitable_cold_damage = 1
 	unsuitable_heat_damage = 1
 	menu_description = "Stronger assassin spider variant with an unmatched speed, high amount of health and very deadly poison, but deals very low amount of damage. It also has ability to ventcrawl."
+	apply_spider_antag = FALSE
 	innate_actions = list(
 		/datum/action/cooldown/mob_cooldown/lay_web/sticky_web,
 		/datum/action/cooldown/mob_cooldown/lay_web/web_spikes,
@@ -590,6 +601,7 @@
 	melee_damage_lower = 15
 	melee_damage_upper = 20
 	ai_controller = /datum/ai_controller/basic_controller/giant_spider/retaliate
+	apply_spider_antag = FALSE
 
 /mob/living/basic/spider/giant/sgt_araneus/Initialize(mapload)
 	. = ..()

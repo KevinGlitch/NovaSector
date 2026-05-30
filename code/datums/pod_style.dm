@@ -33,7 +33,7 @@
 /datum/pod_style/centcom
 	name = "\improper CentCom supply pod"
 	ui_name = "Nanotrasen"
-	desc = "A Nanotrasen supply pod. This one has been marked with Central Command's designations. Teleports back to CentCom after delivery."
+	desc = "A Nanotrasen supply pod, this one has been marked with Central Command's designations. Teleports back to CentCom after delivery."
 	decal_icon = "centcom"
 	glow_color = "blue"
 	id = "centcom"
@@ -149,3 +149,10 @@
 	glow_color = null
 	rubble_type = RUBBLE_NONE
 	id = "seethrough"
+
+/datum/pod_style/arcanum
+	name = "arcanum"
+	ui_name = "Arcanum"
+	desc = "A drop pod used by Arcanum Research Corporation. Take care not to scratch its contents..."
+	decal_icon = "arcanum"
+	id = "arcanum"

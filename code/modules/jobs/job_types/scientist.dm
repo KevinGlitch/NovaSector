@@ -1,6 +1,7 @@
 /datum/job/scientist
 	title = JOB_SCIENTIST
 	description = "Do experiments, perform research, feed the slimes, make bombs."
+	department_head = list(JOB_RESEARCH_DIRECTOR)
 	faction = FACTION_STATION
 	total_positions = 5
 	spawn_positions = 3
@@ -16,7 +17,7 @@
 	paycheck = PAYCHECK_CREW
 	paycheck_department = ACCOUNT_SCI
 
-	liver_traits = list(TRAIT_SCIENTIST_LIVER)
+	liver_traits = list(TRAIT_BALLMER_SCIENTIST)
 
 	display_order = JOB_DISPLAY_ORDER_SCIENTIST
 	bounty_types = CIV_JOB_SCI

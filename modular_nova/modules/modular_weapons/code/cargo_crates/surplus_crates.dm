@@ -16,14 +16,14 @@
 
 // Special basically locks it out of appearing literally ever unless an admin VV's the cargo subsystem
 /datum/supply_pack/imports/russian
-	order_flags = ORDER_POD_ONLY
+	special = TRUE
 
 /// base type that uses paxil's crate budgeting system. contains stuff from the CIN
 /datum/supply_pack/imports/budgeted
 	name = "CIN Surplus Equipment Crate"
 	desc = "A collection of surplus equipment sourced from the Coalition of Independent Nations' military stockpiles. \
 	Likely to contain old and outdated equipment, as is the nature of surplus."
-	order_flags = ORDER_CONTRABAND
+	contraband = TRUE
 	cost = CARGO_CRATE_VALUE * 20
 	contains = list(
 		// Clothing
@@ -96,7 +96,7 @@
 	name = "Vanguard Expeditionary Corps Surplus"
 	desc = "Contains an assortment of surplus equipment from the now-defunct Vanguard Expeditionary Corps. May or may not just be things they stole from other stations."
 	cost = CARGO_CRATE_VALUE * 20
-	order_flags = ORDER_GOODY
+	contraband = FALSE
 	// note: weights are entirely arbitrary. also arbitrarily sorted by weight
 	contains = list(
 		// clothes incl. storage

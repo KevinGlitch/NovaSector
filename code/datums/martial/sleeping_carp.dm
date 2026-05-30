@@ -6,7 +6,7 @@
 /datum/martial_art/the_sleeping_carp
 	name = "The Sleeping Carp"
 	id = MARTIALART_SLEEPINGCARP
-	help_verb = "Recall Teachings"
+	help_verb = /mob/living/proc/sleeping_carp_help
 	display_combos = TRUE
 	grab_state_modifier = 1
 	/// List of traits applied to users of this martial art.
@@ -38,15 +38,14 @@
 	RegisterSignal(new_holder, COMSIG_ATOM_ATTACKBY, PROC_REF(on_attackby))
 	RegisterSignal(new_holder, COMSIG_ATOM_PRE_BULLET_ACT, PROC_REF(hit_by_projectile))
 	RegisterSignal(new_holder, COMSIG_LIVING_CHECK_BLOCK, PROC_REF(check_dodge))
-	new_holder.add_faction(FACTION_CARP) //:D
+	new_holder.faction |= FACTION_CARP //:D
 	new_holder.grant_language(/datum/language/carptongue, ALL, type)
 
 /datum/martial_art/the_sleeping_carp/deactivate_style(mob/living/remove_from)
 	remove_from.remove_traits(scarp_traits, SLEEPING_CARP_TRAIT)
 	UnregisterSignal(remove_from, list(COMSIG_ATOM_ATTACKBY, COMSIG_ATOM_PRE_BULLET_ACT, COMSIG_LIVING_CHECK_BLOCK))
-	remove_from.remove_faction(FACTION_CARP) //:(
-	if (!QDELING(remove_from))
-		remove_from.remove_language(/datum/language/carptongue, ALL, type)
+	remove_from.faction -= FACTION_CARP //:(
+	remove_from.remove_language(/datum/language/carptongue, ALL, type)
 	return ..()
 
 /datum/martial_art/the_sleeping_carp/proc/check_streak(mob/living/attacker, mob/living/defender)
@@ -163,7 +162,7 @@
 	var/grab_log_description = "grabbed"
 	attacker.do_attack_animation(defender, ATTACK_EFFECT_PUNCH)
 	playsound(defender, 'sound/items/weapons/punch1.ogg', 25, TRUE, -1)
-	if(defender.stat != DEAD && !defender.IsUnconscious() && defender.get_stamina_loss() >= 80) //We put our target to sleep.
+	if(defender.stat != DEAD && !defender.IsUnconscious() && defender.getStaminaLoss() >= 80) //We put our target to sleep.
 		defender.visible_message(
 			span_danger("[attacker] carefully pinch a nerve in [defender]'s neck, knocking them out cold!"),
 			span_userdanger("[attacker] pinches something in your neck, and you fall unconscious!"),
@@ -281,11 +280,11 @@
 	)
 	return COMPONENT_NO_AFTERATTACK
 
-/// If our user has committed to being as martial arty as they can be, they may be able to avoid incoming attacks.
+/// If our user has committed to being as nautically radical as they can be, they may be able to avoid incoming attacks.
 /datum/martial_art/the_sleeping_carp/proc/check_dodge(mob/living/carp_user, atom/movable/hitby, damage, attack_text, attack_type, ...)
 	SIGNAL_HANDLER
 
-	var/determine_avoidance = clamp(round(carp_style_check(carp_user) / (attack_type == OVERWHELMING_ATTACK ? 2 : 1), 1), 0, 75)
+	var/determine_avoidance = clamp(carp_style_check(carp_user), 0, 75)
 
 	if(!can_deflect(carp_user))
 		return
@@ -327,33 +326,35 @@
 	var/obj/item/bodypart/potential_chest = human_carp_user.get_bodypart(BODY_ZONE_CHEST)
 	var/obj/item/clothing/is_it_the_shoes = human_carp_user.get_item_by_slot(ITEM_SLOT_FEET)
 
-	// The presence of armor and heavy objects is a style malus
-	var/style_factor_malus = 0
+	// The presence of armor is a style malus
+	var/oh_no_armor = 0
 
 	// Lets look to see if any relevant headwear is armored or on theme
-	if(potential_head)
-		for(var/obj/item/clothing/possible_headbands in human_carp_user.get_clothing_on_part(potential_head))
-			if(possible_headbands.clothing_flags & CARP_STYLE_FACTOR)
-				style_factor_points += 20 // Basically, you only need one chest level item to contribute
-		style_factor_malus += human_carp_user.run_armor_check(potential_head, MELEE)
+	for(var/obj/item/clothing/possible_headbands in human_carp_user.get_clothing_on_part(potential_head))
+		if(possible_headbands.clothing_flags & CARP_STYLE_FACTOR)
+			style_factor_points += 20 // Basically, you only need one chest level item to contribute
+		oh_no_armor += human_carp_user.run_armor_check(potential_head, MELEE)
 
 	// Then let's look for any chest clothing that is either armored or on theme
-	if(potential_chest)
-		for(var/obj/item/clothing/possible_gi in human_carp_user.get_clothing_on_part(potential_chest))
-			if(possible_gi.clothing_flags & CARP_STYLE_FACTOR)
-				style_factor_points += 20 // Only need one head level item to contribute
-		style_factor_malus += human_carp_user.run_armor_check(potential_chest, MELEE)
+	for(var/obj/item/clothing/possible_gi in human_carp_user.get_clothing_on_part(potential_chest))
+		if(possible_gi.clothing_flags & CARP_STYLE_FACTOR)
+			style_factor_points += 20 // Only need one head level item to contribute
+		oh_no_armor += human_carp_user.run_armor_check(potential_chest, MELEE)
 
 	// We also consider whether our footwear is appropriate
-	if(istype(is_it_the_shoes) && is_it_the_shoes.clothing_flags & CARP_STYLE_FACTOR)
+	if(is_it_the_shoes.clothing_flags & CARP_STYLE_FACTOR)
 		style_factor_points += 20
 
 	// Achieved a carp state of mind.
 	if(human_carp_user.has_status_effect(/datum/status_effect/organ_set_bonus/carp))
 		style_factor_points += 20
 
-	// We check for wielded objects. If they're not abstract items or exempt items, we add their weight as a penalty. And their block chance.
-	for(var/obj/item/possibly_a_held_object in human_carp_user.held_items)
+	var/list/our_held_items = list()
+	our_held_items += human_carp_user.get_active_held_item()
+	our_held_items += human_carp_user.get_inactive_held_item()
+
+	// We check for wielded objects. If they're not abstract items or exempt items, we
+	for(var/obj/item/possibly_a_held_object as anything in our_held_items)
 		if(possibly_a_held_object.item_flags & (ABSTRACT|HAND_ITEM) && !possibly_a_held_object.block_chance)
 			continue
 
@@ -363,34 +364,35 @@
 		if(possibly_a_held_object.w_class <= WEIGHT_CLASS_SMALL && !possibly_a_held_object.block_chance)
 			continue
 
-		style_factor_malus += possibly_a_held_object.block_chance
-		style_factor_malus += possibly_a_held_object.w_class * 10 * (HAS_TRAIT(possibly_a_held_object, TRAIT_WIELDED) ? 2 : 1)
+		oh_no_armor += possibly_a_held_object.block_chance
+		oh_no_armor += possibly_a_held_object.w_class * 10 * (HAS_TRAIT(possibly_a_held_object, TRAIT_WIELDED) ? 2 : 1)
 
-	if(human_carp_user.body_position != STANDING_UP) // this ain't monkey style
+	if(human_carp_user.body_position != STANDING_UP) // YARR, MAN OVERBOARD
 		style_factor_points -= 30
 
-	style_factor_points -= style_factor_malus
+	style_factor_points -= oh_no_armor
 
 	return style_factor_points
 
 /// Verb added to humans who learn the art of the sleeping carp.
-/datum/martial_art/the_sleeping_carp/get_style_help()
-	. = list()
+/mob/living/proc/sleeping_carp_help()
+	set name = "Recall Teachings"
+	set desc = "Remember the martial techniques of the Sleeping Carp clan."
+	set category = "Sleeping Carp"
 
-	. += span_info("<b><i>You retreat inward and recall the teachings of the Sleeping Carp...</i></b>\n\
-		[span_notice("Gnashing Teeth")]: Punch Grab. Violently twists your opponent's arm, dislocating or even shattering bone and forcing them to drop their held items.\n\
-		[span_notice("Crashing Wave Kick")]: Punch Shove. Launch your opponent away from you with incredible force!\n\
-		[span_notice("Keelhaul")]: Shove Shove. Nonlethally kick an opponent to the floor, knocking them down, discombobulating them and dealing substantial stamina damage. If they're already prone, disarm them as well.\n\
-		[span_notice("Kraken Wrack")]: Grab Punch. Deliver a knee jab into the opponent, dealing high stamina damage, as well as briefly stunning them, winding them and making it difficult for them to speak.\n\
-		[span_notice("Grabs and Shoves")]: While in combat mode, your typical grab and shove do decent stamina damage, and your grabs harder to break. If you grab someone who has substantial amounts of stamina damage, you knock them out!\n\
-		<span class='notice'>While in combat mode (and not stunned, not a hulk, and not in a mech), you can reflect all projectiles that come your way, sending them back at the people who fired them! \n\
-		However, your ability to avoid projectiles is negatively affected when your are burdened by armor, or whenever you are carrying normal-sized or heavier objects in your hands. \n\
-		But if you commmit fully to the martial arts lifestyle by wearing martial arts or carp-related regalia, you will feel empowered enough to potentially avoid attacks even from melee weapons or other unarmed combatants. \n\
-		Some melee weapons, such as bo starves, spears, short blades, knives, toolboxes, baseball bats and non-blocking small objects are safe to carry without affecting your ability to defend yourself. Exploit this for a tactical advantage. \n\
-		Also, you are more resilient against suffering wounds in combat, and your limbs cannot be dismembered. This grants you extra staying power during extended combat, especially against slashing and other bleeding weapons. \n\
-		You are not invincible, however- while you may not suffer debilitating wounds often, you must still watch your health and should have appropriate medical supplies for use during downtime. \n\
-		In addition, your training has imbued you with a loathing of guns, and you can no longer use them.</span>")
-	return .
+	to_chat(usr, span_info("<b><i>You retreat inward and recall the teachings of the Sleeping Carp...</i></b>\n\
+	[span_notice("Gnashing Teeth")]: Punch Grab. Violently twists your opponent's arm, dislocating or even shattering bone and forcing them to drop their held items.\n\
+	[span_notice("Crashing Wave Kick")]: Punch Shove. Launch your opponent away from you with incredible force!\n\
+	[span_notice("Keelhaul")]: Shove Shove. Nonlethally kick an opponent to the floor, knocking them down, discombobulating them and dealing substantial stamina damage. If they're already prone, disarm them as well.\n\
+	[span_notice("Kraken Wrack")]: Grab Punch. Deliver a knee jab into the opponent, dealing high stamina damage, as well as briefly stunning them, winding them and making it difficult for them to speak.\n\
+	[span_notice("Grabs and Shoves")]: While in combat mode, your typical grab and shove do decent stamina damag, and your grabs harder to break. If you grab someone who has substantial amounts of stamina damage, you knock them out!\n\
+	<span class='notice'>While in combat mode (and not stunned, not a hulk, and not in a mech), you can reflect all projectiles that come your way, sending them back at the people who fired them! \n\
+	However, your ability to avoid projectiles is negatively affected when your are burdened by armor, or whenever you are carrying normal-sized or heavier objects in your hands. \n\
+	But if you commmit fully to the martial arts lifestyle by wearing martial arts or carp-related regalia, you will feel empowered enough to potentially avoid attacks even from melee weapons or other unarmed combatants. \n\
+	Some melee weapons, such as bo starves, spears, short blades, knives, toolboxes, baseball bats and non-blocking small objects are safe to carry without affecting your ability to defend yourself. Exploit this for a tactical advantage. \n\
+	Also, you are more resilient against suffering wounds in combat, and your limbs cannot be dismembered. This grants you extra staying power during extended combat, especially against slashing and other bleeding weapons. \n\
+	You are not invincible, however- while you may not suffer debilitating wounds often, you must still watch your health and should have appropriate medical supplies for use during downtime. \n\
+	In addition, your training has imbued you with a loathing of guns, and you can no longer use them.</span>"))
 
 /obj/item/staff/bostaff
 	name = "bo staff"
@@ -451,7 +453,7 @@
 						span_userdanger("[user] [pick(fluffmessages)]s you with [src]!"), span_hear("You hear a sickening sound of flesh hitting flesh!"), null, user)
 		to_chat(user, span_danger("You [pick(fluffmessages)] [H] with [src]!"))
 		playsound(get_turf(user), 'sound/effects/woodhit.ogg', 75, TRUE, -1)
-		H.adjust_stamina_loss(rand(13,20))
+		H.adjustStaminaLoss(rand(13,20))
 		if(prob(10))
 			H.visible_message(span_warning("[H] collapses!"), \
 							span_userdanger("Your legs give out!"))
@@ -463,7 +465,7 @@
 								span_userdanger("You're knocked unconscious by [user]!"), span_hear("You hear a sickening sound of flesh hitting flesh!"), null, user)
 				to_chat(user, span_danger("You deliver a heavy hit to [H]'s head, knocking [H.p_them()] out cold!"))
 				H.SetSleeping(60 SECONDS)
-				H.adjust_organ_loss(ORGAN_SLOT_BRAIN, 15, 150)
+				H.adjustOrganLoss(ORGAN_SLOT_BRAIN, 15, 150)
 	else
 		return ..()
 

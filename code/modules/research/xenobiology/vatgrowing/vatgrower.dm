@@ -18,12 +18,12 @@
 	/// Whether or not to add the plumbing component and related stuff
 	var/use_plumbing = TRUE
 
-/obj/machinery/vatgrower/Initialize(mapload)
+/obj/machinery/vatgrower/Initialize(mapload, bolt, layer)
 	. = ..()
 	create_reagents(reagent_volume, reagent_flags)
 
 	if(use_plumbing)
-		AddElement(/datum/element/simple_rotation)
+		AddComponent(/datum/component/simple_rotation)
 		AddComponent(/datum/component/plumbing/simple_demand)
 
 	var/static/list/hovering_item_typechecks = list(
@@ -60,10 +60,14 @@
 		return deposit_sample(user, tool)
 
 /obj/machinery/vatgrower/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+	. = ..()
+	if(default_deconstruction_screwdriver(user, icon_state, icon_state, tool))
+		return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/vatgrower/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+	. = ..()
+	if(default_deconstruction_crowbar(tool))
+		return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/vatgrower/wrench_act(mob/living/user, obj/item/tool)
 	. = ..()

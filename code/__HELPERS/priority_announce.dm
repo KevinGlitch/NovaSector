@@ -91,20 +91,7 @@
 		else
 			GLOB.news_network.submit_article(text, "[command_name()] Update", NEWSCASTER_STATION_ANNOUNCEMENTS, null)
 
-/**
- * Print a report to all the communications consoles, and optionally send an announcement to players about it. This is used for the roundstart report, but can also be used for other reports in the future.
- *
- * * text - the text of the report to print
- * * title - the title of the report, which is also the name of the printed paper.
- * If null, defaults to "Classified [command_name()] Update"
- * * announce - whether or not to send an announcement to players about the report being printed.
- * Defaults to TRUE.
- * * contains_advanced_html - whether or not the text contains advanced HTML that should be rendered on the paper.
- * Advanced HTML (currently) only includes <img> tags, but may include other tags in the future.
- * Do not allow player inputted reports to contain advanced HTML.
- * Defaults to FALSE, which means only basic HTML will be rendered.
- */
-/proc/print_command_report(text = "", title = null, announce = TRUE, contains_advanced_html = FALSE)
+/proc/print_command_report(text = "", title = null, announce=TRUE)
 	if(!title)
 		title = "Classified [command_name()] Update"
 
@@ -120,7 +107,7 @@
 	message.title = title
 	message.content = text
 
-	GLOB.communications_controller.send_message(message, contains_advanced_html = contains_advanced_html)
+	GLOB.communications_controller.send_message(message)
 
 /**
  * Sends a minor annoucement to players.
@@ -208,7 +195,7 @@
 	var/datum/callback/should_play_sound_callback = astype(should_play_sound)
 
 	for(var/mob/target in players)
-		if(isnewplayer(target) || HAS_TRAIT(target, TRAIT_DEAF))
+		if(isnewplayer(target) || !target.can_hear())
 			continue
 
 		to_chat(target, announcement)
@@ -230,7 +217,7 @@
 	alert_sound_to_playing(sound_to_play, players = players)
 
 	for(var/mob/target in players)
-		if(isnewplayer(target) || HAS_TRAIT(target, TRAIT_DEAF))
+		if(isnewplayer(target) || !target.can_hear())
 			continue
 
 		to_chat(target, announcement)

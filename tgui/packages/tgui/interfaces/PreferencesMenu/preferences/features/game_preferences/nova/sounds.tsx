@@ -1,4 +1,4 @@
-import { CheckboxInput, type FeatureToggle } from '../../base';
+import { CheckboxInput, FeatureToggle } from '../../base';
 
 export const sound_eating: FeatureToggle = {
   name: 'Enable eating and drinking sounds',

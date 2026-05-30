@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from 'tgui-core/components';
 import { createSearch } from 'tgui-core/string';
-import { CharacterPreview } from '../../common/CharacterPreview'; // NOVA EDIT ADDITION
 
 import {
   type PreferencesMenuData,
@@ -40,7 +39,7 @@ function getColorValueClass(quirk: Quirk) {
 
 function getCorrespondingPreferences(
   customization_options: string[],
-  relevant_preferences: Record<string, string> = {},
+  relevant_preferences: Record<string, string>,
 ) {
   return Object.fromEntries(
     filter(Object.entries(relevant_preferences), ([key, value]) =>
@@ -56,21 +55,19 @@ type QuirkListProps = {
 };
 
 type QuirkProps = {
-  handleClick: (quirkName: string, quirk: Quirk) => void;
+  onClick: (quirkName: string, quirk: Quirk) => void;
   randomBodyEnabled: boolean;
   selected: boolean;
   serverData: ServerData;
-  quirkActionLocked: boolean;
 };
 
 function QuirkList(props: QuirkProps & QuirkListProps) {
   const {
     quirks = [],
     selected,
-    handleClick,
+    onClick,
     serverData,
     randomBodyEnabled,
-    quirkActionLocked,
   } = props;
 
   return (
@@ -78,13 +75,12 @@ function QuirkList(props: QuirkProps & QuirkListProps) {
       {quirks.map(([quirkKey, quirk]) => (
         <Stack.Item key={quirkKey} m={0}>
           <QuirkDisplay
-            handleClick={handleClick}
+            onClick={onClick}
             quirk={quirk}
             quirkKey={quirkKey}
             randomBodyEnabled={randomBodyEnabled}
             selected={selected}
             serverData={serverData}
-            quirkActionLocked={quirkActionLocked}
           />
         </Stack.Item>
       ))}
@@ -99,29 +95,23 @@ type QuirkDisplayProps = {
 } & QuirkProps;
 
 function QuirkDisplay(props: QuirkDisplayProps) {
-  const { quirk, quirkKey, handleClick, selected, quirkActionLocked } = props;
+  const { quirk, quirkKey, onClick, selected } = props;
   const { icon, value, name, description, customizable, failTooltip } = quirk;
 
   const [customizationExpanded, setCustomizationExpanded] = useState(false);
-  const { data } = useBackend<PreferencesMenuData>(); // NOVA EDIT ADDITION
 
   const className = 'PreferencesMenu__Quirks__QuirkList__quirk';
 
   const child = (
     <Box
       className={className}
-      style={{
-        opacity: props.quirkActionLocked ? 0.6 : 1,
-        pointerEvents: props.quirkActionLocked ? 'none' : 'auto',
-      }}
-      onClick={() => {
-        if (quirkActionLocked)
-          return;
+      onClick={(event) => {
+        event.stopPropagation();
         if (selected) {
           setCustomizationExpanded(false);
         }
 
-        handleClick(quirkKey, quirk);
+        onClick(quirkKey, quirk);
       }}
     >
       <Stack fill g={0}>
@@ -318,19 +308,6 @@ function QuirkPage() {
     data.selected_quirks = selected_quirks;
   }
 
-  const [quirkActionLocked, setQuirkActionLocked] = useState(false);
-
-  function withQuirkDebounce(debounce: () => void, delay = 200) {
-    if (quirkActionLocked) return;
-
-    setQuirkActionLocked(true);
-    debounce();
-
-    setTimeout(() => {
-      setQuirkActionLocked(false);
-    }, delay);
-  }
-
   const [searchQuery, setSearchQuery] = useState('');
   const server_data = useServerPrefs();
   if (!server_data) return;
@@ -351,7 +328,7 @@ function QuirkPage() {
     }
   });
 
-  const balance = -data.quirks_balance; // NOVA EDIT CHANGE - ORIGINAL: let balance = -data.default_quirk_balance;
+  let balance = -data.default_quirk_balance;
   let positiveQuirks = 0;
 
   for (const selectedQuirkName of selectedQuirks) {
@@ -364,7 +341,7 @@ function QuirkPage() {
       positiveQuirks += 1;
     }
 
-    // balance += selectedQuirk.value; // NOVA EDIT REMOVAL - use DM data.quirks_balance
+    balance += selectedQuirk.value;
   }
 
   function getReasonToNotAdd(quirkName: string) {
@@ -378,11 +355,7 @@ function QuirkPage() {
       }
     }
     // NOVA EDIT START - Nova star quirks
-    if (
-      data.nova_star_restrictions &&
-      quirk.nova_stars_only &&
-      !data.is_nova_star
-    ) {
+    if (quirk.nova_stars_only && !data.is_nova_star) {
       return 'You need to be a Nova star to select this quirk, apply today!';
     }
     // NOVA EDIT END
@@ -458,16 +431,14 @@ function QuirkPage() {
           <Stack.Item grow className="PreferencesMenu__Quirks__QuirkList">
             <QuirkList
               selected={false}
-              quirkActionLocked={quirkActionLocked}
-              handleClick={(quirkName, quirk) => {
+              onClick={(quirkName, quirk) => {
                 if (getReasonToNotAdd(quirkName) !== undefined) {
                   return;
                 }
 
-                withQuirkDebounce(() => {
-                  setSelectedQuirks(selectedQuirks.concat(quirkName));
-                  act('give_quirk', { quirk: quirk.name });
-                });
+                setSelectedQuirks(selectedQuirks.concat(quirkName));
+
+                act('give_quirk', { quirk: quirk.name });
               }}
               quirks={quirks
                 .filter(([quirkName, _]) => {
@@ -493,29 +464,7 @@ function QuirkPage() {
       </Stack.Item>
 
       <Stack.Item align="center">
-        {/* <Icon name="exchange-alt" size={1.5} ml={2} mr={2} /> // NOVA EDIT REMOVAL - moved down */}
-        {/* NOVA EDIT ADDITION START */}
-        <Stack vertical fill align="center">
-          {/* Keep the CharacterPreview alive but "hidden", so that traits that affect appearance (e.g. Oversized) refresh rendering calculations immediately. */}
-          <Stack.Item
-            style={{
-              position: 'absolute',
-              left: '-10000px',
-              top: '-10000px',
-              width: '1px',
-              height: '1px',
-              pointerEvents: 'none',
-            }}
-          >
-            <CharacterPreview
-              id={data.character_preview_view}
-              height="1px"
-              width="1px"
-            />
-          </Stack.Item>
-          <Icon name="exchange-alt" size={1.5} ml={2} mr={2} />
-        </Stack>
-        {/* NOVA EDIT ADDITION END */}
+        <Icon name="exchange-alt" size={1.5} ml={2} mr={2} />
       </Stack.Item>
 
       <Stack.Item basis="50%">
@@ -543,19 +492,18 @@ function QuirkPage() {
           <Stack.Item grow className="PreferencesMenu__Quirks__QuirkList">
             <QuirkList
               selected
-              quirkActionLocked={quirkActionLocked}
-              handleClick={(quirkName, quirk) => {
+              onClick={(quirkName, quirk) => {
                 if (getReasonToNotRemove(quirkName) !== undefined) {
                   return;
                 }
 
-                withQuirkDebounce(() => {
-                  setSelectedQuirks(
-                    selectedQuirks.filter((otherQuirk) => quirkName !== otherQuirk),
-                  );
+                setSelectedQuirks(
+                  selectedQuirks.filter(
+                    (otherQuirk) => quirkName !== otherQuirk,
+                  ),
+                );
 
-                  act('remove_quirk', { quirk: quirk.name });
-                });
+                act('remove_quirk', { quirk: quirk.name });
               }}
               quirks={quirks
                 .filter(([quirkName, _]) => {

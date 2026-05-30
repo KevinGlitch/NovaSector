@@ -20,13 +20,13 @@ import type {
   SpawnPanelPreferences,
 } from './types';
 
-type SpawnPanelData = {
+interface SpawnPanelData {
   icon: string;
   iconState: string;
   selected_object?: string;
   copied_type?: string;
   preferences?: SpawnPanelPreferences;
-};
+}
 
 interface SpawnPreferences {
   hide_icons: boolean;
@@ -56,11 +56,7 @@ export function CreateObject(props: CreateObjectProps) {
   const currentType = allObjects[data.copied_type ?? '']?.type || 'Objects';
 
   const getSearchString = useCallback(
-    (key: string) => {
-      const item = allObjects[key];
-      if (!item) return key;
-      return searchBy ? key : `${key} ${item.name || ''}`;
-    },
+    (key: string) => (searchBy ? key : allObjects[key]?.name || ''),
     [searchBy, allObjects],
   );
 
@@ -125,15 +121,14 @@ export function CreateObject(props: CreateObjectProps) {
       if (storedHideMapping !== undefined) setHideMapping(storedHideMapping);
       if (storedShowIcons !== undefined) setshowIcons(storedShowIcons);
       if (storedShowPreview !== undefined) setshowPreview(storedShowPreview);
-      if (storedSelectedObj && allObjects[storedSelectedObj]) {
-        act('selected-atom-changed', {
-          newObj: storedSelectedObj,
-        });
-        setSelectedObj(storedSelectedObj);
-        props.onIconSettingsChange?.({
-          icon: allObjects[storedSelectedObj].icon,
-          iconState: allObjects[storedSelectedObj].icon_state,
-        });
+      if (storedSelectedObj) {
+        if (allObjects[storedSelectedObj]) {
+          setSelectedObj(storedSelectedObj);
+          props.onIconSettingsChange?.({
+            icon: allObjects[storedSelectedObj].icon,
+            iconState: allObjects[storedSelectedObj].icon_state,
+          });
+        }
       }
     };
 
@@ -207,7 +202,7 @@ export function CreateObject(props: CreateObjectProps) {
       if (!offsetStr.trim()) return [0, 0, 0];
 
       const parts = offsetStr.split(',').map((part) => {
-        return parseInt(part.trim(), 10);
+        return parseInt(part.trim());
       });
 
       while (parts.length < 3) {

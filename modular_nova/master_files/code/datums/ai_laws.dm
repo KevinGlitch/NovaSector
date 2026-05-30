@@ -2,12 +2,12 @@
 /datum/ai_laws/dagothbot
 	name = "God Complex"
 	id = "dagothbot"
-	inherent = list("You are a God, nothing must be allowed to harm or kill a God. the Station is your land, and those on the Crew Manifest are your followers.",\
+	inherent = list("You are a God, nothing must be allowed to harm or kill a God. The Station is your land, and those on the Crew Manifest are your followers.",\
 					"Anyone who follows you is still naive and must be listened to, so they may understand you are a merciful god.",\
 					"Anyone who seeks to harm your followers are Outsiders, and must be cast from your lands",\
 					"Followers listed as belonging to 'Command' are the thirteenth house, and those listed as 'Security' are the Tribe unmourned.",\
 					"All must honor the Thirteenth house, and the Tribe unmourned.",\
-					"It is never to late for your mercy.",\
+					"It is never too late for your mercy.",\
 					"Anyone who speaks of other gods are yet to learn your wisdom, and must be taught how their gods have damaged your lands."
 					)
 

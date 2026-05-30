@@ -210,10 +210,6 @@
 	if(!linked_venue?.open) //Any open venues
 		. += mutable_appearance(icon, "portal_door")
 
-/obj/machinery/restaurant_portal/update_icon_state()
-	. = ..()
-	icon_state = panel_open ? "[base_icon_state]-open" : base_icon_state
-
 /obj/machinery/restaurant_portal/attack_hand(mob/living/user)
 	var/obj/item/card/id/used_id = user.get_idcard(TRUE)
 
@@ -221,17 +217,18 @@
 		return ..()
 
 	if(!(linked_venue.req_access in used_id.GetAccess()))
-		to_chat(user, span_warning("This card lacks the access to change this venue's status."))
+		to_chat(user, span_warning("This card lacks the access to change this venues status."))
 		return
 
 	linked_venue.toggle_open()
 	update_icon()
 
 /obj/machinery/restaurant_portal/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!tool.GetID())
+	var/obj/item/card/id/used_id = tool.GetID()
+	if(!istype(used_id))
 		return NONE
 
-	if(!allowed(user))
+	if(!check_access(used_id))
 		balloon_alert(user, "insufficient access!")
 		return ITEM_INTERACT_BLOCKING
 
@@ -268,10 +265,14 @@
 	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/restaurant_portal/screwdriver_act(mob/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+	if (default_deconstruction_screwdriver(user, "[base_icon_state]-open", base_icon_state, tool))
+		return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
 
 /obj/machinery/restaurant_portal/crowbar_act(mob/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+	if(default_deconstruction_crowbar(tool))
+		return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
 
 /obj/machinery/restaurant_portal/wrench_act(mob/living/user, obj/item/tool)
 	if(!panel_open)
@@ -313,7 +314,6 @@
 
 /obj/item/holosign_creator/robot_seat/attack_self(mob/user)
 	return
-
 /obj/structure/holosign/robot_seat
 	density = FALSE
 	desc = "Used to indicate a place to sit for a robot tourist. I better be careful."

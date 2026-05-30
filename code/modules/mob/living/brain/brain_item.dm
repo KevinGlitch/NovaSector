@@ -130,8 +130,9 @@
 	if((!QDELETED(src) || !QDELETED(owner)) && !(movement_flags & NO_ID_TRANSFER))
 		transfer_identity(organ_owner)
 	if(!special)
+		if(!(organ_owner.living_flags & STOP_OVERLAY_UPDATE_BODY_PARTS))
+			organ_owner.update_body_parts()
 		organ_owner.clear_mood_event("brain_damage")
-		organ_owner.med_hud_set_status()
 
 /obj/item/organ/brain/update_icon_state()
 	icon_state = "[initial(icon_state)][smooth_brain ? "-smooth" : ""]"
@@ -241,6 +242,8 @@
 		. += span_notice("It is a bit on the smaller side...")
 	if(brain_size > 1)
 		. += span_notice("It is bigger than average...")
+	if(GetComponent(/datum/component/ghostrole_on_revive))
+		. += span_notice("Its soul might yet come back...")
 
 /// Needed so subtypes can override examine text while still calling parent
 /obj/item/organ/brain/proc/brain_damage_examine()
@@ -334,9 +337,7 @@
 	owner?.mind?.set_current(null) //You aren't allowed to return to brains that don't exist
 	return ..()
 
-/obj/item/organ/brain/on_life(seconds_per_tick)
-	. = ..()
-
+/obj/item/organ/brain/on_life(seconds_per_tick, times_fired)
 	if(HAS_TRAIT(src, TRAIT_BRAIN_DAMAGE_NODEATH))
 		return
 	if(damage >= BRAIN_DAMAGE_DEATH) //rip
@@ -344,36 +345,24 @@
 		owner.investigate_log("has been killed by brain damage.", INVESTIGATE_DEATHS)
 		owner.death()
 
-/obj/item/organ/brain/on_bodypart_insert(obj/item/bodypart/limb)
-	. = ..()
-	if(ishuman(limb.owner))
-		limb.owner.update_hair()
-	else
-		limb.update_icon_dropped()
-
 /obj/item/organ/brain/on_bodypart_remove(obj/item/bodypart/limb, movement_flags)
 	. = ..()
-	if(ishuman(limb.owner))
-		limb.owner.update_hair()
-	else
-		limb.update_icon_dropped()
-	// once it's out in the world we need to make sure it's the right color
-	update_brain_color(animate = FALSE)
+	update_brain_color(animate = FALSE) // once it's out in the world we need to make sure it's the right color
 
 /obj/item/organ/brain/apply_organ_damage(damage_amount, maximum = maxHealth, required_organ_flag = NONE)
 	. = ..()
 	var/delta_dam = . //for the sake of clarity
 	if(isnull(bodypart_owner)) // no need to color it if it's in someone's noggin
 		update_brain_color()
-	if(delta_dam < 0 && damage > BRAIN_DAMAGE_MILD)
-		roll_for_brain_trauma(-delta_dam) // parent call returns negative numbers if take damage and positive if we heal
+	if(delta_dam > 0 && damage > BRAIN_DAMAGE_MILD)
+		roll_for_brain_trauma(delta_dam)
 
 /// Rolls a random chance to gain a brain trauma based on damage taken and current damage level
 /obj/item/organ/brain/proc/roll_for_brain_trauma(delta_dam)
 	if(prob(delta_dam * (1 + max(0, (damage - BRAIN_DAMAGE_MILD)/100)))) //Base chance is the hit damage; for every point of damage past the threshold the chance is increased by 1% //learn how to do your bloody math properly goddamnit
 		gain_trauma_type(BRAIN_TRAUMA_MILD, natural_gain = TRUE)
 
-	var/is_boosted = (owner && HAS_TRAIT(src, TRAIT_SPECIAL_TRAUMA_BOOST))
+	var/is_boosted = (owner && HAS_TRAIT(owner, TRAIT_SPECIAL_TRAUMA_BOOST))
 	if(damage < BRAIN_DAMAGE_SEVERE)
 		return
 	if(prob(delta_dam * (1 + max(0, (damage - BRAIN_DAMAGE_SEVERE)/100)))) //Base chance is the hit damage; for every point of damage past the threshold the chance is increased by 1%
@@ -449,7 +438,7 @@
 
 	// If we have some sort of brain type or subtype change and have skillchips, engage the failsafe procedure!
 	if(owner && length(skillchips) && (replacement_brain.type != type))
-		activate_skillchip_failsafe()
+		activate_skillchip_failsafe(silent = TRUE)
 
 	// Check through all our skillchips, remove them from this brain, add them to the replacement brain.
 	for(var/chip in skillchips)
@@ -515,7 +504,6 @@
 		TRAIT_EXPERT_FISHER, // live off land, fish from river
 		TRAIT_ROUGHRIDER, // ride beast, chase down prey, flee from danger
 		TRAIT_BEAST_EMPATHY, // know the way of beast, calm with food
-		TRAIT_NECROPOLIS_WORSHIP,
 		TRAIT_TACKLING_TAILED_DEFENDER,
 	)
 

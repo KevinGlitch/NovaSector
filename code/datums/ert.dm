@@ -150,3 +150,23 @@
 	code = "Violet"
 	mission = "Provide emergency medical services to the crew."
 	polldesc = "an emergency medical response team"
+
+/// EXOBYTECHNOVA UPD: Phoenix Collective ERT definitions.
+/datum/ert/phoenix
+	teamsize = 4
+	leader_role = /datum/antagonist/ert/phoenix
+	enforce_human = FALSE //Xenophobia is bad, death to SolFed --PC
+	roles = list(/datum/antagonist/ert/phoenix/security, /datum/antagonist/ert/phoenix/medical, /datum/antagonist/ert/phoenix/engie)
+	rename_team = "Phoenix Collective Responsory Unit"
+	code = "Red"
+	polldesc = "a Code Red Phoenix Collective imperial response team"
+
+/datum/ert/phoenix/elite
+	teamsize = 4
+	leader_role = /datum/antagonist/ert/phoenix/elite
+	enforce_human = FALSE //Xenophobia is bad, death to SolFed --PC
+	roles = list(/datum/antagonist/ert/phoenix/medical/elite, /datum/antagonist/ert/phoenix/security/elite, /datum/antagonist/ert/phoenix/security/elite)
+	rename_team = "Phoenix Collective Elite DMO Unit"
+	code = "Epsilon"
+	mission = "Accomplish the interests of the Phoenix Collective."
+	polldesc = "an elite Phoenix Collective military unit"

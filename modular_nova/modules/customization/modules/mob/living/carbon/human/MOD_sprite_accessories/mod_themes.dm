@@ -91,6 +91,11 @@
 /datum/mod_theme/cosmohonk
 	hardlight_theme = CONTRACTOR_RED
 
+/// EXOBYTECHNOVA UPD: Phoenix Collective MOD suit
+/datum/mod_theme/phoenix
+	hardlight_theme = ALERT_AMBER
+/// EXOBYTECHNOVA UPD END
+
 
 // ERT
 /datum/mod_theme/responsory

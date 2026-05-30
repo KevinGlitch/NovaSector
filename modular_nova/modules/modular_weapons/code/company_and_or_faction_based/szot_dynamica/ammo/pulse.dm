@@ -27,9 +27,9 @@
 	desc = "A reusable energy cell for pulse weapons."
 	icon = 'modular_nova/modules/modular_weapons/icons/obj/company_and_or_faction_based/szot_dynamica/ammo.dmi'
 	icon_state = "zaibas_bullet"
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.25, /datum/material/plasma = SHEET_MATERIAL_AMOUNT * 1, /datum/material/gold = SHEET_MATERIAL_AMOUNT * 0.75)
+	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT*0.25, /datum/material/plasma = SHEET_MATERIAL_AMOUNT*2, /datum/material/gold = SHEET_MATERIAL_AMOUNT*0.75)
 	caliber = "pulse"
-	projectile_type = /obj/projectile/bullet/pulse
+	projectile_type = /obj/projectile/beam/laser/plasma_glob/pulse
 	///Maximum amount of times this casing can be used.
 	var/max_uses = 15
 	///Current amount of times this casing can be used.
@@ -59,8 +59,8 @@
 
 /obj/item/ammo_casing/pulse/add_notes_ammo()
 	var/list/readout = list()
-	var/initial_burn = /obj/projectile/bullet/pulse::damage
-	var/initial_brute = /obj/projectile/bullet/pulse::secondary_damage
+	var/initial_brute = 10
+	var/initial_burn = 20
 
 	// Get damage multiplier if in a gun
 	var/proj_damage_mult = 1
@@ -118,48 +118,55 @@
 		if(0.1 to 0.3)
 			. += "zaibas_bullet_1"
 
-/obj/projectile/bullet/pulse
+/obj/item/ammo_casing/pulse/extended
+	name = "extended pulse energy cell"
+	desc = "A reusable energy cell for pulse weapons. This one has an upgraded and extended power capacity, but shots lack some impact potential."
+	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT*0.4, /datum/material/plasma = SHEET_MATERIAL_AMOUNT*2.5, /datum/material/gold = SHEET_MATERIAL_AMOUNT*0.9)
+	projectile_type = /obj/projectile/beam/laser/plasma_glob/pulse/phoenix
+	///Maximum amount of times this casing can be used.
+	max_uses = 30
+	///Current amount of times this casing can be used.
+	remaining_uses = 30
+
+/obj/projectile/beam/laser/plasma_glob/pulse
 	name = "pulse energy"
 	icon = 'modular_nova/modules/modular_weapons/icons/obj/company_and_or_faction_based/szot_dynamica/ammo.dmi'
 	icon_state = "plasma_pulse"
-	damage = 10
+	damage = 15
+	armour_penetration = 30
 	wound_bonus = 5
 	exposed_wound_bonus = 10
 	light_range = 1
 	light_color = LIGHT_COLOR_PURPLE
 	impact_effect_type = /obj/effect/temp_visual/impact_effect/purple_laser
-	///Which damage type do we deal as a secondary effect?
-	var/secondary_damage_type = BURN
-	///How much secondary damage do we deal?
-	var/secondary_damage = 15
-	///How much chance does it have to proc wounds?
-	var/secondary_wound_bonus = 5
-	///How much chance does it have to proc wounds on exposed targets?
-	var/secondary_exposed_wound_bonus = 10
-	///How much penetration does it have?
-	var/secondary_armour_penetration = 0
-	///Which armor protects against it?
-	var/secondary_armor_flag = ENERGY
+	///Brute damage for the pulse projectile
+	var/pulse_brute_damage = 10
 
-/obj/projectile/bullet/pulse/on_hit(atom/target, blocked = 0, pierce_hit)
+/obj/projectile/beam/laser/plasma_glob/pulse/phoenix
+	/// EXOBYTECHNOVA CHANGE: High-speed version of the plasma pulse projectile, slightly reduced damage
+	name = "phoenix pulse energy"
+	icon = 'modular_nova/modules/modular_weapons/icons/obj/company_and_or_faction_based/szot_dynamica/ammo.dmi'
+	icon_state = "plasma_pulse"
+	damage = 12
+	speed = 2
+	pulse_brute_damage = 8
+
+/obj/projectile/beam/laser/plasma_glob/pulse/on_hit(atom/target, blocked, pierce_hit)
 	. = ..()
-
-	// Calculate damage multiplier from the gun
-	var/proj_damage_mult = 1
-	if(fired_from && istype(fired_from, /obj/item/gun))
-		var/obj/item/gun/gun = fired_from
-		proj_damage_mult = gun.projectile_damage_multiplier
-
-	var/brute_damage = secondary_damage * proj_damage_mult
-
-	// Apply damage to living mobs with armor/limb checks
+	var/hit_limb_zone
 	if(isliving(target))
 		var/mob/living/victim = target
-		var/hit_limb_zone = victim.check_hit_limb_zone_name(def_zone)
-		var/armour_block = victim.run_armor_check(hit_limb_zone, secondary_armor_flag, armour_penetration = secondary_armour_penetration)
-		victim.apply_damage(brute_damage, secondary_damage_type, hit_limb_zone, blocked = armour_block, wound_bonus = secondary_wound_bonus, exposed_wound_bonus = secondary_exposed_wound_bonus, sharpness = SHARP_POINTY)
-	// Apply damage to all other atoms
-	else if(isatom(target))
-		var/atom/atom_target = target
-		if(atom_target.uses_integrity)
-			atom_target.take_damage(brute_damage, secondary_damage_type, secondary_armor_flag, secondary_armour_penetration)
+		hit_limb_zone = victim.check_hit_limb_zone_name(def_zone)
+		var/armour_block = victim.run_armor_check(hit_limb_zone, BULLET, armour_penetration = 20)
+
+		// Get the projectile damage multiplier from the gun that fired this projectile
+		var/proj_damage_mult = 1
+		if(fired_from && istype(fired_from, /obj/item/gun))
+			var/obj/item/gun/gun = fired_from
+			proj_damage_mult = gun.projectile_damage_multiplier
+
+		// Modify brute damage with the multiplier
+		var/brute_damage = pulse_brute_damage * proj_damage_mult
+
+		// Apply brute damage
+		victim.apply_damage(brute_damage, BRUTE, hit_limb_zone, blocked = armour_block, wound_bonus = 5, exposed_wound_bonus = 10, sharpness = SHARP_POINTY)

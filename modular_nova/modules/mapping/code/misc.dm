@@ -46,6 +46,7 @@
 	fragments -= gone
 
 /obj/item/claymore/cutlass/luna/crowbar_act(mob/living/user, obj/item/tool)
+	. = ..()
 	if(LAZYLEN(fragments))
 		to_chat(user, span_notice("You remove [src]'s array of addons."))
 		tool.play_tool_sound(src)
@@ -92,7 +93,7 @@
 	playsound(user, 'sound/items/weapons/resonator_blast.ogg', 90, TRUE)
 	sord_beam.fire()
 	user.apply_damage(25, STAMINA, BODY_ZONE_CHEST) // Spam these and pay the price of self-ownage
-	user.adjust_blood_volume(-10) // 560 is normal blood volume
+	user.blood_volume -= 10 // 560 is normal blood volume
 
 /// Upgrades ///
 

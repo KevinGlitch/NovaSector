@@ -18,7 +18,6 @@
 	block_chance = 0
 	armor_type = /datum/armor/claymore_bone
 	resistance_flags = FIRE_PROOF | LAVA_PROOF
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT * 2)
 
 /datum/armor/claymore_bone
 	fire = 100

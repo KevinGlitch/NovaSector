@@ -1,6 +1,6 @@
 // THIS IS A NOVA SECTOR UI FILE
 
-import { type Antagonist, Category } from '../base';
+import { Antagonist, Category } from '../base';
 
 const Marauder: Antagonist = {
   key: 'marauder',

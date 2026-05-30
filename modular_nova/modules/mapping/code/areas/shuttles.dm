@@ -38,7 +38,7 @@
 	name = "Trader Ship Cargo Bay"
 
 /area/shuttle/escape/no_light
-	area_flags = NONE
+	area_flags = UNIQUE_AREA
 
 /area/shuttle/arrival/no_light
 	static_lighting = FALSE
@@ -87,3 +87,7 @@
 
 /area/shuttle/solfed/fancy
 	name = "SFTS-1221 Transport Shuttle"
+
+/area/shuttle/phoenix
+	name = "Axion Pariah"
+	static_lighting = TRUE

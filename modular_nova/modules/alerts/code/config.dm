@@ -51,3 +51,11 @@
 
 /datum/config_entry/string/alert_federal
 	config_entry_value = "The Sol Federation has placed this galactic sector under its full command. All star systems within this sector are now under Military Law. Comply with all official SolFed instructions."
+
+
+
+/datum/config_entry/string/alert_black_upto
+	config_entry_value = "The station's primary power source has entered a critical state. As a result, the destruction of the station is imminent or already in progress. All crew are instructed to follow standard evacuation procedures and must obey all instructions given by heads of staff. Any violation of these orders can be punished by death. Crew cooperation is compulsory."
+
+/datum/config_entry/string/alert_black_downto
+	config_entry_value = "Destruction of the station is still imminent due to the station's primary power source being in a critical state. All crew are instructed to follow standard evacuation procedures and must obey all instructions given by heads of staff. Any violation of these orders can be punished by death. Crew cooperation is compulsory."

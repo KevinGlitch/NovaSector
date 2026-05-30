@@ -47,7 +47,6 @@
 	new /obj/item/clothing/under/rank/captain(src)
 	new /obj/item/clothing/under/rank/captain/skirt(src)
 	new /obj/item/clothing/under/rank/captain/parade(src)
-	new /obj/item/clothing/under/rank/captain/royal(src)
 	new /obj/item/clothing/suit/armor/vest/capcarapace(src)
 	new /obj/item/clothing/suit/armor/vest/capcarapace/captains_formal(src)
 	new /obj/item/clothing/suit/hooded/wintercoat/captain(src)
@@ -57,7 +56,6 @@
 	new /obj/item/clothing/head/costume/crown/fancy(src)
 	new /obj/item/clothing/head/hats/caphat(src)
 	new /obj/item/clothing/head/hats/caphat/parade(src)
-	new /obj/item/clothing/head/hats/caphat/bicorne(src)
 	new /obj/item/clothing/neck/cloak/cap(src)
 	new /obj/item/clothing/shoes/laceup(src)
 	new /obj/item/storage/backpack/captain(src)
@@ -76,7 +74,6 @@
 	new /obj/item/clothing/shoes/laceup(src)
 
 /obj/item/storage/bag/garment/hos/PopulateContents()
-	new /obj/item/clothing/under/rank/security/head_of_security(src)
 	new /obj/item/clothing/under/rank/security/head_of_security/skirt(src)
 	new /obj/item/clothing/under/rank/security/head_of_security/alt(src)
 	new /obj/item/clothing/under/rank/security/head_of_security/alt/skirt(src)
@@ -103,17 +100,16 @@
 	// new /obj/item/clothing/suit/armor/vest/warden(src) NOVA EDIT - Moved to /obj/item/storage/bag/garment/warden/blue
 	// new /obj/item/clothing/head/hats/warden(src) NOVA EDIT - Moved to /obj/item/storage/bag/garment/warden/blue
 	new /obj/item/clothing/head/hats/warden/drill(src)
-	new /obj/item/clothing/head/hats/warden/red(src)
 	// new /obj/item/clothing/head/beret/sec/navywarden(src) NOVA EDIT - Moved to /obj/item/storage/bag/garment/warden/blue
-	new /obj/item/clothing/suit/armor/vest/warden/alt(src)
-	new /obj/item/clothing/under/rank/security/warden/formal(src)
 	new /obj/item/clothing/under/rank/security/warden/skirt(src)
 	new /obj/item/clothing/gloves/kaza_ruk/sec(src)
 	new /obj/item/clothing/glasses/hud/security/sunglasses(src)
 	new /obj/item/clothing/mask/gas/sechailer(src)
 	// NOVA EDIT ADDITION START - EXTRA GOODIES
 	new /obj/item/clothing/under/rank/security/warden/nova(src)
+	new /obj/item/clothing/under/rank/security/warden/formal(src)
 	new /obj/item/clothing/under/rank/security/warden/nova/suit(src)
+	new /obj/item/clothing/suit/armor/vest/warden/alt(src)
 	// NOVA EDIT ADDITION END
 
 /obj/item/storage/bag/garment/research_director/PopulateContents()
@@ -159,7 +155,7 @@
 	new /obj/item/clothing/head/utility/hardhat/white(src)
 	new /obj/item/clothing/head/utility/hardhat/welding/white(src)
 	new /obj/item/clothing/neck/cloak/ce(src)
-	new /obj/item/clothing/shoes/workboots(src)
+	new /obj/item/clothing/shoes/sneakers/brown(src)
 
 /obj/item/storage/bag/garment/quartermaster/PopulateContents()
 	new /obj/item/clothing/under/rank/cargo/qm(src)

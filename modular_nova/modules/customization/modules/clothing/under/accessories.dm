@@ -239,33 +239,24 @@
 
 	. += span_nicegreen(examine_text)
 
-// Pride Pin Over-ride (item-version)
-/datum/atom_skin/pride_pin
-	new_icon = 'modular_nova/master_files/icons/obj/clothing/accessories.dmi'
-	allow_all_subtypes_in_loadout = TRUE // To allow for our icon override subtype to show up in the loadout menu.
-
-/datum/atom_skin/pride_pin/nova
-	abstract_type = /datum/atom_skin/pride_pin/nova
-	new_icon = 'modular_nova/master_files/icons/obj/clothing/accessories.dmi'
-	new_worn_icon = 'modular_nova/master_files/icons/mob/clothing/accessories.dmi'
-
-/datum/atom_skin/pride_pin/nova/man_loving_man
-	preview_name = "Man-Loving-Man / Gay Pride"
-	new_icon_state = "pride_mlm"
-
-/datum/atom_skin/pride_pin/nova/genderfluid
-	preview_name = "Genderfluid Pride"
-	new_icon_state = "pride_genderfluid"
-
-/datum/atom_skin/pride_pin/nova/genderqueer
-	preview_name = "Genderqueer Pride"
-	new_icon_state = "pride_genderqueer"
-
-/datum/atom_skin/pride_pin/nova/aromantic
-	preview_name = "Aromantic Pride"
-	new_icon_state = "pride_aromantic"
-
+// Pride Pin Over-ride
 /obj/item/clothing/accessory/pride
+	icon = 'modular_nova/master_files/icons/obj/clothing/accessories.dmi'
+	worn_icon = 'modular_nova/master_files/icons/mob/clothing/accessories.dmi'
+	unique_reskin = list(
+		"Rainbow Pride" = "pride",
+		"Bisexual Pride" = "pride_bi",
+		"Pansexual Pride" = "pride_pan",
+		"Asexual Pride" = "pride_ace",
+		"Non-binary Pride" = "pride_enby",
+		"Transgender Pride" = "pride_trans",
+		"Intersex Pride" = "pride_intersex",
+		"Lesbian Pride" = "pride_lesbian",
+		"Man-Loving-Man / Gay Pride" = "pride_mlm",
+		"Genderfluid Pride" = "pride_genderfluid",
+		"Genderqueer Pride" = "pride_genderqueer",
+		"Aromantic Pride" = "pride_aromantic",
+	)
 	attachment_slot = NONE
 
 // Accessory for Akula species, it makes them wet and happy! :)
@@ -310,12 +301,9 @@
 /mob/living/carbon/human/emp_act(severity) // necessary to still emp when worn as accessory
 	. = ..()
 	var/obj/item/clothing/under/worn_uniform = w_uniform
-	if(!worn_uniform)
-		return
-	var/obj/item/clothing/accessory/vaporizer/vaporizer = locate() in worn_uniform.attached_accessories
-	vaporizer?.on_emp()
-	var/obj/item/clothing/accessory/energy_shield/energy_shield = locate() in worn_uniform.attached_accessories
-	energy_shield?.emp_act(severity)
+	if(w_uniform)
+		var/obj/item/clothing/accessory/vaporizer/vaporizer = locate() in worn_uniform.attached_accessories
+		vaporizer?.on_emp()
 
 /obj/item/clothing/accessory/vaporizer/emp_act(severity)
 	. = ..()

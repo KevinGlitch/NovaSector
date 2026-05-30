@@ -47,7 +47,6 @@
 	)
 
 /datum/emote/mothroach
-	abstract_type = /datum/emote/mothroach
 	mob_type_allowed_typecache = /mob/living/basic/mothroach
 	mob_type_blacklist_typecache = list()
 

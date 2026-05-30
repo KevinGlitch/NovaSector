@@ -5,13 +5,13 @@
 	var/emote_key
 
 /datum/keybinding/emote/proc/link_to_emote(datum/emote/faketype)
-	hotkey_keys = list(UNBOUND_KEY)
-	classic_keys = list(UNBOUND_KEY)
+	hotkey_keys = list("Unbound")
+	classic_keys = list("Unbound")
 	emote_key = initial(faketype.key)
 	name = initial(faketype.key)
 	full_name = capitalize(initial(faketype.key))
 
-/datum/keybinding/emote/down(client/user, turf/target, mousepos_x, mousepos_y)
+/datum/keybinding/emote/down(client/user, turf/target)
 	. = ..()
 	if(.)
 		return

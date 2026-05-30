@@ -57,7 +57,6 @@
 	icon = 'modular_nova/master_files/icons/obj/clothing/gloves.dmi'
 	worn_icon = 'modular_nova/master_files/icons/mob/clothing/hands.dmi'
 	icon_state = "fightgloves_blue"
-	greyscale_colors = "#3F6E9E"
 
 //PEACEKEEPER WEBBING
 /obj/item/storage/belt/security/webbing/peacekeeper
@@ -65,9 +64,8 @@
 	worn_icon = 'modular_nova/master_files/icons/mob/clothing/belt.dmi'
 	icon_state = "blue_webbing"
 	worn_icon_state = "blue_webbing"
-
-/obj/item/storage/belt/security/webbing/peacekeeper/setup_reskins()
-	return
+	uses_advanced_reskins = FALSE
+	unique_reskin = null
 
 //BOOTS
 /obj/item/clothing/shoes/jackboots/peacekeeper

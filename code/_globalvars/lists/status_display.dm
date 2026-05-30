@@ -15,6 +15,7 @@ GLOBAL_LIST_INIT(status_display_approved_pictures, list(
 	"gammaalert", // NOVA EDIT ADDITION - Alert Levels
 	"epsilonalert", // NOVA EDIT ADDITION - Alert Levels
 	"federalalert", // NOVA EDIT ADDITION - Alert Levels
+	"blackalert", // EXONOVA ADDITION - Alert Levels
 	"redalert",
 	"deltaalert",
 	"radiation",

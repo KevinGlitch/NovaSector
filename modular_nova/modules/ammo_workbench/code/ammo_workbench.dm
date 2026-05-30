@@ -3,14 +3,11 @@
 	desc = "A machine specifically made for manufacturing ammunition. Fits anything ammo-related, from magazines and stripper clips to boxes."
 	icon = 'modular_nova/modules/ammo_workbench/icons/ammo_workbench.dmi'
 	icon_state = "ammobench"
-	base_icon_state = "ammobench"
 	density = TRUE
 	use_power = IDLE_POWER_USE
 	// active power usage taken from autolathes
 	active_power_usage = 0.025 * STANDARD_CELL_RATE
 	circuit = /obj/item/circuitboard/machine/ammo_workbench
-	/// The container to hold materials
-	var/datum/material_container/materials
 	var/busy = FALSE
 	var/error_message = ""
 	var/error_type = ""
@@ -59,17 +56,18 @@
 	)
 
 /obj/machinery/ammo_workbench/Initialize(mapload)
-	materials = new ( \
-		src, \
-		SSmaterials.flat_materials, \
+	AddComponent( \
+		/datum/component/material_container, \
+		SSmaterials.materials_by_category[MAT_CATEGORY_ITEM_MATERIAL], \
 		200000, \
 		MATCONTAINER_EXAMINE, \
 		allowed_items = /obj/item/stack, \
 	)
-	return ..()
+	. = ..()
 
 /obj/machinery/ammo_workbench/examine(mob/user)
 	. += ..()
+	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
 	if(in_range(user, src) || isobserver(user))
 		. += span_notice("The status display reads: Storing up to <b>[materials.max_amount]</b> material units.<br>\
 			Material consumption at <b>[creation_efficiency*100]%</b>.")
@@ -87,7 +85,7 @@
 		return
 	var/obj/item/ammo_casing/ammo_type = loaded_magazine.ammo_type
 	var/ammo_caliber = initial(ammo_type.caliber)
-	var/obj/item/ammo_casing/ammo_parent_type = ammo_type::parent_type
+	var/obj/item/ammo_casing/ammo_parent_type = type2parent(ammo_type)
 
 	if(ammo_caliber == initial(ammo_parent_type.caliber) && ammo_caliber != null)
 		ammo_type = ammo_parent_type
@@ -148,9 +146,11 @@
 	data["turboBoost"] = turbo_boost
 
 	data["materials"] = list()
-	if (materials)
-		for(var/mat, amount in materials.materials)
+	var/datum/component/material_container/mat_container = GetComponent(/datum/component/material_container)
+	if (mat_container)
+		for(var/mat in mat_container.materials)
 			var/datum/material/material = mat
+			var/amount = mat_container.materials[material]
 			var/sheet_amount = amount / SHEET_MATERIAL_AMOUNT
 			var/ref = REF(material)
 			data["materials"] += list(list("name" = material.name, "id" = ref, "amount" = sheet_amount))
@@ -203,11 +203,13 @@
 
 		if("Release")
 
-			if(isnull(materials))
+			var/datum/component/material_container/mat_container = GetComponent(/datum/component/material_container)
+
+			if(!mat_container)
 				return
 			var/datum/material/mat = locate(params["id"])
 
-			var/amount = materials.materials[mat]
+			var/amount = mat_container.materials[mat]
 			if(!amount)
 				return
 
@@ -222,7 +224,7 @@
 
 			var/sheets_to_remove = round(min(desired,50,stored_amount))
 
-			materials.retrieve_stack(sheets_to_remove, mat, loc)
+			mat_container.retrieve_stack(sheets_to_remove, mat, loc)
 			. = TRUE
 
 		if("ReadDisk")
@@ -312,6 +314,8 @@
 
 	if(!loaded_magazine)
 		return
+
+	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
 
 	var/obj/item/ammo_casing/new_casing = new casing_type
 
@@ -422,12 +426,9 @@
 	for(var/datum/stock_part/matter_bin/new_matter_bin in component_parts)
 		mat_capacity += new_matter_bin.tier * (40 * SHEET_MATERIAL_AMOUNT)
 
+	var/datum/component/material_container/materials = GetComponent(/datum/component/material_container)
 	materials.max_amount = mat_capacity
 	update_ammotypes()
-
-/obj/machinery/ammo_workbench/update_icon_state()
-	. = ..()
-	icon_state = panel_open ?"[base_icon_state]_t" : base_icon_state
 
 /obj/machinery/ammo_workbench/update_overlays()
 	. = ..()
@@ -441,19 +442,18 @@
 	if(loaded_magazine)
 		loaded_magazine.forceMove(loc)
 		loaded_magazine = null
-	QDEL_NULL(materials)
+
 	return ..()
 
-/obj/machinery/ammo_workbench/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
-
-/obj/machinery/ammo_workbench/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
-
-/obj/machinery/ammo_workbench/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(insert_item(tool, user))
-		return ITEM_INTERACT_SUCCESS
-	return NONE
+/obj/machinery/ammo_workbench/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
+	if(default_deconstruction_screwdriver(user, "[initial(icon_state)]_t", initial(icon_state), attacking_item))
+		return
+	if(default_deconstruction_crowbar(attacking_item))
+		return
+	if(Insert_Item(attacking_item, user))
+		return TRUE
+	else
+		return ..()
 
 /obj/machinery/ammo_workbench/attack_hand_secondary(mob/user, list/modifiers)
 	. = ..()
@@ -473,7 +473,7 @@
 /obj/machinery/ammo_workbench/attack_ai_secondary(mob/user, list/modifiers)
 	return attack_hand_secondary(user, modifiers)
 
-/obj/machinery/ammo_workbench/proc/insert_item(obj/item/inserted, mob/living/user)
+/obj/machinery/ammo_workbench/proc/Insert_Item(obj/item/inserted, mob/living/user)
 	if(user.combat_mode)
 		return FALSE
 	if(!is_insertion_ready(user, inserted))

@@ -2,6 +2,10 @@
 	. = ..()
 	if(!.)
 		return
+	// NOVA EDIT ADDITION START - No AIs in MODsuits
+	if(!allow_ai)
+		return
+	// NOVA EDIT END
 	if(!open) //mod must be open
 		balloon_alert(user, "panel closed!")
 		return

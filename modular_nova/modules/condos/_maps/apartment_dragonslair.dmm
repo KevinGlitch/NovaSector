@@ -207,7 +207,10 @@
 	},
 /obj/structure/barricade/wooden,
 /obj/structure/railing/wooden_fencing,
-/turf/open/floor/fakebasalt,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "cF" = (
 /obj/structure/millstone,
@@ -657,7 +660,10 @@
 	dir = 4;
 	pixel_x = -1
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "iW" = (
 /obj/effect/turf_decal/trimline/dark/corner{
@@ -858,7 +864,10 @@
 	dir = 1;
 	pixel_y = -2
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "lC" = (
 /obj/structure/stone_tile/block/cracked,
@@ -1017,6 +1026,11 @@
 	pixel_x = -14;
 	pixel_y = -12;
 	color = "#8f2727"
+	},
+/obj/item/clothing/head/costume/maidheadband/syndicate{
+	pixel_x = -27;
+	pixel_y = -16;
+	desc = "Nixie would never wear this."
 	},
 /turf/open/floor/mineral/gold,
 /area/misc/condo)
@@ -1188,7 +1202,10 @@
 	dir = 4;
 	pixel_x = -2
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "qf" = (
 /obj/structure/fake_stairs/directional/south{
@@ -1387,8 +1404,12 @@
 	alpha = 125;
 	pixel_y = -16
 	},
-/obj/structure/stone_tile/slab,
-/turf/open/floor/fakebasalt,
+/turf/closed/indestructible/hoteldoor{
+	icon = 'modular_nova/modules/aesthetics/floors/icons/floors.dmi';
+	icon_state = "black";
+	name = "Cave Entrance";
+	desc = "You came through this! Click this to exit."
+	},
 /area/misc/condo)
 "un" = (
 /obj/structure/stone_tile/slab/cracked,
@@ -1597,8 +1618,12 @@
 	alpha = 125;
 	pixel_y = -16
 	},
-/obj/structure/stone_tile/slab,
-/turf/open/floor/fakebasalt,
+/turf/closed/indestructible/hoteldoor{
+	icon = 'modular_nova/modules/aesthetics/floors/icons/floors.dmi';
+	icon_state = "black";
+	name = "Cave Entrance";
+	desc = "You came through this! Click this to exit."
+	},
 /area/misc/condo)
 "xq" = (
 /obj/structure/stone_tile/block,
@@ -1674,7 +1699,10 @@
 	pixel_x = 5;
 	pixel_y = 8
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "yt" = (
 /obj/structure/stone_tile/surrounding_tile/burnt{
@@ -1705,7 +1733,10 @@
 	uses_integrity = 0;
 	density = 1
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "yy" = (
 /obj/structure/chair/pew/right{
@@ -1828,7 +1859,10 @@
 	uses_integrity = 0;
 	density = 1
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "zu" = (
 /obj/effect/turf_decal/weather/dirt{
@@ -1959,7 +1993,10 @@
 	pixel_x = -2;
 	pixel_y = -2
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "Bx" = (
 /obj/structure/stone_tile/slab,
@@ -2734,7 +2771,10 @@
 	uses_integrity = 0;
 	density = 1
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "Nf" = (
 /obj/item/fancy_pillow{
@@ -2826,7 +2866,10 @@
 	uses_integrity = 0;
 	density = 1
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "Oo" = (
 /obj/structure/stone_tile/block,
@@ -3184,7 +3227,10 @@
 	dir = 1;
 	pixel_y = 1
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "Rb" = (
 /obj/effect/turf_decal/weather/dirt{
@@ -3844,7 +3890,10 @@
 	dir = 8;
 	pixel_x = 1
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "Wd" = (
 /obj/structure/ore_vein/gold{
@@ -4040,7 +4089,10 @@
 /obj/structure/stone_tile/block/burnt{
 	dir = 4
 	},
-/turf/open/lava/fake,
+/turf/open/floor/fakebasalt{
+	icon = 'icons/turf/floors/lava.dmi';
+	icon_state = "lava-255"
+	},
 /area/misc/condo)
 "Yf" = (
 /obj/structure/broken_flooring/pile{

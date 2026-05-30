@@ -44,6 +44,15 @@
 		/obj/item/clothing/mask/breath,
 	)
 
+/*
+*	ENGINEERING STUFF
+*/
+
+/datum/supply_pack/goody/improvedrcd
+	name = "Improved RCD"
+	desc = "An upgraded RCD featuring superior material storage. Comes with complimentary frames and circuitry upgrades to boot!"
+	cost = PAYCHECK_CREW * 38
+	contains = list(/obj/item/construction/rcd/improved)
 
 /*
 *	MISC
@@ -69,13 +78,13 @@
 	contains = list(/obj/item/paper_bin)
 
 /datum/supply_pack/goody/xenoarch_intern
-	name = "Xenoarchaeology Intern Set"
-	desc = "A toolbelt with all the tools required to start dabbling in the fine art of scavenging xenoarchaeological finds, \
-			and a magnifying glass for actually analyzing your finds (Not guaranteed to actually yield any results). \
+	name = "Xenoarchaeology Intern Skillchip Set"
+	desc = "A skillchip with all the information required to start dabbling in the fine art of interpreting xenoarchaeological finds, \
+			and a magnifying glass for actually analyzing your finds. \
 			Does not come with actual excavation tools, nor the ability to actually make anyone pay attention to one's \
 			attempts at intellectual posturing, nor any actual job experience as a curator."
-	cost = PAYCHECK_CREW * 15
-	contains = list(/obj/item/storage/belt/utility/xenoarch/full,
+	cost = PAYCHECK_CREW * 15 // 750 credits but you also theoretically print a lot of money if you consistently get/scan relics
+	contains = list(/obj/item/skillchip/xenoarch_magnifier,
 				/obj/item/glassblowing/magnifying_glass,
 			)
 
@@ -84,7 +93,19 @@
 	desc = "A high-grade sharpening stone made of specialized alloys, meant to sharpen razor-claws. Unfortunately, this particular one has by far seen better days."
 	cost = CARGO_CRATE_VALUE * 4 //800 credits
 	contains = list(/obj/item/scratching_stone)
-	order_flags = ORDER_CONTRABAND
+	contraband = TRUE
+
+/datum/supply_pack/goody/c38_super_kit
+	name = "NT/E \"Laevateinn\" Revolver Conversion Kit"
+	desc = "A set of parts for converting a .38 revolver into Nanotrasen's latest foray into magnetically-accelerated sidearms."
+	cost = PAYCHECK_CREW * 6 // 300 cr at time of writing, 800 cr total
+	contains = list(/obj/item/crafting_conversion_kit/c38_super)
+
+/datum/supply_pack/goody/sol_riot_super_kit
+	name = "Archon Systems \"KOLBEN/NACHTREIHER\" Shotgun Conversion Kit"
+	desc = "A set of parts for converting an M64 shotgun into one of Archon Combat Systems's forays into improving the shotgun's end-user experience."
+	cost = PAYCHECK_COMMAND * 6 // 600 cr at time of writing, 1200 cr total
+	contains = list(/obj/item/crafting_conversion_kit/riot_sol_super)
 
 /*
 *	CARPET PACKS

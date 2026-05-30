@@ -25,9 +25,8 @@
 	return ..()
 
 /datum/action/innate/constrict/Trigger(trigger_flags)
-	. = ..()
-	if(!.)
-		return
+	if(!..())
+		return FALSE
 
 	if (trigger_flags & TRIGGER_SECONDARY_ACTION)
 		unset_ranged_ability(owner)
@@ -44,7 +43,8 @@
 			qdel(tail)
 			return TRUE
 
-		return FALSE
+		create_tail()
+		return TRUE
 
 	var/mob/living/living_target = clicked_on
 
@@ -214,9 +214,8 @@
 /obj/structure/serpentine_tail/proc/sync_sprite()
 	//coloring
 	var/list/finished_list = list()
-	var/datum/mutant_bodypart/taur_body = owner.dna.mutant_bodyparts[FEATURE_TAUR]
-	var/list/color_list = taur_body.get_colors() //identify color
-	var/datum/sprite_accessory/sprite_type = SSaccessories.sprite_accessories[FEATURE_TAUR][taur_body.name] //identify type
+	var/list/color_list = owner.dna.species.mutant_bodyparts[FEATURE_TAUR][MUTANT_INDEX_COLOR_LIST] //identify color
+	var/datum/sprite_accessory/sprite_type = SSaccessories.sprite_accessories[FEATURE_TAUR][owner.dna.species.mutant_bodyparts[FEATURE_TAUR][MUTANT_INDEX_NAME]] //identify type
 
 	switch(sprite_type.color_src)
 		if(USE_MATRIXED_COLORS)

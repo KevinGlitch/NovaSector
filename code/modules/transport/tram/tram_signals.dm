@@ -103,7 +103,8 @@
 
 /obj/machinery/transport/crossing_signal/Initialize(mapload)
 	. = ..()
-	RegisterSignal(SStransport, COMSIG_TRANSPORT_UPDATED, PROC_REF(wake_up))
+	RegisterSignal(SStransport, COMSIG_TRANSPORT_ACTIVE, PROC_REF(wake_up))
+	RegisterSignal(SStransport, COMSIG_COMMS_STATUS, PROC_REF(comms_change))
 	SStransport.crossing_signals += src
 	register_context()
 
@@ -117,11 +118,15 @@
 	SStransport.crossing_signals -= src
 	. = ..()
 
-/obj/machinery/transport/crossing_signal/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+/obj/machinery/transport/crossing_signal/attackby(obj/item/weapon, mob/living/user, list/modifiers, list/attack_modifiers)
+	if(!user.combat_mode)
+		if(default_deconstruction_screwdriver(user, icon_state, icon_state, weapon))
+			return
 
-/obj/machinery/transport/crossing_signal/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+		if(default_deconstruction_crowbar(weapon))
+			return
+
+	return ..()
 
 /obj/machinery/transport/crossing_signal/add_context(atom/source, list/context, obj/item/held_item, mob/user)
 	. = ..()
@@ -270,11 +275,13 @@
 	if(updated_controller.specific_transport_id != configured_transport_id)
 		return
 
-	if(new_status)
-		if(operating_status == TRANSPORT_REMOTE_FAULT)
-			operating_status = TRANSPORT_SYSTEM_NORMAL
-	else if(operating_status == TRANSPORT_SYSTEM_NORMAL)
-		operating_status = TRANSPORT_REMOTE_FAULT
+	switch(new_status)
+		if(TRUE)
+			if(operating_status == TRANSPORT_REMOTE_FAULT)
+				operating_status = TRANSPORT_SYSTEM_NORMAL
+		if(FALSE)
+			if(operating_status == TRANSPORT_SYSTEM_NORMAL)
+				operating_status = TRANSPORT_REMOTE_FAULT
 
 /**
  * Update processing state.
@@ -348,7 +355,7 @@
 		return PROCESS_KILL
 
 	// Finally the interesting part where it's ACTUALLY approaching
-	if(approach_distance <= red_distance_threshold && operating_status == TRANSPORT_SYSTEM_NORMAL)
+	if(approach_distance <= red_distance_threshold)
 		set_signal_state(XING_STATE_RED)
 		return
 	if(approach_distance <= amber_distance_threshold && operating_status == TRANSPORT_SYSTEM_NORMAL)
@@ -483,7 +490,7 @@
 /obj/machinery/transport/guideway_sensor/post_machine_initialize()
 	. = ..()
 	pair_sensor()
-	RegisterSignal(SStransport, COMSIG_TRANSPORT_UPDATED, PROC_REF(wake_up))
+	RegisterSignal(SStransport, COMSIG_TRANSPORT_ACTIVE, PROC_REF(wake_up))
 
 /obj/machinery/transport/guideway_sensor/add_context(atom/source, list/context, obj/item/held_item, mob/user)
 	. = ..()
@@ -512,11 +519,15 @@
 			. += span_notice("The red [EXAMINE_HINT("local fault")] light is on.")
 			. += span_notice("The status display reads: Repair required.")
 
-/obj/machinery/transport/guideway_sensor/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+/obj/machinery/transport/guideway_sensor/attackby(obj/item/weapon, mob/living/user, list/modifiers, list/attack_modifiers)
+	if (!user.combat_mode)
+		if(default_deconstruction_screwdriver(user, icon_state, icon_state, weapon))
+			return
 
-/obj/machinery/transport/guideway_sensor/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+		if(default_deconstruction_crowbar(weapon))
+			return
+
+	return ..()
 
 /obj/machinery/transport/guideway_sensor/proc/pair_sensor()
 	set_machine_stat(machine_stat | MAINT)

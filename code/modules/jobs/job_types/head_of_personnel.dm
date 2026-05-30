@@ -1,9 +1,10 @@
 /datum/job/head_of_personnel
 	title = JOB_HEAD_OF_PERSONNEL
 	description = "Alter access on ID cards, manage the service department, \
-		protect Ian, run the station when the Captain dies."
+		protect Ian, run the station when the captain dies."
 	auto_deadmin_role_flags = DEADMIN_POSITION_HEAD
-	head_announce = RADIO_CHANNEL_SERVICE
+	department_head = list(JOB_CAPTAIN)
+	head_announce = list(RADIO_CHANNEL_SERVICE)
 	faction = FACTION_STATION
 	total_positions = 1
 	spawn_positions = 1
@@ -113,7 +114,7 @@
 /datum/outfit/job/hop/pre_equip(mob/living/carbon/human/H)
 	..()
 	if(check_holidays(IAN_HOLIDAY))
-		undershirt = /datum/sprite_accessory/clothing/undershirt/ian
+		undershirt = /datum/sprite_accessory/undershirt/ian
 
 //only pet worth reviving
 /datum/job/head_of_personnel/get_mail_goodies(mob/recipient)

@@ -65,7 +65,7 @@
 	start = add_input_port("Start", PORT_TYPE_SIGNAL)
 	stop = add_input_port("Stop", PORT_TYPE_SIGNAL)
 	if(camera_range_settable)
-		camera_range = add_input_port("Far Range", PORT_TYPE_BOOLEAN, default = FALSE)
+		camera_range = add_input_port("Camera Range", PORT_TYPE_NUMBER, default = 0)
 	network = add_input_port("Network", PORT_TYPE_STRING, default = "ss13")
 
 	if(camera_range_settable)
@@ -189,9 +189,7 @@
 /obj/item/circuit_component/remotecam/proc/update_camera_location(atom/old_loc, movement_dir, forced, list/old_locs, momentum_change)
 	SIGNAL_HANDLER
 	if(current_camera_state && current_cameranet_state)
-		if(!shell_camera?.can_use())
-			return
-		SScameras.camera_moved(shell_camera, get_turf(old_loc), get_turf(shell_camera), 0.5 SECONDS)
+		SScameras.update_portable_camera(shell_camera, 0.5 SECONDS)
 
 /**
  * Add camera from global cameranet

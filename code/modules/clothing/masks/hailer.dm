@@ -52,10 +52,9 @@ GLOBAL_LIST_INIT(hailer_phrases, list(
 	flags_inv = HIDEFACIALHAIR | HIDEFACE | HIDESNOUT
 	w_class = WEIGHT_CLASS_SMALL
 	visor_flags = BLOCK_GAS_SMOKE_EFFECT | MASKINTERNALS
-	visor_vars_to_toggle = VISOR_TINT
 	visor_flags_inv = HIDEFACIALHAIR | HIDEFACE | HIDESNOUT
-	flags_cover = MASKCOVERSMOUTH | PEPPERPROOF
-	visor_flags_cover = MASKCOVERSMOUTH | PEPPERPROOF
+	flags_cover = MASKCOVERSMOUTH
+	visor_flags_cover = MASKCOVERSMOUTH
 	tint = 0
 	fishing_modifier = 0
 	unique_death = 'sound/items/sec_hailer/sec_death.ogg'
@@ -135,6 +134,7 @@ GLOBAL_LIST_INIT(hailer_phrases, list(
 	return FALSE
 
 /obj/item/clothing/mask/gas/sechailer/verb/halt()
+	set category = "Object"
 	set name = "HALT"
 	set src in usr
 	if(!isliving(usr) || !can_use(usr) || !COOLDOWN_FINISHED(src, hailer_cooldown))

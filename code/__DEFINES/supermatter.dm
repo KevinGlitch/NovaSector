@@ -58,10 +58,10 @@
 #define VORTEX_ANOMALY "vortex_anomaly"
 #define DIMENSIONAL_ANOMALY "dimensional_anomaly"
 
-/// How long it takes for the supermatter to delaminate after hitting 0 integrity
-#define SUPERMATTER_COUNTDOWN_TIME (15 SECONDS)
-/// How long it takes for the supermatter to delaminate after hitting 0 integrity if a sliver has been removed
-#define SUPERMATTER_SLIVER_REMOVED_COUNTDOWN_TIME (5 SECONDS)
+/// How long it takes for the supermatter to delaminate after hitting 0 integrity, old value was 15 sec
+#define SUPERMATTER_COUNTDOWN_TIME (2 MINUTES)
+/// How long it takes for the supermatter to delaminate after hitting 0 integrity if a sliver has been removed, old value was 5 sec
+#define SUPERMATTER_SLIVER_REMOVED_COUNTDOWN_TIME (40 SECONDS)
 
 ///to prevent accent sounds from layering
 #define SUPERMATTER_ACCENT_SOUND_MIN_COOLDOWN (2 SECONDS)

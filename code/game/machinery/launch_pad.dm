@@ -5,12 +5,13 @@
 	desc = "A bluespace pad able to thrust matter through bluespace, teleporting it to or from nearby locations."
 	icon = 'icons/obj/machines/telepad.dmi'
 	icon_state = "lpad-idle"
-	base_icon_state = "lpad"
 	active_power_usage = BASE_MACHINE_ACTIVE_CONSUMPTION * 2.5
 	hud_possible = list(DIAG_LAUNCHPAD_HUD)
 	interaction_flags_mouse_drop = NEED_DEXTERITY | NEED_HANDS
 	circuit = /obj/item/circuitboard/machine/launchpad
 
+	/// The beam icon
+	var/icon_teleport = "lpad-beam"
 	/// To prevent briefcase pad deconstruction and such
 	var/stationary = TRUE
 	/// What to name the launchpad in the console
@@ -74,29 +75,16 @@
 	balloon_alert(user, "saved to buffer")
 	return ITEM_INTERACT_SUCCESS
 
-/obj/machinery/launchpad/screwdriver_act(mob/living/user, obj/item/tool)
-	return stationary ? default_deconstruction_screwdriver(user, tool) : NONE
+/obj/machinery/launchpad/attackby(obj/item/weapon, mob/user, list/modifiers, list/attack_modifiers)
+	if(!stationary)
+		return ..()
 
-/obj/machinery/launchpad/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+	if(default_deconstruction_screwdriver(user, "lpad-idle-open", "lpad-idle", weapon))
+		update_indicator()
+		return
 
-/obj/machinery/launchpad/can_crowbar_deconstruct()
-	return ..() && stationary
-
-/obj/machinery/launchpad/on_set_is_operational(old_value)
-	update_indicator()
-
-/obj/machinery/launchpad/on_set_panel_open(old_value)
-	update_indicator()
-
-/obj/machinery/launchpad/update_icon_state()
-	. = ..()
-	if(machine_stat & (BROKEN|NOPOWER))
-		icon_state = "[base_icon_state]-off"
-	else if(state_open)
-		icon_state = "[base_icon_state]-open"
-	else
-		icon_state = "[base_icon_state]-idle"
+	if(default_deconstruction_crowbar(weapon))
+		return
 
 /obj/machinery/launchpad/attack_ghost(mob/dead/observer/ghost)
 	. = ..()
@@ -116,7 +104,9 @@
 	update_indicator()
 
 	if(stationary)
-		AddComponent(/datum/component/usb_port, typecacheof(list(/obj/item/circuit_component/bluespace_launchpad), only_root_path = TRUE))
+		AddComponent(/datum/component/usb_port, list(
+			/obj/item/circuit_component/bluespace_launchpad,
+		))
 
 /// Whether this launchpad can send or receive.
 /obj/machinery/launchpad/proc/is_available()
@@ -182,7 +172,7 @@
 	var/turf/target = locate(target_x, target_y, z)
 	var/area/A = get_area(target)
 
-	flick("[base_icon_state]-beam", src)
+	flick(icon_teleport, src)
 
 	//Change the indicator's icon to show that we're teleporting
 	if(sending)
@@ -196,7 +186,9 @@
 
 	if(!hidden)
 		playsound(target, 'sound/items/weapons/flash.ogg', 25, TRUE)
-		do_sparks(5, TRUE, target, spark_type = /datum/effect_system/basic/spark_spread/quantum)
+		var/datum/effect_system/spark_spread/quantum/spark_system = new /datum/effect_system/spark_spread/quantum()
+		spark_system.set_up(5, TRUE, target)
+		spark_system.start()
 
 	sleep(teleport_speed)
 
@@ -278,7 +270,7 @@
 	name = "briefcase launchpad"
 	desc = "A portable bluespace pad able to thrust matter through bluespace, teleporting it to or from nearby locations. Controlled via remote."
 	icon_state = "blpad-idle"
-	base_icon_state = "blpad"
+	icon_teleport = "blpad-beam"
 	anchored = FALSE
 	use_power = NO_POWER_USE
 	active_power_usage = 0
@@ -404,18 +396,11 @@
 		if("move_pos")
 			var/plus_x = text2num(params["x"])
 			var/plus_y = text2num(params["y"])
-			if(plus_x || plus_y)
-				// sanitizes our ranges for us
-				our_pad.set_offset(
-					x = our_pad.x_offset + plus_x,
-					y = our_pad.y_offset + plus_y,
-				)
-			else
-				// for resetting
-				our_pad.set_offset(
-					x = 0,
-					y = 0,
-				)
+			// sanitizes our ranges for us
+			our_pad.set_offset(
+				x = our_pad.x_offset + plus_x,
+				y = our_pad.y_offset + plus_y
+			)
 			. = TRUE
 		if("rename")
 			. = TRUE

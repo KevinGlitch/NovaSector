@@ -40,7 +40,6 @@
 	supports_variations_flags = NONE
 	armor_type = /datum/armor/ash_headdress
 	resistance_flags = FIRE_PROOF | LAVA_PROOF
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT)
 
 /datum/crafting_recipe/ash_recipe/ash_headdress
 	name = "Ash Headdress"
@@ -56,7 +55,6 @@
 /obj/item/clothing/head/ash_headdress/winged
 	name = "winged ash headdress"
 	icon_state = "wing_headdress"
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT)
 
 /datum/crafting_recipe/ash_recipe/ash_headdress/winged
 	name = "Winged Ash Headdress"
@@ -71,7 +69,6 @@
 	icon_state = "robes"
 	armor_type = /datum/armor/clothing_under/ash_robes
 	resistance_flags = FIRE_PROOF | LAVA_PROOF
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT)
 
 /datum/crafting_recipe/ash_recipe/ash_robes
 	name = "Ash Robes"
@@ -92,7 +89,6 @@
 	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION_NO_NEW_ICON
 	armor_type = /datum/armor/ash_plates
 	resistance_flags = FIRE_PROOF | LAVA_PROOF
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT)
 
 /datum/crafting_recipe/ash_recipe/ash_plates
 	name = "Ash Combat Plates"
@@ -107,7 +103,6 @@
 /obj/item/clothing/suit/ash_plates/decorated
 	name = "decorated ash combat plates"
 	icon_state = "dec_breastplate"
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT)
 
 /datum/crafting_recipe/ash_recipe/ash_plates/decorated
 	name = "Decorated Ash Combat Plates"
@@ -126,7 +121,6 @@
 	armor_type = /datum/armor/bone_greaves
 	body_parts_covered = FEET|LEGS
 	resistance_flags = FIRE_PROOF | LAVA_PROOF
-	custom_materials = list(/datum/material/bone = SHEET_MATERIAL_AMOUNT * 2)
 
 /datum/crafting_recipe/ash_recipe/bone_greaves
 	name = "Bone Greaves"

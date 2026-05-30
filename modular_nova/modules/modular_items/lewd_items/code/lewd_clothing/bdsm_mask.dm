@@ -153,9 +153,6 @@
 
 // Trigger thing for manual breath
 /datum/action/item_action/toggle_breathcontrol/Trigger(trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	var/obj/item/clothing/mask/gas/bdsm_mask/mask = target
 	if(istype(mask))
 		mask.check(owner)
@@ -165,9 +162,6 @@
 	desc = "Toggles whether or not the wearer is able to speak."
 
 /datum/action/item_action/toggle_gag/Trigger(trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	var/obj/item/clothing/mask/gas/bdsm_mask/mask = target
 	if(istype(mask))
 		mask.check_gag(owner)
@@ -178,12 +172,9 @@
 
 // Open the valve when press the button
 /datum/action/item_action/mask_inhale/Trigger(trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	var/obj/item/clothing/mask/gas/bdsm_mask/mask = target
 	if(!istype(mask))
-		return FALSE
+		return ..()
 
 	if(mask.breath_status)
 		return FALSE
@@ -284,7 +275,7 @@
 	if(time_to_choke_left <= 0)
 		if(tt <= 0)
 			if(affected_carbon.stat == CONSCIOUS)
-				affected_carbon.adjust_oxy_loss(rand(4, 8)) // Oxy dmg
+				affected_carbon.adjustOxyLoss(rand(4, 8)) // Oxy dmg
 				affected_carbon.try_lewd_autoemote(pick("gasp", "choke", "moan"))
 				tt = time
 			else
@@ -300,22 +291,13 @@
 */
 
 // Here goes code for lewd gasmask filter
-/datum/atom_skin/gasmask_filter
-	abstract_type = /datum/atom_skin/gasmask_filter
-
-/datum/atom_skin/gasmask_filter/pink
-	preview_name = "pink"
-	new_icon_state = "filter_pink"
-
-/datum/atom_skin/gasmask_filter/teal
-	preview_name = "teal"
-	new_icon_state = "filter_teal"
-
 /obj/item/reagent_containers/cup/lewd_filter
 	name = "gasmask filter"
 	desc = "A strange looking air filter. It may not be a good idea to breathe this in..."
 	icon = 'modular_nova/modules/modular_items/lewd_items/icons/obj/lewd_items/lewd_items.dmi'
 	icon_state = "filter_pink"
+	unique_reskin = list("pink" = "filter_pink",
+						"teal" = "filter_teal")
 	w_class = WEIGHT_CLASS_SMALL
 	obj_flags_nova = ERP_ITEM
 	custom_materials = list(
@@ -327,9 +309,6 @@
 	list_reagents = list(/datum/reagent/drug/aphrodisiac/crocin = 50)
 	amount_per_transfer_from_this = 1
 	interaction_flags_click = NEED_DEXTERITY
-
-/obj/item/reagent_containers/cup/lewd_filter/setup_reskins()
-	AddComponent(/datum/component/reskinable_item, /datum/atom_skin/gasmask_filter)
 
 // Standard initialize code for filter
 /obj/item/reagent_containers/cup/lewd_filter/Initialize(mapload)

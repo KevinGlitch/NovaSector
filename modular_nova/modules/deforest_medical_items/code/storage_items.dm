@@ -154,10 +154,63 @@
 		/obj/item/stack/medical/ointment = 1,
 		/obj/item/stack/medical/suture = 1,
 		/obj/item/stack/medical/suture/coagulant = 1,
-		/obj/item/stack/medical/wrap/gauze/sterilized = 1,
+		/obj/item/stack/medical/gauze/sterilized = 1,
 		/obj/item/storage/pill_bottle/painkiller = 1,
 	)
 	generate_items_inside(items_inside,src)
+
+// EXOBYTECHNOVA UPD: Phoenix Collective medkits, based off the Frontier medkits but better.
+// This is literally just a texture change if you don't use the pre-stocked versions.
+/obj/item/storage/medkit/frontier/phoenix
+	name = "phoenix collective standard medical kit"
+	desc = "A roll-top waterproof medkit, intended for usage by Phoenix Collective imperials. Its polysilicate fabrics are woven in a way that makes it resilient to \
+		the environment of unexplored Frontier worlds, while still preserving a lightweight easy-to-carry profile. It has a clip for hooking onto your belt."
+	icon_state = "phoenix"
+
+/obj/item/storage/medkit/frontier/phoenix/stocked
+
+/obj/item/storage/medkit/frontier/phoenix/stocked/PopulateContents()
+	var/static/items_inside = list(
+		/obj/item/stack/medical/suture/bloody = 2,
+		/obj/item/stack/medical/mesh/advanced = 2,
+		/obj/item/reagent_containers/hypospray/combat/nanites = 1,
+		/obj/item/reagent_containers/hypospray/medipen/deforest/calopine = 1,
+		/obj/item/stack/medical/gauze/twelve = 1,
+	)
+	generate_items_inside(items_inside,src)
+
+/obj/item/storage/medkit/frontier/phoenix/toxin
+	name = "phoenix collective toxin treatment kit"
+	desc = "A waterproof toxin treatment kit, intended for usage by Phoenix Collective imperials. While toxins are notoriously difficult to treat, the Phoenix Collective \
+		has done their best to make the materials needed to treat it as readily available as possible. It has a clip for hooking onto your belt."
+	icon_state = "phoenix_tox"
+
+/obj/item/storage/medkit/frontier/phoenix/toxin/stocked
+
+/obj/item/storage/medkit/frontier/phoenix/toxin/stocked/PopulateContents()
+	var/static/items_inside = list(
+		/obj/item/reagent_containers/hypospray/medipen/penacid = 3,
+		/obj/item/reagent_containers/syringe/syriniver = 2,
+		/obj/item/reagent_containers/hypospray/medipen/deforest/meridine = 2,
+	)
+	generate_items_inside(items_inside,src)
+
+/obj/item/storage/medkit/frontier/phoenix/oxygen
+	name = "phoenix collective oxygen treatment kit"
+	desc = "A waterproof oxygen deprivation treatment kit, intended for usage by Phoenix Collective imperials. Although resuscitation methods such as CPR exist, sometimes \
+		you don't have time in hostile environments; hence, this package existing. It has a clip for hooking onto your belt."
+	icon_state = "phoenix_oxy"
+
+/obj/item/storage/medkit/frontier/phoenix/oxygen/stocked
+
+/obj/item/storage/medkit/frontier/phoenix/oxygen/stocked/PopulateContents()
+	var/static/items_inside = list(
+		/obj/item/reagent_containers/hypospray/medipen/salbutamol = 4,
+		/obj/item/reagent_containers/hypospray/medipen = 2,
+		/obj/item/storage/pill_bottle/iron = 1,
+	)
+	generate_items_inside(items_inside,src)
+// EXOBYTECHNOVA UPD END
 
 // Pre-packed combat surgeon medkit, with items for fixing more specific injuries and wounds
 /obj/item/storage/medkit/combat_surgeon
@@ -187,7 +240,7 @@
 		/obj/item/cautery = 1,
 		/obj/item/stack/medical/wound_recovery = 1,
 		/obj/item/stack/medical/wound_recovery/rapid_coagulant = 1,
-		/obj/item/stack/medical/wrap/gauze/sterilized = 1,
+		/obj/item/stack/medical/gauze/sterilized = 1,
 		/obj/item/healthanalyzer/simple = 1,
 	)
 	generate_items_inside(items_inside,src)
@@ -229,8 +282,8 @@
 		/obj/item/stack/medical/suture/coagulant = 1,
 		/obj/item/stack/medical/suture/bloody = 2,
 		/obj/item/stack/medical/mesh = 2,
-		/obj/item/stack/medical/wrap/gauze/sterilized = 1,
-		/obj/item/stack/medical/wrap/gauze = 1,
+		/obj/item/stack/medical/gauze/sterilized = 1,
+		/obj/item/stack/medical/gauze = 1,
 		/obj/item/stack/medical/ointment/red_sun = 1,
 		/obj/item/storage/pill_bottle/painkiller = 1,
 		/obj/item/healthanalyzer/simple = 1,
@@ -279,7 +332,7 @@
 		/obj/item/reagent_containers/spray,
 		/obj/item/reagent_containers/syringe,
 		/obj/item/stack/medical,
-		/obj/item/stack/medical/wrap/sticky_tape,
+		/obj/item/stack/sticky_tape,
 		/obj/item/sensor_device,
 		/obj/item/storage/fancy/cigarettes,
 		/obj/item/storage/pill_bottle,
@@ -320,10 +373,10 @@
 		/obj/item/surgical_drapes = 1,
 		/obj/item/blood_filter = 1,
 		/obj/item/emergency_bed = 1,
-		/obj/item/stack/medical/wrap/gauze = 1,
-		/obj/item/stack/medical/wrap/gauze/sterilized = 1,
+		/obj/item/stack/medical/gauze = 1,
+		/obj/item/stack/medical/gauze/sterilized = 1,
 		/obj/item/reagent_containers/medigel/sterilizine = 1,
-		/obj/item/stack/medical/wrap/sticky_tape/surgical = 1,
+		/obj/item/stack/sticky_tape/surgical = 1,
 		/obj/item/stack/medical/bone_gel = 1,
 	)
 	generate_items_inside(items_inside,src)
@@ -381,7 +434,7 @@
 		/obj/item/scalpel,
 		/obj/item/shears,
 		/obj/item/stack/medical,
-		/obj/item/stack/medical/wrap/sticky_tape,
+		/obj/item/stack/sticky_tape,
 		/obj/item/stamp,
 		/obj/item/sensor_device,
 		/obj/item/storage/fancy/cigarettes,
@@ -432,7 +485,7 @@
 		/obj/item/stack/medical/wound_recovery/rapid_coagulant = 1,
 		/obj/item/stack/medical/mesh/advanced = 2,
 		/obj/item/stack/medical/suture/medicated = 2,
-		/obj/item/stack/medical/wrap/gauze/sterilized = 1,
+		/obj/item/stack/medical/gauze/sterilized = 1,
 		/obj/item/storage/pill_bottle/painkiller = 1,
 		/obj/item/hypospray/mkii/piercing/atropine = 1,
 		/obj/item/reagent_containers/cup/vial/small/libital = 1,
@@ -488,7 +541,7 @@
 		/obj/item/scalpel,
 		/obj/item/surgical_drapes,
 		/obj/item/stack/medical,
-		/obj/item/stack/medical/wrap/sticky_tape,
+		/obj/item/stack/sticky_tape,
 		/obj/item/sensor_device,
 		/obj/item/storage/fancy/cigarettes,
 		/obj/item/storage/pill_bottle,

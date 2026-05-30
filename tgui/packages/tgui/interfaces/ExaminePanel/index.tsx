@@ -1,16 +1,16 @@
 // THIS IS A NOVA SECTOR UI FILE
-import { type ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Button, ByondUi, Section, Stack } from 'tgui-core/components';
 
 import { resolveAsset } from '../../assets';
 import { useBackend } from '../../backend';
 import { Window } from '../../layouts';
-import type { ExaminePanelData } from './data';
+import { ExaminePanelData } from './data';
 
 function formatURLs(text: string) {
   if (!text) return;
   const parts: ReactNode[] = [];
-  const regex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
+  let regex = /https?:\/\/[^\s/$.?#].[^\s]*/gi;
   let lastIndex = 0;
 
   text.replace(regex, (url, index) => {

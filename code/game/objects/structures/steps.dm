@@ -6,7 +6,6 @@
 	icon_state = "iron"
 	anchored = TRUE
 	move_resist = INFINITY
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2)
 
 /obj/structure/steps/Initialize(mapload)
 	. = ..()
@@ -16,8 +15,8 @@
 	)
 
 	AddElement(/datum/element/connect_loc, loc_connections)
-	AddElement(/datum/element/climb_walkable)
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(/datum/component/climb_walkable)
+	AddComponent(/datum/component/simple_rotation)
 	register_context()
 
 /obj/structure/steps/add_context(atom/source, list/context, obj/item/held_item, mob/user)

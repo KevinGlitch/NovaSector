@@ -5,11 +5,10 @@
 	invisibility = INVISIBILITY_ABSTRACT
 	density = FALSE
 	stat = DEAD
-	//hud_type = /datum/hud/new_player // NOVA EDIT REMOVAL
+	//hud_type = /datum/hud/new_player NOVA EDIT REMOVAL
+	hud_possible = list()
 
-	/// String Values tied to Defines that state whether the new_player is ready to play or not.
-	/// Do try your best to compare this value directly against the defines for certainty but helper procs do exist in bulkier situations.
-	var/ready = PLAYER_NOT_READY
+	var/ready = FALSE
 	/// Referenced when you want to delete the new_player later on in the code.
 	var/spawning = FALSE
 	/// For instant transfer once the round is set up
@@ -64,12 +63,6 @@
 	if (href_list["votepollref"])
 		var/datum/poll_question/poll = locate(href_list["votepollref"]) in GLOB.polls
 		vote_on_poll_handler(poll, href_list)
-
-/// Quickly gets a boolean of whether the new_player is ready to play or not in places where we would like the boolean logic.
-/// The assertion is that readiness must be an opted in TRUE, while all other states (e.g. not ready, broken, etc) are FALSE.
-/// We organize it this way to ensure the system is extensible for other possible ready states.
-/mob/dead/new_player/proc/is_ready_to_play()
-	return ready == PLAYER_READY_TO_PLAY
 
 //When you cop out of the round (NB: this HAS A SLEEP FOR PLAYER INPUT IN IT)
 /mob/dead/new_player/proc/make_me_an_observer()
@@ -176,7 +169,7 @@
 		return JOB_UNAVAILABLE_LANGUAGE
 	if(job.has_banned_quirk(client.prefs))
 		return JOB_UNAVAILABLE_QUIRK
-	if(GLOB.nova_star_restrictions && job.nova_stars_only && !SSplayer_ranks.is_nova_star(client))
+	if(job.nova_stars_only && !SSplayer_ranks.is_nova_star(client))
 		return JOB_NOT_NOVA_STAR
 	if(job.has_banned_species(client.prefs))
 		return JOB_UNAVAILABLE_SPECIES
@@ -214,9 +207,7 @@
 		tgui_alert(usr, "There was an unexpected error putting you into your requested job. If you cannot join with any job, you should contact an admin.")
 		return FALSE
 
-	var/latejoin_period = CEILING(STATION_TIME_PASSED() / (5 MINUTES), 5)
-	SSblackbox.record_feedback("tally", "latejoin_time", 1, latejoin_period)
-	hide_title_screen() // NOVA EDIT ADDITION
+	hide_title_screen()// NOVA EDIT ADDITION
 	mind.late_joiner = TRUE
 	var/atom/destination = mind.assigned_role.get_latejoin_spawn_point()
 	if(!destination)
@@ -385,11 +376,13 @@
  */
 /mob/dead/new_player/proc/register_for_interview()
 	// First we detain them by removing all the verbs they have on client
-	for (var/procpath/verb_path as anything in client.verbs)
+	for (var/v in client.verbs)
+		var/procpath/verb_path = v
 		remove_verb(client, verb_path)
 
 	// Then remove those on their mob as well
-	for (var/procpath/verb_path as anything in verbs)
+	for (var/v in verbs)
+		var/procpath/verb_path = v
 		remove_verb(src, verb_path)
 
 	// Then we create the interview form and show it to the client

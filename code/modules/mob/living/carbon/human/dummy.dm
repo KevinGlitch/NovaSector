@@ -16,13 +16,13 @@ INITIALIZE_IMMEDIATE(/mob/living/carbon/human/dummy)
 	in_use = FALSE
 	return ..()
 
-/mob/living/carbon/human/dummy/Life(seconds_per_tick = SSMOBS_DT)
+/mob/living/carbon/human/dummy/Life(seconds_per_tick = SSMOBS_DT, times_fired)
 	return
 
 /mob/living/carbon/human/dummy/attach_rot(mapload)
 	return
 
-/mob/living/carbon/human/dummy/set_species(datum/species/mrace, icon_update = TRUE, pref_load = FALSE, replace_missing = TRUE, list/override_features, list/override_mutantparts, list/override_markings) // NOVA EDIT CHANGE - Customization. ORIGINAL: /mob/living/carbon/human/dummy/set_species(datum/species/mrace, icon_update = TRUE, pref_load = FALSE, replace_missing = TRUE)
+/mob/living/carbon/human/dummy/set_species(datum/species/mrace, icon_update = TRUE, pref_load = FALSE, replace_missing = TRUE, list/override_features, list/override_mutantparts, list/override_markings, retain_features = FALSE, retain_mutantparts = FALSE) // NOVA EDIT CHANGE - Customization. ORIGINAL: /mob/living/carbon/human/dummy/set_species(datum/species/mrace, icon_update = TRUE, pref_load = FALSE, replace_missing = TRUE)
 	harvest_organs()
 	return ..()
 
@@ -33,14 +33,14 @@ INITIALIZE_IMMEDIATE(/mob/living/carbon/human/dummy)
 		var/obj/item/organ/current_organ = get_organ_slot(slot) //Time to cache it lads
 		if(current_organ)
 			current_organ.Remove(src, special = TRUE) //Please don't somehow kill our dummy
-			SSwardrobe.recycle_object(current_organ)
+			SSwardrobe.stash_object(current_organ)
 
 	var/datum/species/current_species = dna.species
 	for(var/organ_path in current_species.mutant_organs)
 		var/obj/item/organ/current_organ = get_organ_by_type(organ_path)
 		if(current_organ)
 			current_organ.Remove(src, special = TRUE) //Please don't somehow kill our dummy
-			SSwardrobe.recycle_object(current_organ)
+			SSwardrobe.stash_object(current_organ)
 
 //Instead of just deleting our equipment, we save what we can and reinsert it into SSwardrobe's store
 //Hopefully this makes preference reloading not the worst thing ever
@@ -55,6 +55,8 @@ INITIALIZE_IMMEDIATE(/mob/living/carbon/human/dummy)
 		if(!isitem(checking)) //What the fuck are you on
 			to_nuke += checking
 			continue
+		if(checking.item_flags & DO_NOT_WARDROBE) // Skip any items like MOD parts, which are created in the contents of a stashed item and should not be destroyed
+			continue
 
 		var/list/contents = checking.contents
 		if(length(contents))
@@ -66,7 +68,7 @@ INITIALIZE_IMMEDIATE(/mob/living/carbon/human/dummy)
 		if(ismob(checking.loc))
 			var/mob/checkings_owner = checking.loc
 			checkings_owner.temporarilyRemoveItemFromInventory(checking, TRUE) //Clear out of there yeah?
-		SSwardrobe.recycle_object(checking)
+		SSwardrobe.stash_object(checking)
 
 	for(var/obj/item/delete as anything in to_nuke)
 		qdel(delete)
@@ -76,12 +78,8 @@ INITIALIZE_IMMEDIATE(/mob/living/carbon/human/dummy)
 	item.item_flags |= IN_INVENTORY
 	if(!item.visual_equipped(src, slot, initial))
 		return FALSE
-	if(!(slot & item.slot_flags)) // Things below only update if slotted in (ie: not held)
-		return TRUE
+
 	add_item_coverage(item)
-	if(item.hair_mask)
-		LAZYADD(hair_masks, item.hair_mask)
-		update_hair()
 	return TRUE
 
 /mob/living/carbon/human/dummy/proc/wipe_state()

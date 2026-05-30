@@ -113,10 +113,14 @@
 	return board.custom_cost
 
 /obj/machinery/medical_kiosk/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+	if(default_deconstruction_screwdriver(user, "[base_icon_state]_open", "[base_icon_state]_off", tool))
+		return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
 
 /obj/machinery/medical_kiosk/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+	if(default_deconstruction_crowbar(tool))
+		return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
 
 /obj/machinery/medical_kiosk/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	if(!istype(tool, /obj/item/scanner_wand))
@@ -221,10 +225,10 @@
 	var/patient_status = "Alive."
 	var/max_health = patient.maxHealth
 	var/total_health = patient.health
-	var/brute_loss = patient.get_brute_loss()
-	var/fire_loss = patient.get_fire_loss()
-	var/tox_loss = patient.get_tox_loss()
-	var/oxy_loss = patient.get_oxy_loss()
+	var/brute_loss = patient.getBruteLoss()
+	var/fire_loss = patient.getFireLoss()
+	var/tox_loss = patient.getToxLoss()
+	var/oxy_loss = patient.getOxyLoss()
 	var/chaos_modifier = 0
 
 	var/sickness = "Patient does not show signs of disease."
@@ -232,7 +236,7 @@
 
 	var/bleed_status = "Patient is not currently bleeding."
 	var/blood_status = " Patient either has no blood, or does not require it to function."
-	var/blood_percent = round((patient.get_blood_volume(apply_modifiers = TRUE) / BLOOD_VOLUME_NORMAL) * 100)
+	var/blood_percent = round((patient.blood_volume / BLOOD_VOLUME_NORMAL) * 100)
 	var/datum/blood_type/blood_type = patient.get_bloodtype()
 	var/blood_name = "error"
 	var/blood_warning = " "

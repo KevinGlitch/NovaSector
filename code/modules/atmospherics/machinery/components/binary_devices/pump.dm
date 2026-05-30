@@ -24,7 +24,9 @@
 
 /obj/machinery/atmospherics/components/binary/pump/Initialize(mapload)
 	. = ..()
-	AddComponent(/datum/component/usb_port, typecacheof(list(/obj/item/circuit_component/atmos_pump), only_root_path = TRUE))
+	AddComponent(/datum/component/usb_port, list(
+		/obj/item/circuit_component/atmos_pump,
+	))
 	register_context()
 
 /obj/machinery/atmospherics/components/binary/pump/add_context(atom/source, list/context, obj/item/held_item, mob/user)
@@ -173,7 +175,7 @@
 	input_temperature = add_output_port("Input Temperature", PORT_TYPE_NUMBER)
 	output_temperature = add_output_port("Output Temperature", PORT_TYPE_NUMBER)
 
-	is_active = add_output_port("Active", PORT_TYPE_BOOLEAN)
+	is_active = add_output_port("Active", PORT_TYPE_NUMBER)
 	turned_on = add_output_port("Turned On", PORT_TYPE_SIGNAL)
 	turned_off = add_output_port("Turned Off", PORT_TYPE_SIGNAL)
 

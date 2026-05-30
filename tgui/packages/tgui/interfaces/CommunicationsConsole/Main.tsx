@@ -100,28 +100,28 @@ export function PageMain(props) {
 
             <Flex.Item>
               <AlertButton
-                alertLevel="green"
-                onClick={() => setNewAlertLevel('green')}
+                alertLevel="Green"
+                onClick={() => setNewAlertLevel('Green')}
               />
 
               <AlertButton
-                alertLevel="blue"
-                onClick={() => setNewAlertLevel('blue')}
+                alertLevel="Blue"
+                onClick={() => setNewAlertLevel('Blue')}
               />
               {/* NOVA EDIT ADDITION START - Alerts */}
               <AlertButton
-                alertLevel="violet"
-                onClick={() => setNewAlertLevel('violet')}
+                alertLevel="Violet"
+                onClick={() => setNewAlertLevel('Violet')}
               />
 
               <AlertButton
-                alertLevel="orange"
-                onClick={() => setNewAlertLevel('orange')}
+                alertLevel="Orange"
+                onClick={() => setNewAlertLevel('Orange')}
               />
 
               <AlertButton
-                alertLevel="amber"
-                onClick={() => setNewAlertLevel('amber')}
+                alertLevel="Amber"
+                onClick={() => setNewAlertLevel('Amber')}
               />
               {/* NOVA EDIT ADDITION END - Alerts */}
             </Flex.Item>
@@ -159,8 +159,8 @@ export function PageMain(props) {
               color={engineeringOverride ? 'bad' : undefined}
               onClick={() => act('toggleEngOverride')}
             >
-              {engineeringOverride ? 'Disable' : 'Enable'} Engineering Override
-              Access
+              {engineeringOverride ? 'Disable' : 'Enable'}
+              Engineering Override Access
             </Button.Confirm>
           )}
           {/* NOVA EDIT ADDITION END */}
@@ -227,26 +227,26 @@ export function PageMain(props) {
           {!!canMessageAssociates && (
             <Button
               icon="bullhorn"
-              color="gold"
+              color="purple"
               disabled={!importantActionReady}
               onClick={() => act('messagethefeds')}
             >
-              Send message to the Sol Federation Regional Command
+              Send message to the Exobytech Regional Command
             </Button>
           )}
           {!!canMakeAnnouncement && (
-            <Button icon="bullhorn" onClick={() => act('callThePolice')}>
-              Call Sol Federation 911: Marshals Response
+            <Button icon="bullhorn" color="purple" onClick={() => act('callThePolice')}>
+              Call Exobytech 911: Marshals Response
             </Button>
           )}
           {!!canMakeAnnouncement && (
-            <Button icon="bullhorn" onClick={() => act('callTheCatmos')}>
-              Call Sol Federation 811: Advanced Atmospherics Response
+            <Button icon="bullhorn" color="purple" onClick={() => act('callTheCatmos')}>
+              Call Exobytech 811: Advanced Atmospherics Response
             </Button>
           )}
           {!!canMakeAnnouncement && (
-            <Button icon="bullhorn" onClick={() => act('callTheParameds')}>
-              Call Sol Federation 911: Medical Response
+            <Button icon="bullhorn" color="purple" onClick={() => act('callTheParameds')}>
+              Call Exobytech 911: Medical Response
             </Button>
           )}
           {!!emagged && (

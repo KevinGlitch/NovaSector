@@ -29,7 +29,7 @@
 		return list("prefixes" = GLOB.posibrain_names)
 	return
 
-/obj/effect/mob_spawn/ghost_role/drone/special(mob/living/spawned_mob, mob/mob_possessor, apply_prefs)
+/obj/effect/mob_spawn/ghost_role/drone/special(mob/living/spawned_mob, mob/mob_possessor)
 	. = ..()
 
 	var/datum/mind/spawned_mind = spawned_mob?.mind

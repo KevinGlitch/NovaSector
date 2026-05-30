@@ -60,7 +60,7 @@
 	if(value)
 		if(synced_bank_account)
 			synced_bank_account.adjust_money(value)
-			say("[MONEY_NAME_CAPITALIZED] deposited! The [synced_bank_account.account_holder] is now [synced_bank_account.account_balance] [MONEY_SYMBOL].")
+			say("Credits deposited! The [synced_bank_account.account_holder] is now [synced_bank_account.account_balance] cr.")
 		qdel(weapon)
 		return
 	return ..()
@@ -112,13 +112,13 @@
 	switch(action)
 		if("siphon")
 			if(is_station_level(src.z) || is_centcom_level(src.z))
-				say("Siphon of station [MONEY_NAME] has begun!")
+				say("Siphon of station credits has begun!")
 				start_siphon(ui.user)
 			else
 				say("Error: Console not in reach of station, withdrawal cannot begin.")
 			. = TRUE
 		if("halt")
-			say("Station [MONEY_NAME_SINGULAR] withdrawal halted.")
+			say("Station credit withdrawal halted.")
 			end_siphon()
 			. = TRUE
 
@@ -131,9 +131,8 @@
 /obj/machinery/computer/bank_machine/proc/end_siphon()
 	siphoning = FALSE
 	unauthorized = FALSE
-	var/atom/droploc = drop_location()
-	for(var/cash_typepath in credits_to_spacecash(syphoning_credits))
-		new cash_typepath(droploc)
+	if(syphoning_credits > 0)
+		new /obj/item/holochip(drop_location(), syphoning_credits) //get the loot
 	syphoning_credits = 0
 
 /obj/machinery/computer/bank_machine/proc/start_siphon(mob/living/carbon/user)

@@ -1,4 +1,4 @@
-/mob/living/carbon/alien/Life(seconds_per_tick = SSMOBS_DT)
+/mob/living/carbon/alien/Life(seconds_per_tick = SSMOBS_DT, times_fired)
 	. = ..()
 	if(!.) //dead or deleted
 		return
@@ -13,7 +13,7 @@
 		return 0
 
 	if(health <= HEALTH_THRESHOLD_CRIT)
-		adjust_oxy_loss(2)
+		adjustOxyLoss(2)
 
 	var/plasma_used = 0
 	var/plas_detect_threshold = 0.02
@@ -43,8 +43,8 @@
 	//BREATH TEMPERATURE
 	handle_breath_temperature(breath)
 
-/mob/living/carbon/alien/adult/Life(seconds_per_tick)
+/mob/living/carbon/alien/adult/Life(seconds_per_tick, times_fired)
 	. = ..()
 	if(QDELETED(src))
 		return
-	handle_organs(seconds_per_tick)
+	handle_organs(seconds_per_tick, times_fired)

@@ -1,21 +1,16 @@
 // THIS IS A NOVA SECTOR UI FILE
 import {
   CheckboxInput,
-  type Feature,
-  type FeatureChoiced,
+  Feature,
+  FeatureChoiced,
   FeatureShortTextInput,
   FeatureTextInput,
-  type FeatureToggle,
+  FeatureToggle,
 } from '../../base';
 import { FeatureDropdownInput } from '../../dropdowns';
 
 export const entombed_skin: FeatureChoiced = {
   name: 'MODsuit Skin',
-  component: FeatureDropdownInput,
-};
-
-export const entombed_hardlight_theme: FeatureChoiced = {
-  name: 'MODsuit Hardlight Theme',
   component: FeatureDropdownInput,
 };
 

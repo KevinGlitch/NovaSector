@@ -3,14 +3,14 @@ import { Button, Stack } from 'tgui-core/components';
 
 import {
   CheckboxInput,
-  type Feature,
-  type FeatureChoiced,
-  type FeatureChoicedServerData,
+  Feature,
+  FeatureChoiced,
+  FeatureChoicedServerData,
   FeatureNumberInput,
-  type FeatureNumeric,
+  FeatureNumeric,
   FeatureSliderInput,
-  type FeatureToggle,
-  type FeatureValueProps,
+  FeatureToggle,
+  FeatureValueProps,
 } from '../../base';
 import { FeatureDropdownInput } from '../../dropdowns';
 

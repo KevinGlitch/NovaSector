@@ -5,7 +5,7 @@
 	reagents = /datum/reagents
 	layer = ABOVE_ALL_MOB_LAYER
 	plane = ABOVE_GAME_PLANE
-	reagent_flags = /obj/machinery/plumbing::reagent_flags | DRAINABLE
+	reagent_flags = TRANSPARENT | DRAINABLE
 	buffer = 100
 
 	///how much do we fill
@@ -19,9 +19,9 @@
 	///Does the plumbing machine have a correct tile setup
 	var/valid_output_configuration = FALSE
 
-/obj/machinery/plumbing/bottler/Initialize(mapload, layer)
+/obj/machinery/plumbing/bottler/Initialize(mapload, bolt, layer)
 	. = ..()
-	AddComponent(/datum/component/plumbing/simple_demand, layer, distinct_reagent_cap = 3)
+	AddComponent(/datum/component/plumbing/simple_demand, bolt, layer)
 	setDir(dir)
 
 /obj/machinery/plumbing/bottler/examine(mob/user)

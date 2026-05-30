@@ -1,19 +1,19 @@
 /datum/disease/beesease
 	name = "Beesease"
-	form = "Parasite"
+	form = "Infection"
 	max_stages = 4
-	spread_text = "Skin contact"
+	spread_text = "On contact"
 	spread_flags = DISEASE_SPREAD_BLOOD | DISEASE_SPREAD_CONTACT_SKIN | DISEASE_SPREAD_CONTACT_FLUIDS
-	cure_text = /datum/reagent/consumable/sugar::name
+	cure_text = "Sugar"
 	cures = list(/datum/reagent/consumable/sugar)
 	agent = "Apidae Infection"
 	viable_mobtypes = list(/mob/living/carbon/human)
-	desc = "A strange disease that leads to the gestation of bees in the subject's stomach, which are often regurgitated."
+	desc = "If left untreated subject will regurgitate bees."
 	severity = DISEASE_SEVERITY_MEDIUM
 	infectable_biotypes = MOB_ORGANIC|MOB_UNDEAD //bees nesting in corpses
 
 
-/datum/disease/beesease/stage_act(seconds_per_tick)
+/datum/disease/beesease/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return
@@ -28,7 +28,7 @@
 			if(SPT_PROB(1, seconds_per_tick))
 				to_chat(affected_mob, span_danger("Your stomach stings painfully."))
 				if(prob(20))
-					affected_mob.adjust_tox_loss(2)
+					affected_mob.adjustToxLoss(2)
 		if(4)
 			if(SPT_PROB(5, seconds_per_tick))
 				affected_mob.visible_message(span_danger("[affected_mob] buzzes."), \

@@ -45,6 +45,16 @@
 	end_sound = 'sound/machines/generator/generator_end.ogg'
 	volume = 40
 
+/datum/looping_sound/generator/antimatter
+	start_sound = 'sound/machines/generator/antimatter/generator_start.ogg'
+	start_length = 7.0 SECONDS
+	mid_sounds = list(
+		'sound/machines/generator/antimatter/generator_mid2.ogg',
+	)
+	mid_length = 2.8 SECONDS
+	end_sound = 'sound/machines/generator/antimatter/generator_end.ogg'
+	volume = 40
+
 /datum/looping_sound/deep_fryer
 	start_sound = 'sound/machines/fryer/deep_fryer_immerse.ogg' //my immersions
 	start_length = 1 SECONDS
@@ -161,10 +171,10 @@
 
 /datum/looping_sound/firealarm
 	mid_sounds = list(
-		'sound/machines/fire_alarm/fire_alarm1.ogg',
-		'sound/machines/fire_alarm/fire_alarm2.ogg',
-		'sound/machines/fire_alarm/fire_alarm3.ogg',
-		'sound/machines/fire_alarm/fire_alarm4.ogg',
+		'sound/machines/fire_alarm/FireAlarm1.ogg',
+		'sound/machines/fire_alarm/FireAlarm2.ogg',
+		'sound/machines/fire_alarm/FireAlarm3.ogg',
+		'sound/machines/fire_alarm/FireAlarm4.ogg',
 	)
 	mid_length = 2.4 SECONDS
 	volume = 30
@@ -206,9 +216,6 @@
 	end_volume = 60
 	extra_range = MEDIUM_RANGE_SOUND_EXTRARANGE
 	falloff_exponent = 4
-
-/datum/looping_sound/soup/toxic
-	volume = 40
 
 /datum/looping_sound/cryo_cell
 	mid_sounds = list(

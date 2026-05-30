@@ -137,10 +137,6 @@
 	name = "Squishy Yellow Rock"
 	item_path = /obj/item/toy/plush/nova/funniyellowrock
 
-/datum/loadout_item/toys/plush/expie
-	name = "Experiment Plushie"
-	item_path = /obj/item/toy/plush/nova/expie
-
 /*
 *	DONATOR
 */
@@ -280,22 +276,6 @@
 /datum/loadout_item/toys/plush/towa
 	name = "Tiny Overwatch"
 	item_path = /obj/item/toy/plush/nova/towa
-
-/datum/loadout_item/toys/plush/fushi
-	name = "Fluffy Dragon"
-	item_path = /obj/item/toy/plush/nova/fushi
-
-/datum/loadout_item/toys/plush/plush_hemlock
-	name = "Silly Snuppy Plushie"
-	item_path = /obj/item/toy/plush/nova/donator/plush_hemlock
-
-/datum/loadout_item/toys/plush/plush_celica
-	name = "Researcher Serpent Plushie"
-	item_path = /obj/item/toy/plush/nova/donator/plush_celica
-
-/datum/loadout_item/toys/plush/plush_lasti
-	name = "Espatier Captain Fox Plushie"
-	item_path = /obj/item/toy/plush/nova/donator/plush_lasti
 
 /*
 *	STAFF

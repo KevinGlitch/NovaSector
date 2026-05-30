@@ -24,23 +24,23 @@
 *	GHETTO GUNS
 */
 
-/datum/loadout_item/weapons/ghetto_guns
-	abstract_type = /datum/loadout_item/weapons/ghetto_guns
+/datum/loadout_item/weapons/ghettoguns
+	abstract_type = /datum/loadout_item/weapons/ghettoguns
 	group = "Improvised Ballistics"
 
-/datum/loadout_item/weapons/ghetto_guns/pipegun
+/datum/loadout_item/weapons/ghettoguns/pipegun
 	name = /obj/item/gun/ballistic/rifle/boltaction/pipegun::name
 	item_path = /obj/item/gun/ballistic/rifle/boltaction/pipegun
 
-/datum/loadout_item/weapons/ghetto_guns/pipepistol
+/datum/loadout_item/weapons/ghettoguns/pipepistol
 	name = /obj/item/gun/ballistic/rifle/boltaction/pipegun/pistol::name
 	item_path = /obj/item/gun/ballistic/rifle/boltaction/pipegun/pistol
 
-/datum/loadout_item/weapons/ghetto_guns/lasermusket
+/datum/loadout_item/weapons/ghettoguns/lasermusket
 	name = /obj/item/gun/energy/laser/musket::name
 	item_path = /obj/item/gun/energy/laser/musket
 
-/datum/loadout_item/weapons/ghetto_guns/smoothbore
+/datum/loadout_item/weapons/ghettoguns/smoothbore
 	name = /obj/item/gun/energy/disabler/smoothbore::name
 	item_path = /obj/item/gun/energy/disabler/smoothbore
 
@@ -48,46 +48,38 @@
 *	FORGE WEAPONRY
 */
 
-/datum/loadout_item/weapons/forge_weapons
-	abstract_type = /datum/loadout_item/weapons/forge_weapons
+/datum/loadout_item/weapons/forgeweapons
+	abstract_type = /datum/loadout_item/weapons/forgeweapons
 	group = "Forge Weapons"
 
-/datum/loadout_item/weapons/forge_weapons/dagger
+/datum/loadout_item/weapons/forgeweapons/dagger
 	name = /obj/item/forging/reagent_weapon/dagger::name
 	item_path = /obj/item/forging/reagent_weapon/dagger
 
-/datum/loadout_item/weapons/forge_weapons/sword
+/datum/loadout_item/weapons/forgeweapons/sword
 	name = /obj/item/forging/reagent_weapon/sword::name
 	item_path = /obj/item/forging/reagent_weapon/sword
 
-/datum/loadout_item/weapons/forge_weapons/katana
+/datum/loadout_item/weapons/forgeweapons/katana
 	name = /obj/item/forging/reagent_weapon/katana::name
 	item_path = /obj/item/forging/reagent_weapon/katana
 
-/datum/loadout_item/weapons/forge_weapons/bokken
+/datum/loadout_item/weapons/forgeweapons/bokken
 	name = /obj/item/forging/reagent_weapon/bokken::name
 	item_path = /obj/item/forging/reagent_weapon/bokken
 
-/datum/loadout_item/weapons/forge_weapons/spear
+/datum/loadout_item/weapons/forgeweapons/spear
 	name = /obj/item/forging/reagent_weapon/spear::name
 	item_path = /obj/item/forging/reagent_weapon/spear
 
-/datum/loadout_item/weapons/forge_weapons/axe
+/datum/loadout_item/weapons/forgeweapons/hammer
+	name = /obj/item/forging/reagent_weapon/hammer::name
+	item_path = /obj/item/forging/reagent_weapon/hammer
+
+/datum/loadout_item/weapons/forgeweapons/axe
 	name = /obj/item/forging/reagent_weapon/axe::name
 	item_path = /obj/item/forging/reagent_weapon/axe
 
-/datum/loadout_item/weapons/forge_weapons/staff
+/datum/loadout_item/weapons/forgeweapons/staff
 	name = /obj/item/forging/reagent_weapon/staff::name
 	item_path = /obj/item/forging/reagent_weapon/staff
-
-/*
-*	RANDOM BULLSHIT GO
-*/
-
-/datum/loadout_item/weapons/assorted_weapons
-	abstract_type = /datum/loadout_item/weapons/assorted_weapons
-	group = "Assorted Weapons"
-
-/datum/loadout_item/weapons/assorted_weapons/lead_pipe
-	name = /obj/item/lead_pipe::name
-	item_path = /obj/item/lead_pipe

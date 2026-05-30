@@ -103,7 +103,6 @@
 		"dispenser_shell",
 		"door_shell",
 		"gun_shell",
-		"implant_shell",
 		"keyboard_shell",
 		"module_shell",
 		"money_bot_shell",

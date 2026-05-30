@@ -32,11 +32,13 @@
 		weapon.interact_with_atom(keg, user) // redirect refillable containers to the keg, allowing them to be filled
 		return TRUE // pretend we handled the attack, too.
 
+	if(istype(weapon, /obj/item/nuke_core_container))
+		to_chat(user, span_notice("[src] has had its plutonium core removed as a part of being decommissioned."))
+		return TRUE
+
 	return ..()
 
 /obj/machinery/nuclearbomb/beer/actually_explode()
-	if(core)
-		return ..()
 	//Unblock roundend, we're not actually exploding.
 	SSticker.roundend_check_paused = FALSE
 	var/turf/bomb_location = get_turf(src)
@@ -55,12 +57,16 @@
 	return ..()
 
 /obj/machinery/nuclearbomb/beer/proc/local_foam()
-	do_foam(200, src, get_turf(src), flood_reagent, 100)
+	var/datum/reagents/tmp_holder = new/datum/reagents(1000)
+	tmp_holder.my_atom = src
+	tmp_holder.add_reagent(flood_reagent, 100)
+
+	var/datum/effect_system/fluid_spread/foam/foam = new
+	foam.set_up(200, holder = src, location = get_turf(src), carry = tmp_holder)
+	foam.start()
 	disarm_nuke()
 
 /obj/machinery/nuclearbomb/beer/really_actually_explode(detonation_status)
-	if(core)
-		return ..()
 	//if it's always hooked in it'll override admin choices
 	RegisterSignal(overflow_control, COMSIG_CREATED_ROUND_EVENT, PROC_REF(on_created_round_event))
 	disarm_nuke()
@@ -71,3 +77,16 @@
 	SIGNAL_HANDLER
 	UnregisterSignal(overflow_control, COMSIG_CREATED_ROUND_EVENT)
 	created_event.forced_reagent_type = flood_reagent
+
+/obj/machinery/nuclearbomb/beer/catnip
+	name = "\improper Nanotrasen-brand mew-clear fission explosive"
+	flood_reagent = /datum/reagent/consumable/catnip_tea
+
+/obj/machinery/nuclearbomb/beer/nikos_surprise
+	name = "\improper Niko's Party Surprise"
+	desc = "An obviously modified Nanotrasen-brand nuclear fission warhead with an unlabeled beer tap on the back of it. This one has a tag attached: \"Prank 'em, John. With love, -Niko.\""
+	flood_reagent = /datum/reagent/mutationtoxin/felinid
+
+/obj/machinery/nuclearbomb/beer/nikos_surprise/erp
+	name = "\improper Niko's Cuddle Party Surprise"
+	flood_reagent = /datum/reagent/drug/aphrodisiac/crocin/hexacrocin

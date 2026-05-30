@@ -23,10 +23,6 @@
 	///The rope inside the stand, that's actually tying the person to it
 	var/obj/item/stack/shibari_rope/ropee = null
 
-/obj/structure/chair/shibari_stand/Initialize(mapload)
-	. = ..()
-	AddElement(/datum/element/tool_blocker, TOOL_WRENCH, TOOL_ACT_SECONDARY)
-
 /obj/structure/chair/shibari_stand/MakeRotate()
 	return
 
@@ -51,6 +47,10 @@
 	. = ..()
 	if(!has_buckled_mobs() && can_buckle)
 		. += span_notice("They need to be wearing <b>full-body shibari</b>, and you need to be <b>holding ropes</b>!")
+
+// formerly NO_DECONSTRUCT
+/obj/structure/chair/shibari_stand/wrench_act_secondary(mob/living/user, obj/item/weapon)
+	return NONE
 
 /obj/structure/chair/shibari_stand/user_unbuckle_mob(mob/living/buckled_mob, mob/living/user)
 	var/mob/living/buckled = buckled_mob
@@ -119,7 +119,7 @@
 			ropee.set_greyscale(rope.greyscale_colors)
 			rope.use(1)
 			add_overlay(shibari_shadow_overlay)
-			add_rope_overlays(ropee.greyscale_colors, hooman?.dna?.mutant_bodyparts[FEATURE_TAUR])
+			add_rope_overlays(ropee.greyscale_colors, hooman?.dna?.species?.mutant_bodyparts[FEATURE_TAUR])
 			buckled.visible_message(span_warning("[user] tied [buckled] to \the [src]!"),\
 				span_userdanger("[user] tied you to \the [src]!"),\
 				span_hear("You hear ropes being completely tightened."))

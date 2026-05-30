@@ -10,8 +10,7 @@
 	else
 		return INFINITY //Can't get flashed without eyes
 	if(isclothing(head)) //Adds head protection
-		var/obj/item/clothing/helmet = head
-		. += helmet.flash_protect
+		. += head.flash_protect
 	if(isclothing(glasses)) //Glasses
 		. += glasses.flash_protect
 	if(isclothing(wear_mask)) //Mask
@@ -30,7 +29,9 @@
 
 /mob/living/carbon/get_ear_protection(ignore_deafness = FALSE)
 	var/obj/item/organ/ears/ears = get_organ_slot(ORGAN_SLOT_EARS)
-	return ..() + ears?.bang_protect
+	if(!ears)
+		return INFINITY
+	return ..() + ears.bang_protect
 
 /mob/living/carbon/is_mouth_covered(check_flags = ALL)
 	if((check_flags & ITEM_SLOT_HEAD) && head && (head.flags_cover & HEADCOVERSMOUTH))
@@ -71,9 +72,9 @@
 /mob/living/carbon/check_projectile_dismemberment(obj/projectile/proj, def_zone)
 	var/obj/item/bodypart/affecting = get_bodypart(def_zone)
 	if(affecting && affecting.can_dismember() && !(affecting.bodypart_flags & BODYPART_UNREMOVABLE) && affecting.get_damage() >= (affecting.max_damage - proj.dismemberment))
-		if(!affecting.dismember(proj.damtype) || !proj.catastropic_dismemberment)
-			return
-		apply_damage(proj.damage, proj.damtype, BODY_ZONE_CHEST, wound_bonus = proj.wound_bonus) //stops a projectile blowing off a limb effectively doing no damage. Mostly relevant for sniper rifles.
+		affecting.dismember(proj.damtype)
+		if(proj.catastropic_dismemberment)
+			apply_damage(proj.damage, proj.damtype, BODY_ZONE_CHEST, wound_bonus = proj.wound_bonus) //stops a projectile blowing off a limb effectively doing no damage. Mostly relevant for sniper rifles.
 
 /mob/living/carbon/try_catch_item(obj/item/item, skip_throw_mode_check = FALSE, try_offhand = FALSE)
 	. = ..()
@@ -252,7 +253,7 @@
 		return
 	else
 		show_message(span_userdanger("The blob attacks!"))
-		adjust_brute_loss(10)
+		adjustBruteLoss(10)
 
 ///Adds to the parent by also adding functionality to propagate shocks through pulling and doing some fluff effects.
 /mob/living/carbon/electrocute_act(shock_damage, source, siemens_coeff = 1, flags = NONE, jitter_time = 20 SECONDS, stutter_time = 4 SECONDS, stun_duration = 4 SECONDS)
@@ -279,17 +280,11 @@
 			C.electrocute_act(shock_damage*0.75, src, 1, flags, jitter_time, stutter_time, stun_duration)
 	//Stun
 	var/should_stun = (!(flags & SHOCK_TESLA) || siemens_coeff > 0.5) && !(flags & SHOCK_NOSTUN)
-	var/stun = !(flags & SHOCK_KNOCKDOWN)
+	var/paralyze = !(flags & SHOCK_KNOCKDOWN)
 	var/immediately_stun = should_stun && !(flags & SHOCK_DELAY_STUN)
 	if (immediately_stun)
-		if (stun)
-			// intended effect here is to floor you immediately if you are shocked twice in quick succession
-			// or to keep you floored if you are already incapacitated otherwise
-			if(incapacitated)
-				StaminaKnockdown(stun_duration / 4) // NOVA EDIT CHANGE - ORIGINAL: Paralyze(stun_duration)
-			// otherwise it just stuns you upright - until the second shock, which floors you
-			else
-				Stun(stun_duration)
+		if (paralyze)
+			StaminaKnockdown(stun_duration / 4) // NOVA EDIT CHANGE - ORIGINAL: Paralyze(40)
 		else
 			Knockdown(stun_duration)
 	//Jitter and other fluff.
@@ -297,13 +292,13 @@
 	adjust_jitter(jitter_time)
 	adjust_stutter(stutter_time)
 	if (should_stun)
-		addtimer(CALLBACK(src, PROC_REF(secondary_shock), stun, stun_duration * 1.5), 2 SECONDS)
+		addtimer(CALLBACK(src, PROC_REF(secondary_shock), paralyze, stun_duration * 1.5), 2 SECONDS)
 	return shock_damage
 
 ///Called slightly after electrocute act to apply a secondary stun.
-/mob/living/carbon/proc/secondary_shock(stun, stun_duration)
-	if (stun)
-		StaminaKnockdown(stun_duration / 6) // NOVA EDIT CHANGE - ORIGINAL: Paralyze(stun_duration)
+/mob/living/carbon/proc/secondary_shock(paralyze, stun_duration)
+	if (paralyze)
+		StaminaKnockdown(stun_duration / 6) // NOVA EDIT CHANGE - ORIGINAL: Paralyze(60)
 	else
 		Knockdown(stun_duration)
 
@@ -354,7 +349,7 @@
 		else
 			playsound(src, 'modular_nova/modules/emotes/sound/emotes/Nose_boop.ogg', 50, 0)
 			helper.visible_message(span_notice("[helper] boops [src]'s nose."), span_notice("You boop [src] on the nose."))
-			if(HAS_TRAIT(src, TRAIT_SENSITIVESNOUT) && is_location_accessible(BODY_ZONE_PRECISE_MOUTH))
+			if(HAS_TRAIT(src, TRAIT_SENSITIVESNOUT) && get_location_accessible(src, BODY_ZONE_PRECISE_MOUTH))
 				var/datum/quirk/sensitivesnout/poor_snout = src.get_quirk(/datum/quirk/sensitivesnout)
 				poor_snout?.get_booped(helper)
 			return
@@ -488,7 +483,7 @@
 		return
 
 	var/embeds = FALSE
-	for(var/obj/item/bodypart/limb as anything in get_bodyparts())
+	for(var/obj/item/bodypart/limb as anything in bodyparts)
 		for(var/obj/item/weapon as anything in limb.embedded_objects)
 			if(!embeds)
 				embeds = TRUE
@@ -568,7 +563,16 @@
 		if(hit_clothes)
 			hit_clothes.take_damage(damage_amount, damage_type, damage_flag, 0)
 
-/mob/living/carbon/adjust_oxy_loss(amount, updating_health = TRUE, forced, required_biotype, required_respiration_type)
+/mob/living/carbon/can_hear()
+	. = FALSE
+	var/obj/item/organ/ears/ears = get_organ_slot(ORGAN_SLOT_EARS)
+	if(ears && !HAS_TRAIT(src, TRAIT_DEAF))
+		. = TRUE
+	if(health <= hardcrit_threshold && !HAS_TRAIT(src, TRAIT_NOHARDCRIT))
+		. = FALSE
+
+
+/mob/living/carbon/adjustOxyLoss(amount, updating_health = TRUE, forced, required_biotype, required_respiration_type)
 	if(!forced && HAS_TRAIT(src, TRAIT_NOBREATH))
 		amount = min(amount, 0) //Prevents oxy damage but not healing
 
@@ -580,7 +584,7 @@
 	if(!limb)
 		return
 
-/mob/living/carbon/set_oxy_loss(amount, updating_health = TRUE, forced, required_biotype, required_respiration_type)
+/mob/living/carbon/setOxyLoss(amount, updating_health = TRUE, forced, required_biotype, required_respiration_type)
 	. = ..()
 	check_passout()
 
@@ -588,8 +592,8 @@
 * Check to see if we should be passed out from oxyloss
 */
 /mob/living/carbon/proc/check_passout()
-	var/mob_oxyloss = get_oxy_loss()
-	if(mob_oxyloss >= OXYLOSS_PASSOUT_THRESHOLD && !HAS_TRAIT(src, TRAIT_NO_OXYLOSS_PASSOUT))
+	var/mob_oxyloss = getOxyLoss()
+	if(mob_oxyloss >= OXYLOSS_PASSOUT_THRESHOLD)
 		if(!HAS_TRAIT_FROM(src, TRAIT_KNOCKEDOUT, OXYLOSS_TRAIT))
 			ADD_TRAIT(src, TRAIT_KNOCKEDOUT, OXYLOSS_TRAIT)
 	else if(mob_oxyloss < OXYLOSS_PASSOUT_THRESHOLD)
@@ -597,7 +601,8 @@
 
 /mob/living/carbon/get_organic_health()
 	. = health
-	for (var/obj/item/bodypart/limb as anything in get_bodyparts())
+	for (var/_limb in bodyparts)
+		var/obj/item/bodypart/limb = _limb
 		if (!IS_ORGANIC_LIMB(limb))
 			. += (limb.brute_dam * limb.body_damage_coeff) + (limb.burn_dam * limb.body_damage_coeff)
 
@@ -696,9 +701,6 @@
 	if (HAS_TRAIT(src, TRAIT_GENELESS))
 		return FALSE
 
-	if(flags_1 & HOLOGRAM_1)
-		return FALSE
-
 	if (run_armor_check(attack_flag = BIO, silent = TRUE) >= 100)
 		to_chat(src, span_warning("Your armor shields you from [scramble_source]!"))
 		return FALSE
@@ -709,7 +711,7 @@
 	var/changed_something = FALSE
 	var/obj/item/organ/new_organ = pick(GLOB.bioscrambler_valid_organs)
 	var/obj/item/organ/replaced = get_organ_slot(initial(new_organ.slot))
-	if (!replaced || ORGAN_CAN_BE_BIOSCRAMBLED(replaced))
+	if (!replaced || !IS_ROBOTIC_ORGAN(replaced))
 		changed_something = TRUE
 		new_organ = new new_organ()
 		new_organ.replace_into(src)
@@ -718,10 +720,10 @@
 	if (!HAS_TRAIT(src, TRAIT_NODISMEMBER))
 		var/obj/item/bodypart/new_part = pick(GLOB.bioscrambler_valid_parts)
 		var/obj/item/bodypart/picked_user_part = get_bodypart(initial(new_part.body_zone))
-		if (picked_user_part && BODYPART_CAN_BE_BIOSCRAMBLED(picked_user_part))
+		if (picked_user_part && BODYTYPE_CAN_BE_BIOSCRAMBLED(picked_user_part.bodytype))
 			changed_something = TRUE
 			new_part = new new_part()
-			new_part.replace_limb(src)
+			new_part.replace_limb(src, special = TRUE)
 			if (picked_user_part)
 				qdel(picked_user_part)
 
@@ -736,7 +738,7 @@
 /mob/living/carbon/proc/init_bioscrambler_lists()
 	var/list/body_parts = typesof(/obj/item/bodypart/chest) + typesof(/obj/item/bodypart/head) + subtypesof(/obj/item/bodypart/arm) + subtypesof(/obj/item/bodypart/leg)
 	for(var/obj/item/bodypart/part as anything in body_parts)
-		if(!is_type_in_typecache(part, GLOB.bioscrambler_parts_blacklist) && BODYPART_CAN_BE_BIOSCRAMBLED(part))
+		if(!is_type_in_typecache(part, GLOB.bioscrambler_parts_blacklist) && BODYTYPE_CAN_BE_BIOSCRAMBLED(initial(part.bodytype)))
 			continue
 		body_parts -= part
 	GLOB.bioscrambler_valid_parts = body_parts

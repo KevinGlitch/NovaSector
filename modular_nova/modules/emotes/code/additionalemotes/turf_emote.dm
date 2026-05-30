@@ -15,10 +15,10 @@
 
 	if(ishuman(user))
 		//feet
-		if(!(human_user.bodyshape & BODYSHAPE_DIGITIGRADE) && !(human_user.dna.mutant_bodyparts[FEATURE_TAUR]))
+		if(!(human_user.bodyshape & BODYSHAPE_DIGITIGRADE) && !(human_user.dna.species.mutant_bodyparts[FEATURE_TAUR]))
 			user.allowed_turfs += "footprint"
 
-		if((human_user.bodyshape & BODYSHAPE_DIGITIGRADE) || human_user.dna.mutant_bodyparts[FEATURE_TAUR])
+		if((human_user.bodyshape & BODYSHAPE_DIGITIGRADE) || human_user.dna.species.mutant_bodyparts[FEATURE_TAUR])
 			user.allowed_turfs += list("pawprint", "hoofprint", "clawprint")
 
 		//species & taurs
@@ -46,7 +46,7 @@
 			user.allowed_turfs += "vines"
 
 		if(issynthetic(user))
-			if(human_user.dna.mutant_bodyparts[FEATURE_TAUR])
+			if(human_user.dna.species.mutant_bodyparts[FEATURE_TAUR])
 				user.allowed_turfs += "holobed" //taurs get the holobed instead
 			else
 				user.allowed_turfs += "holoseat"
@@ -57,20 +57,19 @@
 
 		//body parts
 		if(istype(user.get_organ_slot(ORGAN_SLOT_EXTERNAL_TAIL), /obj/item/organ/tail))
-			var/datum/mutant_bodypart/our_tail = human_user.dna.mutant_bodyparts[FEATURE_TAIL]
-			var/datum/sprite_accessory/tails/tail = SSaccessories.sprite_accessories[FEATURE_TAIL][our_tail.name]
+			var/name = human_user.dna.species.mutant_bodyparts[FEATURE_TAIL][MUTANT_INDEX_NAME]
+			var/datum/sprite_accessory/tails/tail = SSaccessories.sprite_accessories[FEATURE_TAIL][name]
 			if(tail.fluffy)
 				user.allowed_turfs += "tails"
 
 		var/taur_mode = human_user.get_taur_mode()
 		if(taur_mode & STYLE_TAUR_SNAKE)
 			user.allowed_turfs -= list("pawprint", "hoofprint", "clawprint")
-			user.allowed_turfs += "coil"
 
 		//clothing
 		var/obj/item/shoes = user.get_item_by_slot(ITEM_SLOT_FEET)
 		if(istype(shoes, /obj/item/clothing/shoes))
-			if(!human_user.dna.mutant_bodyparts[FEATURE_TAUR])
+			if(!human_user.dna.species.mutant_bodyparts[FEATURE_TAUR])
 				user.allowed_turfs += "shoeprint"
 
 	if(issilicon(user))
@@ -113,7 +112,7 @@
 				user.owned_turf.color = human_user.dna.features[FEATURE_MUTANT_COLOR]
 
 
-		var/list/body_part = list("tails", "coil")
+		var/list/body_part = list("tails")
 		if(current_turf in body_part) //These turfs can be a body part and need color/size applied
 			var/key = null
 
@@ -121,15 +120,10 @@
 			if(current_turf in tail_emotes)
 				key = "tail"
 
-			var/list/taur_emotes = list("coil")
-			if(current_turf in taur_emotes)
-				key = "taur"
-
 			//coloring
 			var/list/finished_list = list()
-			var/datum/mutant_bodypart/mutant_bodypart = human_user.dna.mutant_bodyparts[key]
-			var/list/color_list = mutant_bodypart.get_colors() //identify color
-			var/datum/sprite_accessory/sprite_type = SSaccessories.sprite_accessories[key][mutant_bodypart.name] //identify type
+			var/list/color_list = human_user.dna.species.mutant_bodyparts[key][MUTANT_INDEX_COLOR_LIST] //identify color
+			var/datum/sprite_accessory/sprite_type = SSaccessories.sprite_accessories[key][human_user.dna.species.mutant_bodyparts[key][MUTANT_INDEX_NAME]] //identify type
 
 			switch(sprite_type.color_src)
 				if(USE_MATRIXED_COLORS)
@@ -185,4 +179,4 @@
 	UnregisterSignal(user, COMSIG_MOVABLE_MOVED)
 
 	var/obj/owned_turf = user.owned_turf
-	INVOKE_ASYNC(owned_turf, TYPE_PROC_REF(/obj/structure/mark_turf, turf_check), user)
+	INVOKE_ASYNC(owned_turf, /obj/structure/mark_turf/proc/turf_check, user)

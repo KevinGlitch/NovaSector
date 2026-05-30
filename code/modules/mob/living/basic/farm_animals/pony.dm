@@ -22,7 +22,7 @@
 	health = 50
 	maxHealth = 50
 	gold_core_spawnable = FRIENDLY_SPAWN
-	default_blood_volume = BLOOD_VOLUME_NORMAL
+	blood_volume = BLOOD_VOLUME_NORMAL
 	ai_controller = /datum/ai_controller/basic_controller/pony
 	/// Do we register a unique rider?
 	var/unique_tamer = FALSE
@@ -34,7 +34,6 @@
 	var/list/ponycolors = list("#cc8c5d", "#cc8c5d")
 
 /datum/emote/pony
-	abstract_type = /datum/emote/pony
 	mob_type_allowed_typecache = /mob/living/basic/pony
 	mob_type_blacklist_typecache = list()
 
@@ -60,7 +59,6 @@
 	AddComponent(/datum/component/tameable, food_types = food_types, tame_chance = 25, bonus_tame_chance = 15, unique = unique_tamer)
 
 /mob/living/basic/pony/tamed(mob/living/tamer, atom/food)
-	. = ..()
 	playsound(src, 'sound/mobs/non-humanoids/pony/snort.ogg', 50)
 	AddElement(/datum/element/ridable, /datum/component/riding/creature/pony)
 	visible_message(span_notice("[src] snorts happily."))
@@ -118,10 +116,6 @@
 		return
 
 	whinny_angrily()
-
-/mob/living/basic/pony/get_shove_flags(mob/living/shover, obj/item/weapon)
-	. = ..()
-	. |= SHOVE_CAN_STAGGER
 
 /datum/ai_controller/basic_controller/pony
 	blackboard = list(

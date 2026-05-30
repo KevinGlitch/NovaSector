@@ -4,7 +4,10 @@
 /datum/unit_test/quirk_icons/Run()
 	var/list/used_icons = list()
 
-	for (var/datum/quirk/quirk_type as anything in valid_subtypesof(/datum/quirk))
+	for (var/datum/quirk/quirk_type as anything in subtypesof(/datum/quirk))
+		if (initial(quirk_type.abstract_parent_type) == quirk_type)
+			continue
+
 		var/icon = initial(quirk_type.icon)
 
 		if (isnull(icon))
@@ -23,7 +26,10 @@
 /datum/unit_test/quirk_initial_medical_records/Run()
 	var/mob/living/carbon/human/patient = allocate(/mob/living/carbon/human/consistent)
 
-	for(var/datum/quirk/quirk_type as anything in valid_subtypesof(/datum/quirk))
+	for(var/datum/quirk/quirk_type as anything in subtypesof(/datum/quirk))
+		if (initial(quirk_type.abstract_parent_type) == quirk_type)
+			continue
+
 		if(!isnull(quirk_type.medical_record_text))
 			continue
 
@@ -82,11 +88,14 @@
 	// Assigning this manually as config is empty
 	GLOB.uncommon_roundstart_languages = list(/datum/language/uncommon)
 
-	for (var/datum/quirk/quirk_type as anything in valid_subtypesof(/datum/quirk))
+	for (var/datum/quirk/quirk_type as anything in subtypesof(/datum/quirk))
+		if (initial(quirk_type.abstract_parent_type) == quirk_type)
+			continue
 		// NOVA EDIT ADDITION START
 		if(quirk_type::hidden_quirk)
 			continue
 		// NOVA EDIT ADDITION END
+
 		var/mob/dead/new_player/abstract_player = allocate(/mob/dead/new_player)
 		var/datum/client_interface/roundstart_mock_client = new()
 		abstract_player.mock_client = roundstart_mock_client

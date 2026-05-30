@@ -16,8 +16,6 @@
 	remove_on_fullheal = TRUE
 	heal_flag_necessary = HEAL_CC_STATUS
 	var/needs_update_stat = FALSE
-	/// Suffixes attached to the force_say when applied, uses the "hurt" suffixes by default
-	var/list/alter_phrases
 
 /datum/status_effect/incapacitating/on_creation(mob/living/new_owner, set_duration)
 	if(isnum(set_duration))
@@ -33,20 +31,6 @@
 		owner.update_stat()
 	return ..()
 
-/datum/status_effect/incapacitating/on_apply()
-	SHOULD_CALL_PARENT(TRUE)
-	. = ..()
-	if(!.)
-		return
-
-	force_say()
-
-/datum/status_effect/incapacitating/proc/force_say()
-	SHOULD_CALL_PARENT(TRUE)
-
-	var/mob/living/carbon/human/human = owner
-	if(istype(human))
-		human.force_say(alter_phrases, immediate = TRUE)
 
 //STUN
 /datum/status_effect/incapacitating/stun
@@ -95,7 +79,6 @@
 //PARALYZED
 /datum/status_effect/incapacitating/paralyzed
 	id = "paralyzed"
-	alter_phrases = list("") // "Why am I about to be froz-"
 
 /datum/status_effect/incapacitating/paralyzed/on_apply()
 	. = ..()
@@ -141,8 +124,8 @@
 	return ..()
 
 /datum/status_effect/incapacitating/unconscious/tick(seconds_between_ticks)
-	if(owner.get_stamina_loss())
-		owner.adjust_stamina_loss(-0.3) //reduce stamina loss by 0.3 per tick, 6 per 2 seconds
+	if(owner.getStaminaLoss())
+		owner.adjustStaminaLoss(-0.3) //reduce stamina loss by 0.3 per tick, 6 per 2 seconds
 
 
 //SLEEPING
@@ -151,7 +134,6 @@
 	alert_type = /atom/movable/screen/alert/status_effect/asleep
 	needs_update_stat = TRUE
 	tick_interval = 2 SECONDS
-	alter_phrases = list("Zzz...", "ZZz...", "ZZZ...", "zzZ...", "zZZ...", "ZzZ...", "zzz...", "zZz...", "mimimimimimi...")
 
 /datum/status_effect/incapacitating/sleeping/on_apply()
 	. = ..()
@@ -170,10 +152,6 @@
 		REMOVE_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
 		tick_interval = initial(tick_interval)
 	return ..()
-
-/datum/status_effect/incapacitating/sleeping/force_say()
-	if(!HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
-		..()
 
 ///If the mob is sleeping and gain the TRAIT_SLEEPIMMUNE we remove the TRAIT_KNOCKEDOUT and stop the tick() from happening
 /datum/status_effect/incapacitating/sleeping/proc/on_owner_insomniac(mob/living/source)
@@ -255,10 +233,10 @@
 						to_chat(carbon_owner, span_notice("You feel your fitness improving!"))
 
 			if(health_ratio > 0.8) // only heals minor physical damage
-				need_mob_update += owner.adjust_brute_loss(-0.4 * sleep_quality * seconds_between_ticks, updating_health = FALSE, required_bodytype = BODYTYPE_ORGANIC)
-				need_mob_update += owner.adjust_fire_loss(-0.4 * sleep_quality * seconds_between_ticks, updating_health = FALSE, required_bodytype = BODYTYPE_ORGANIC)
-				need_mob_update += owner.adjust_tox_loss(-0.2 * sleep_quality * seconds_between_ticks, updating_health = FALSE, forced = TRUE, required_biotype = MOB_ORGANIC)
-		need_mob_update += owner.adjust_stamina_loss(min(-0.4 * sleep_quality * seconds_between_ticks, -0.4 * HEALING_SLEEP_DEFAULT * seconds_between_ticks), updating_stamina = FALSE)
+				need_mob_update += owner.adjustBruteLoss(-0.4 * sleep_quality * seconds_between_ticks, updating_health = FALSE, required_bodytype = BODYTYPE_ORGANIC)
+				need_mob_update += owner.adjustFireLoss(-0.4 * sleep_quality * seconds_between_ticks, updating_health = FALSE, required_bodytype = BODYTYPE_ORGANIC)
+				need_mob_update += owner.adjustToxLoss(-0.2 * sleep_quality * seconds_between_ticks, updating_health = FALSE, forced = TRUE, required_biotype = MOB_ORGANIC)
+		need_mob_update += owner.adjustStaminaLoss(min(-0.4 * sleep_quality * seconds_between_ticks, -0.4 * HEALING_SLEEP_DEFAULT * seconds_between_ticks), updating_stamina = FALSE)
 		if(need_mob_update)
 			owner.updatehealth()
 	// Drunkenness gets reduced by 0.3% per tick (6% per 2 seconds)
@@ -274,7 +252,7 @@
 /atom/movable/screen/alert/status_effect/asleep
 	name = "Asleep"
 	desc = "You've fallen asleep. Wait a bit and you should wake up. Unless you don't, considering how helpless you are."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "asleep"
 
 //STASIS
@@ -289,7 +267,7 @@
 		var/delta = world.time - last_dead_time
 		var/new_timeofdeath = owner.timeofdeath + delta
 		owner.timeofdeath = new_timeofdeath
-		owner.station_timestamp_timeofdeath = round_timestamp(wtime=new_timeofdeath)
+		owner.station_timestamp_timeofdeath = station_time_timestamp(wtime=new_timeofdeath)
 		last_dead_time = null
 	if(owner.stat == DEAD)
 		last_dead_time = world.time
@@ -304,7 +282,7 @@
 	. = ..()
 	if(!.)
 		return
-	owner.add_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS, TRAIT_TUMOR_SUPPRESSED, TRAIT_ANALGESIA), TRAIT_STATUS_EFFECT(id)) // NOVA EDIT CHANGE - ORIGINAL: owner.add_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS, TRAIT_TUMOR_SUPPRESSED), TRAIT_STATUS_EFFECT(id))
+	owner.add_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS, TRAIT_ANALGESIA), TRAIT_STATUS_EFFECT(id)) // NOVA EDIT CHANGE - ORIGINAL: owner.add_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS), TRAIT_STATUS_EFFECT(id))
 	owner.add_filter("stasis_status_ripple", 2, list("type" = "ripple", "flags" = WAVE_BOUNDED, "radius" = 0, "size" = 2))
 	var/filter = owner.get_filter("stasis_status_ripple")
 	animate(filter, radius = 0, time = 0.2 SECONDS, size = 2, easing = JUMP_EASING, loop = -1, flags = ANIMATION_PARALLEL)
@@ -321,7 +299,7 @@
 	//NOVA EDIT ADDITION END
 
 /datum/status_effect/grouped/stasis/on_remove()
-	owner.remove_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS, TRAIT_TUMOR_SUPPRESSED, TRAIT_ANALGESIA), TRAIT_STATUS_EFFECT(id)) // NOVA EDIT CHANGE - ORIGINAL: owner.remove_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS, TRAIT_TUMOR_SUPPRESSED), TRAIT_STATUS_EFFECT(id))
+	owner.remove_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS, TRAIT_ANALGESIA), TRAIT_STATUS_EFFECT(id)) // NOVA EDIT CHANGE - ORIGINAL: owner.remove_traits(list(TRAIT_IMMOBILIZED, TRAIT_HANDS_BLOCKED, TRAIT_STASIS), TRAIT_STATUS_EFFECT(id))
 	owner.remove_filter("stasis_status_ripple")
 	update_time_of_death()
 	if(iscarbon(owner))
@@ -332,7 +310,7 @@
 /atom/movable/screen/alert/status_effect/stasis
 	name = "Stasis"
 	desc = "Your biological functions have halted. You could live forever this way, but it's pretty boring."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "stasis"
 
 /datum/status_effect/his_wrath //does minor damage over time unless holding His Grace
@@ -358,9 +336,9 @@
 		qdel(src)
 		return
 	var/need_mob_update
-	need_mob_update = owner.adjust_brute_loss(0.04 * seconds_between_ticks, updating_health = FALSE)
-	need_mob_update += owner.adjust_fire_loss(0.04 * seconds_between_ticks, updating_health = FALSE)
-	need_mob_update += owner.adjust_tox_loss(0.08 * seconds_between_ticks, updating_health = FALSE, forced = TRUE)
+	need_mob_update = owner.adjustBruteLoss(0.04 * seconds_between_ticks, updating_health = FALSE)
+	need_mob_update += owner.adjustFireLoss(0.04 * seconds_between_ticks, updating_health = FALSE)
+	need_mob_update += owner.adjustToxLoss(0.08 * seconds_between_ticks, updating_health = FALSE, forced = TRUE)
 	if(need_mob_update)
 		owner.updatehealth()
 
@@ -437,7 +415,7 @@
 	new /obj/effect/temp_visual/bleed(get_turf(owner))
 
 /datum/status_effect/stacking/saw_bleed/threshold_cross_effect()
-	owner.adjust_brute_loss(bleed_damage)
+	owner.adjustBruteLoss(bleed_damage)
 	new /obj/effect/temp_visual/bleed/explode(get_turf(owner))
 	for(var/splatter_dir in GLOB.alldirs)
 		owner.create_splatter(splatter_dir)
@@ -549,7 +527,7 @@
 		wasting_effect.alpha = 255
 		animate(wasting_effect, alpha = 0, time = 32)
 		playsound(owner, 'sound/effects/curse/curse5.ogg', 20, TRUE, -1)
-		owner.adjust_fire_loss(0.75)
+		owner.adjustFireLoss(0.75)
 
 	if(curse_flags & CURSE_GRASPING)
 		if(effect_next_activation > world.time)
@@ -593,7 +571,7 @@
 /atom/movable/screen/alert/status_effect/trance
 	name = "Trance"
 	desc = "Everything feels so distant, and you can feel your thoughts forming loops inside your head..."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "high"
 
 /datum/status_effect/trance/tick(seconds_between_ticks)
@@ -629,7 +607,7 @@
 /datum/status_effect/trance/proc/hypnotize(datum/source, list/hearing_args)
 	SIGNAL_HANDLER
 
-	if(HAS_TRAIT(owner, TRAIT_DEAF) || owner == hearing_args[HEARING_SPEAKER])
+	if(!owner.can_hear() || owner == hearing_args[HEARING_SPEAKER])
 		return
 
 	var/mob/hearing_speaker = hearing_args[HEARING_SPEAKER]
@@ -720,7 +698,7 @@
 /atom/movable/screen/alert/status_effect/convulsing
 	name = "Shaky Hands"
 	desc = "You've been zapped with something and your hands can't stop shaking! You can't seem to hold on to anything."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "convulsing"
 
 /datum/status_effect/dna_melt
@@ -744,7 +722,7 @@
 /atom/movable/screen/alert/status_effect/dna_melt
 	name = "Genetic Breakdown"
 	desc = "I don't feel so good. Your body can't handle the mutations! You have one minute to remove your mutations, or you will be met with a horrible fate."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "dna_melt"
 
 /datum/status_effect/go_away
@@ -777,30 +755,23 @@
 /datum/status_effect/go_away/deletes_mob
 	id = "go_away_deletes_mob"
 	duration = 30 SECONDS
-	/// Timer that tracks when we should vanish
-	var/deletion_timer
 
 /datum/status_effect/go_away/deletes_mob/on_creation(mob/living/new_owner, set_duration)
 	. = ..()
-	deletion_timer = addtimer(CALLBACK(src, PROC_REF(wipe_bozo)), duration - 5 SECONDS, TIMER_STOPPABLE | TIMER_DELETE_ME)
-	ADD_TRAIT(owner, TRAIT_IMMOBILIZED, REF(src))
-	RegisterSignals(new_owner, list(COMSIG_MOVABLE_Z_CHANGED, COMSIG_LIVING_DEATH), PROC_REF(wipe_bozo))
+	RegisterSignal(new_owner, COMSIG_MOVABLE_Z_CHANGED, PROC_REF(wipe_bozo))
 
 /datum/status_effect/go_away/deletes_mob/proc/wipe_bozo()
-	deltimer(deletion_timer)
-	owner.fade_into_nothing()
-	UnregisterSignal(owner, list(COMSIG_MOVABLE_Z_CHANGED, COMSIG_LIVING_DEATH))
+	qdel(src)
 
 /datum/status_effect/go_away/deletes_mob/on_remove()
 	. = ..()
-	deltimer(deletion_timer)
-	REMOVE_TRAIT(owner, TRAIT_IMMOBILIZED, REF(src))
-	UnregisterSignal(owner, list(COMSIG_MOVABLE_Z_CHANGED, COMSIG_LIVING_DEATH))
+	if(!QDELETED(owner))
+		qdel(owner)
 
 /atom/movable/screen/alert/status_effect/go_away
 	name = "TO THE STARS AND BEYOND!"
 	desc = "I must go, my people need me!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "high"
 
 /datum/status_effect/fake_virus
@@ -948,7 +919,7 @@
 /atom/movable/screen/alert/status_effect/ants
 	name = "Ants!"
 	desc = span_warning("JESUS FUCKING CHRIST! CLICK TO GET THOSE THINGS OFF!")
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "antalert"
 	clickable_glow = TRUE
 
@@ -1029,7 +1000,7 @@
 /atom/movable/screen/alert/status_effect/discoordinated
 	name = "Discoordinated"
 	desc = "You can't seem to properly use anything..."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "convulsing"
 
 /datum/status_effect/discoordinated/on_apply()
@@ -1068,7 +1039,7 @@
 /atom/movable/screen/alert/status_effect/careful_driving
 	name = "Careful Driving"
 	desc = "That was close! You almost ran that one over!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "paralysis"
 
 /datum/movespeed_modifier/careful_driving
@@ -1095,13 +1066,14 @@
 /atom/movable/screen/alert/status_effect/midas_blight
 	name = "Midas Blight"
 	desc = "Your blood is being turned to gold, slowing your movements!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "midas_blight"
 
 /datum/status_effect/midas_blight/tick(seconds_between_ticks)
 	var/mob/living/carbon/human/victim = owner
 	// We're transmuting blood, time to lose some.
-	victim.adjust_blood_volume(-5 * seconds_between_ticks, minimum = BLOOD_VOLUME_SURVIVE + 50)
+	if(victim.blood_volume > BLOOD_VOLUME_SURVIVE + 50 && !HAS_TRAIT(victim, TRAIT_NOBLOOD))
+		victim.blood_volume -= 5 * seconds_between_ticks
 	// This has been hell to try and balance so that you'll actually get anything out of it
 	victim.reagents.add_reagent(/datum/reagent/gold/cursed, amount = seconds_between_ticks * goldscale, no_react = TRUE)
 	var/current_gold_amount = victim.reagents.get_reagent_amount(/datum/reagent/gold, type_check = REAGENT_SUB_TYPE)
@@ -1145,7 +1117,7 @@
 /atom/movable/screen/alert/status_effect/designated_target
 	name = "Designated Target"
 	desc = "You've been lit up by some kind of bright energy! Wash it off to get rid of it, or you'll be a lot easier to hit!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "designated_target"
 
 /datum/status_effect/designated_target

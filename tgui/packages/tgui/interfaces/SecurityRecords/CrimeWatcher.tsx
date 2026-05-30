@@ -276,7 +276,7 @@ const CrimeAuthor = (props) => {
         <RestrictedInput
           fluid
           value={crimeFine}
-          maxValue={1000}
+          maxValue={1000000}
           onChange={setCrimeFine}
           onValidationChange={setCrimeFineIsValid}
         />

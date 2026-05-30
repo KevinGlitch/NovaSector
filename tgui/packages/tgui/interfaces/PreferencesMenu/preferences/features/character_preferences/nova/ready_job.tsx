@@ -1,4 +1,4 @@
-import { CheckboxInput, type FeatureToggle } from '../../base';
+import { CheckboxInput, FeatureToggle } from '../../base';
 
 export const ready_job: FeatureToggle = {
   name: 'Show Name in Job Readying',

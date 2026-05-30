@@ -241,7 +241,7 @@
 	return processed_count > 0
 
 /obj/item/circuitboard/machine/trash_compactor
-	name = "DeForest Trash Reclamation Terminal"
+	name = "\improper DeForest trash reclamation terminal (Machine Board)"
 	build_path = /obj/machinery/trash_compactor
 	req_components = list()
 

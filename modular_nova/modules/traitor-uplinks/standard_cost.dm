@@ -20,9 +20,6 @@
 /datum/uplink_item/low_cost/weaponry
 	cost = 4
 
-/datum/uplink_item/low_medium_cost/weaponry
-	cost = 6
-
 /datum/uplink_item/medium_cost/weaponry
 	cost = 11
 

@@ -3,7 +3,7 @@ import { Button, NoticeBox, Section, Stack } from 'tgui-core/components';
 
 import { useBackend } from '../backend';
 import { NtosWindow } from '../layouts';
-import type { NTOSData } from '../layouts/NtosWindow';
+import { NTOSData } from '../layouts/NtosWindow';
 
 type Data = {
   authCard: string;

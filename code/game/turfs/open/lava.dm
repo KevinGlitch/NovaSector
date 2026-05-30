@@ -23,7 +23,6 @@
 	clawfootstep = FOOTSTEP_LAVA
 	heavyfootstep = FOOTSTEP_LAVA
 	rust_resistance = RUST_RESISTANCE_ABSOLUTE
-	turf_flags = NO_RUST
 	/// How much fire damage we deal to living mobs stepping on us
 	var/lava_damage = 20
 	/// How many firestacks we add to living mobs stepping on us
@@ -191,7 +190,7 @@
 	return FALSE
 
 /turf/open/lava/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
-	if(rcd_data[RCD_DESIGN_MODE] == RCD_TURF && rcd_data[RCD_DESIGN_PATH] == /turf/open/floor/plating/rcd)
+	if(rcd_data["[RCD_DESIGN_MODE]"] == RCD_TURF && rcd_data["[RCD_DESIGN_PATH]"] == /turf/open/floor/plating/rcd)
 		place_on_top(/turf/open/floor/plating, flags = CHANGETURF_INHERIT_AIR)
 		return TRUE
 	return FALSE
@@ -343,7 +342,7 @@
 			ADD_TRAIT(burn_living, TRAIT_NO_EXTINGUISH, TURF_TRAIT)
 		burn_living.adjust_fire_stacks(lava_firestacks * seconds_per_tick)
 		burn_living.ignite_mob()
-		burn_living.adjust_fire_loss(lava_damage * seconds_per_tick)
+		burn_living.adjustFireLoss(lava_damage * seconds_per_tick)
 		return TRUE
 
 	return FALSE
@@ -353,7 +352,7 @@
  */
 /turf/open/lava/proc/drop_contents_into_lava()
 	SIGNAL_HANDLER
-	balloon_alert_to_hearers("[pick("splash","pshhhh","hiss","blorble")]!")
+	balloon_alert_to_viewers("[pick("splash","pshhhh","hiss","blorble")]!")
 	playsound(src, 'sound/items/match_strike.ogg', 15, TRUE)
 	for(var/atom/movable/each_content as anything in contents)
 		on_atom_inited(src, each_content)
@@ -407,9 +406,17 @@
 	immunity_resistance_flags = FREEZE_PROOF
 	lava_temperature = 100
 
-/turf/open/lava/plasma/Initialize(mapload)
+/turf/open/lava/plasma/examine(mob/user)
 	. = ..()
-	AddElement(/datum/element/reagent_scoopable_atom, /datum/reagent/toxin/plasma)
+	. += span_info("Some <b>liquid plasma<b> could probably be scooped up with a <b>container</b>.")
+
+/turf/open/lava/plasma/attackby(obj/item/I, mob/user, list/modifiers)
+	if(!I.is_open_container())
+		return ..()
+	if(!I.reagents.add_reagent(/datum/reagent/toxin/plasma, rand(5, 10)))
+		to_chat(user, span_warning("[I] is full."))
+		return
+	user.visible_message(span_notice("[user] scoops some plasma from the [src] with [I]."), span_notice("You scoop out some plasma from the [src] using [I]."))
 
 /turf/open/lava/plasma/do_burn(atom/movable/burn_target, seconds_per_tick = 1)
 	. = TRUE
@@ -419,12 +426,11 @@
 	var/mob/living/burn_living = burn_target
 	var/need_mob_update
 	// This is from plasma, so it should obey plasma biotype requirements
-	need_mob_update += burn_living.adjust_tox_loss(15, updating_health = FALSE, required_biotype = MOB_ORGANIC)
-	need_mob_update += burn_living.adjust_fire_loss(25, updating_health = FALSE)
+	need_mob_update += burn_living.adjustToxLoss(15, updating_health = FALSE, required_biotype = MOB_ORGANIC)
+	need_mob_update += burn_living.adjustFireLoss(25, updating_health = FALSE)
 	if(need_mob_update)
 		burn_living.updatehealth()
 
-/* //NOVA EDIT REMOVAL START - PLASMAMAN TRANSFORMATION - (It's practically a RR most of the time.)
 	if(QDELETED(burn_living) \
 		|| !ishuman(burn_living) \
 		|| HAS_TRAIT(burn_living, TRAIT_NODISMEMBER) \
@@ -438,7 +444,7 @@
 	var/list/immune_parts = list() // Parts we can't transform because they're not organic or can't be dismembered
 	var/list/transform_parts = list() // Parts we want to transform
 
-	for(var/obj/item/bodypart/burn_limb as anything in burn_human.get_bodyparts())
+	for(var/obj/item/bodypart/burn_limb as anything in burn_human.bodyparts)
 		if(!IS_ORGANIC_LIMB(burn_limb) || !burn_limb.can_dismember())
 			immune_parts += burn_limb
 			continue
@@ -478,7 +484,6 @@
 	burn_human.visible_message(span_warning("[burn_human] bursts into flame as the last of [burn_human.p_their()] body is coated in fungus!"), \
 		span_userdanger("Your senses numb as what remains of your flesh sloughs off, revealing the plasma-encrusted bone beneath!"))
 
-*/ // NOVA EDIT REMOVAL END
 //mafia specific tame happy plasma (normal atmos, no slowdown)
 /turf/open/lava/plasma/mafia
 	initial_gas_mix = OPENTURF_DEFAULT_ATMOS

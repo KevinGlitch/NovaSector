@@ -14,7 +14,7 @@
 	backpack_contents = list(
 		/obj/item/stamp/solfed,
 		/obj/item/stamp/denied,
-		/obj/item/stamp/granted,
+		/obj/item/stamp,
 	)
 	id_trim = /datum/id_trim/solfed/official
 

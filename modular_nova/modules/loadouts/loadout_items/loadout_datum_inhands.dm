@@ -119,10 +119,6 @@
 	name = "Saddlebags"
 	item_path = /obj/item/storage/backpack/saddlebags
 
-/datum/loadout_item/inhand/wheelchair
-	name = "Folded Wheelchair"
-	item_path = /obj/item/wheelchair
-
 /datum/loadout_item/inhand/pet
 	abstract_type = /datum/loadout_item/inhand/pet
 
@@ -138,56 +134,56 @@ SPECIES RESTRICTED
 /datum/loadout_item/inhand/envirokit_orange
 	name = "Envirosuit Kit: Orange"
 	item_path = /obj/item/storage/box/envirosuit
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_black
 	name = "Envirosuit Kit: Black"
 	item_path = /obj/item/storage/box/envirosuit/black
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_white
 	name = "Envirosuit Kit: White"
 	item_path = /obj/item/storage/box/envirosuit/white
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_khaki
 	name = "Envirosuit Kit: Khaki"
 	item_path = /obj/item/storage/box/envirosuit/khaki
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_slacks
 	name = "Envirosuit Kit: Formal Enviroslacks"
 	item_path = /obj/item/storage/box/envirosuit/slacks
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_prototype
 	name = "Envirosuit Kit: Protoype"
 	item_path = /obj/item/storage/box/envirosuit/prototype
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_security
 	name = "Alternate Envirosuit Kit: Security Officer"
 	item_path = /obj/item/storage/box/envirosuit/security
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	restricted_roles = list(JOB_WARDEN, JOB_DETECTIVE, JOB_SECURITY_OFFICER, JOB_HEAD_OF_SECURITY, JOB_CORRECTIONS_OFFICER)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_security_warden
 	name = "Alternate Envirosuit Kit: Warden"
 	item_path = /obj/item/storage/box/envirosuit/security_warden
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	restricted_roles = list(JOB_WARDEN)
 	group = "Species-Unique"
 
 /datum/loadout_item/inhand/envirokit_head_of_security
 	name = "Alternate Envirosuit Kit: Head of Security"
 	item_path = /obj/item/storage/box/envirosuit/security_hos
-	species_whitelist = list(SPECIES_PLASMAMAN)
+	restricted_species = list(SPECIES_PLASMAMAN)
 	restricted_roles = list(JOB_HEAD_OF_SECURITY)
 	group = "Species-Unique"

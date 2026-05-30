@@ -94,11 +94,8 @@
 
 /obj/item/gun/energy/recharge/update_icon_state()
 	. = ..()
-	if(no_charge_state)
-		if(can_shoot())
-			icon_state = base_icon_state
-		else
-			icon_state = no_charge_state
+	if(no_charge_state && !can_shoot())
+		icon_state = no_charge_state
 
 /obj/item/gun/energy/recharge/ebow
 	name = "mini energy crossbow"
@@ -108,12 +105,7 @@
 	inhand_icon_state = "crossbow"
 	no_charge_state = "crossbow_empty"
 	w_class = WEIGHT_CLASS_SMALL
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT * 0.5,
-		/datum/material/uranium = HALF_SHEET_MATERIAL_AMOUNT * 0.5,
-		/datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT * 0.5,
-	)
+	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT)
 	suppressed = SUPPRESSED_QUIET
 	ammo_type = list(/obj/item/ammo_casing/energy/bolt)
 	recharge_time = 2 SECONDS
@@ -138,12 +130,7 @@
 	base_icon_state = "crossbowlarge"
 	no_charge_state = "crossbowlarge_empty"
 	w_class = WEIGHT_CLASS_BULKY
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT * 3.5,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT * 1.5,
-		/datum/material/uranium = HALF_SHEET_MATERIAL_AMOUNT * 1.5,
-		/datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT * 1.5,
-	)
+	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2)
 	suppressed = SUPPRESSED_NONE
 	ammo_type = list(/obj/item/ammo_casing/energy/bolt/large)
 
@@ -166,6 +153,7 @@
 /obj/item/gun/energy/recharge/fisher/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/examine_lore, \
+		lore_hint = span_notice("You can [EXAMINE_HINT("look closer")] to learn a little more about [src]."), \
 		lore = "The SC/FISHER is an illegally-modified kinetic accelerator that's been cut down and refit into a miniature energy gun chassis, \
 			optimized for temporary, but effective, electronic warfare.<br>\
 			<br>\

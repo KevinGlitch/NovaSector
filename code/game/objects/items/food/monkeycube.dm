@@ -13,10 +13,6 @@
 	/// Whether we've been wetted and are expanding
 	var/expanding = FALSE
 
-/obj/item/food/monkeycube/Initialize(mapload)
-	. = ..()
-	RegisterSignal(src, COMSIG_ITEM_IN_UNWRAPPED_TRAITOR_MAIL, PROC_REF(on_mail_unwrap))
-
 /obj/item/food/monkeycube/attempt_pickup(mob/user)
 	if(expanding)
 		return FALSE
@@ -36,7 +32,8 @@
 	var/mob/living/bananas = new spawned_mob(drop_location(), TRUE, spammer) // funny that we pass monkey init args to non-monkey mobs, that's totally a future issue
 	if (!QDELETED(bananas))
 		ADD_TRAIT(bananas, TRAIT_SPAWNED_MOB, INNATE_TRAIT)
-		SET_FACTION_AND_ALLIES_FROM(bananas, src)
+		if(faction)
+			bananas.faction = faction
 
 		visible_message(span_notice("[src] expands!"))
 		bananas.log_message("spawned via [src], Last attached mob: [key_name(spammer)].", LOG_ATTACK)
@@ -80,12 +77,6 @@
 	Expand()
 	user.visible_message(span_danger("[user]'s torso bursts open as a primate emerges!"))
 	user.gib(DROP_BRAIN|DROP_BODYPARTS|DROP_ITEMS) // just remove the organs
-
-/obj/item/food/monkeycube/proc/on_mail_unwrap(atom/source, mob/user, obj/item/mail/traitor/letter)
-	SIGNAL_HANDLER
-	to_chat(user, span_danger("As you open [letter], its contents rapidly expand!"))
-	Expand()
-	return COMPONENT_TRAITOR_MAIL_HANDLED
 
 /obj/item/food/monkeycube/syndicate
 	faction = list(FACTION_NEUTRAL, ROLE_SYNDICATE)

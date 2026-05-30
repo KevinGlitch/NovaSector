@@ -1,8 +1,7 @@
 /datum/disease/transformation
-	abstract_type = /datum/disease/transformation
 	name = "Transformation"
 	max_stages = 5
-	spread_text = "None"
+	spread_text = "Acute"
 	spread_flags = DISEASE_SPREAD_SPECIAL
 	cure_text = "A coder's love (theoretical)."
 	agent = "Shenanigans"
@@ -32,7 +31,7 @@
 	return D
 
 
-/datum/disease/transformation/stage_act(seconds_per_tick)
+/datum/disease/transformation/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return
@@ -100,7 +99,7 @@
 
 /datum/disease/transformation/jungle_flu
 	name = "Jungle Flu"
-	cure_text = "Death"
+	cure_text = "Death."
 	cures = list(/datum/reagent/medicine/adminordrazine)
 	spread_text = "Unknown"
 	spread_flags = DISEASE_SPREAD_NON_CONTAGIOUS
@@ -130,7 +129,7 @@
 /datum/disease/transformation/jungle_flu/do_disease_transformation(mob/living/carbon/affected_mob)
 	affected_mob.monkeyize()
 
-/datum/disease/transformation/jungle_flu/stage_act(seconds_per_tick)
+/datum/disease/transformation/jungle_flu/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return
@@ -149,7 +148,7 @@
 
 /datum/disease/transformation/robot
 	name = "Robotic Transformation"
-	cure_text = /datum/reagent/copper::name
+	cure_text = "An injection of copper."
 	cures = list(/datum/reagent/copper)
 	cure_chance = 2.5
 	agent = "R2D2 Nanomachines"
@@ -169,7 +168,7 @@
 	infectable_biotypes = MOB_ORGANIC|MOB_UNDEAD|MOB_ROBOTIC
 	bantype = JOB_CYBORG
 
-/datum/disease/transformation/robot/stage_act(seconds_per_tick)
+/datum/disease/transformation/robot/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return
@@ -189,7 +188,7 @@
 /datum/disease/transformation/xeno
 
 	name = "Xenomorph Transformation"
-	cure_text = /datum/reagent/medicine/spaceacillin::name + " & " + /datum/reagent/glycerol::name
+	cure_text = "Spaceacillin & Glycerol"
 	cures = list(/datum/reagent/medicine/spaceacillin, /datum/reagent/glycerol)
 	cure_chance = 2.5
 	agent = "Rip-LEY Alien Microbes"
@@ -213,7 +212,7 @@
 	bantype = ROLE_ALIEN
 
 
-/datum/disease/transformation/xeno/stage_act(seconds_per_tick)
+/datum/disease/transformation/xeno/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return
@@ -230,7 +229,7 @@
 
 /datum/disease/transformation/slime
 	name = "Advanced Mutation Transformation"
-	cure_text = /datum/reagent/consumable/frostoil::name
+	cure_text = "Frost oil"
 	cures = list(/datum/reagent/consumable/frostoil)
 	cure_chance = 55
 	agent = "Advanced Mutation Toxin"
@@ -245,7 +244,7 @@
 	new_form = /mob/living/basic/slime
 
 
-/datum/disease/transformation/slime/stage_act(seconds_per_tick)
+/datum/disease/transformation/slime/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return
@@ -285,7 +284,7 @@
 	new_form = /mob/living/basic/pet/dog/corgi
 
 
-/datum/disease/transformation/corgi/stage_act(seconds_per_tick)
+/datum/disease/transformation/corgi/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return
@@ -318,7 +317,7 @@
 
 /datum/disease/transformation/gondola
 	name = "Gondola Transformation"
-	cure_text = /datum/reagent/consumable/condensedcapsaicin::name + " (not applied via vapor)"
+	cure_text = "Condensed Capsaicin, ingested or injected." //getting pepper sprayed doesn't help
 	cures = list(/datum/reagent/consumable/condensedcapsaicin) //beats the hippie crap right out of your system
 	cure_chance = 55
 	stage_prob = 2.5
@@ -338,7 +337,7 @@
 	new_form = /mob/living/basic/pet/gondola
 
 
-/datum/disease/transformation/gondola/stage_act(seconds_per_tick)
+/datum/disease/transformation/gondola/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return

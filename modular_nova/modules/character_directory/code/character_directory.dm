@@ -32,21 +32,7 @@ GLOBAL_LIST_EMPTY(name_to_appearance)
 	savefile_identifier = PREFERENCE_CHARACTER
 
 /datum/preference/choiced/attraction/init_possible_values()
-	return list(
-		"Unset",
-		"Check OOC",
-		"Straight",
-		"Lesbian",
-		"Gay",
-		"Bisexual",
-		"Pansexual",
-		"Polysexual",
-		"Asexual",
-		"Aromantic",
-		"Aro/Ace",
-		"Skoliosexual",
-		"Omnisexual",
-	)
+	return list("Gay", "Lesbian", "Straight", "Skolio", "Bi", "Pan", "Poly", "Omni", "Ace", "Aro", "Aro/Ace", "Unset", "Check OOC")
 
 /datum/preference/choiced/attraction/create_default_value()
 	return "Unset"
@@ -60,20 +46,7 @@ GLOBAL_LIST_EMPTY(name_to_appearance)
 	savefile_identifier = PREFERENCE_CHARACTER
 
 /datum/preference/choiced/display_gender/init_possible_values()
-	return list(
-		"Unset",
-		"Check OOC",
-		"Male",
-		"Female",
-		"Nonbinary",
-		"Genderfluid",
-		"Trans",
-		"Andromorph",
-		"Gynomorph",
-		"Agender",
-		"Plural",
-		"Omnigender",
-	)
+	return list("Male", "Female", "Null", "Plural", "Nonbinary", "Omni", "Trans", "Andro", "Gyno", "Fluid", "Unset", "Check OOC")
 
 /datum/preference/choiced/display_gender/create_default_value()
 	return "Unset"

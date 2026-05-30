@@ -566,8 +566,6 @@
 
 ///Find airlocks and link up with them
 /obj/machinery/atmospherics/components/unary/airlock_pump/proc/unlink_airlock(airlock)
-	SIGNAL_HANDLER
-
 	UnregisterSignal(airlock, COMSIG_QDELETING)
 
 	if(airlock in internal_airlocks)
@@ -583,7 +581,6 @@
 /obj/machinery/atmospherics/components/unary/airlock_pump/proc/break_all_links()
 	for(var/obj/machinery/door/airlock/airlock as anything in (internal_airlocks + external_airlocks))
 		UnregisterSignal(airlock, COMSIG_QDELETING)
-		airlock.unbolt()
 
 	external_airlocks = list()
 	internal_airlocks = list()

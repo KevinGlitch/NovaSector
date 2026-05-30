@@ -8,6 +8,7 @@ GLOBAL_LIST_INIT(alert_picture_options_nova, list(
 		"Gamma Alert" = "gammaalert",
 		"Epsilon Alert" = "epsilonalert",
 		"Federal Alert" = "federalalert",
+		"Black Alert" = "blackalert",
 ))
 
 // Change the icon based on if we are using our alerts or TG's

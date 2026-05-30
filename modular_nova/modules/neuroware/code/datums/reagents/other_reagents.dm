@@ -1,6 +1,3 @@
-/datum/reagent/water
-	evaporates = TRUE
-
 /datum/reagent/serotrotium/synth
 	name = "5HT-EMU.EXE"
 	chemical_flags = REAGENT_NEUROWARE

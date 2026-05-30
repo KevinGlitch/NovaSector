@@ -19,20 +19,9 @@
 		/obj/item/gun/energy/dueling,
 		/obj/item/food/grown/banana,
 		/obj/item/gun/energy/laser/thermal,
-		/obj/item/gun/energy/laser/pistol,
 		/obj/item/gun/ballistic/rifle/boltaction, //fits if you make it an obrez
 		/obj/item/gun/energy/laser/captain,
 		/obj/item/gun/energy/e_gun/hos,
-		// NOVA EDIT ADDITION START
-		/obj/item/gun/energy/e_gun, // covers e_gun/mini, e_gun/hos,
-		/obj/item/gun/energy/laser, // covers laser/captain, laser/thermal
-		/obj/item/ammo_box/magazine, // Just magazine, because the sec-belt can hold these aswell
-		/obj/item/ammo_box/speedloader,
-		/obj/item/gun/energy/recharge/kinetic_accelerator/variant/glock,
-		/obj/item/gun/ballistic/rifle/c96,
-		// additional functionality changes in modular_nova\modules\sec_haul\code\security_clothing\sec_clothing_overrides.dm
-		// e.g. one-gun limit, additional slots
-		// NOVA EDIT ADDITION END
 	))
 
 ///Energy holster
@@ -48,17 +37,13 @@
 		/obj/item/gun/energy/laser/thermal,
 		/obj/item/gun/energy/recharge/ebow,
 		/obj/item/gun/energy/laser/captain,
-		/obj/item/gun/energy/laser/pistol,
 		/obj/item/gun/energy/e_gun/hos,
-		// NOVA EDIT START
-		/obj/item/gun/energy/e_gun, // covers e_gun/mini, e_gun/hos,
-		/obj/item/gun/energy/laser, // covers laser/captain, laser/thermal
-		/obj/item/gun/energy/modular_laser_rifle,
+		// NOVA EDIT ADDITION START
 		/obj/item/gun/ballistic/automatic/pistol/plasma_marksman,
 		/obj/item/gun/ballistic/automatic/pistol/plasma_thrower,
 		/obj/item/ammo_box/magazine/recharge/plasma_battery,
 		/obj/item/gun/energy/recharge/kinetic_accelerator/variant/glock,
-		// NOVA EDIT END
+		// NOVA EDIT ADDITION END
 	)
 
 	return ..()
@@ -83,18 +68,8 @@
 		/obj/item/gun/energy/dueling,
 		/obj/item/gun/energy/laser/thermal,
 		/obj/item/gun/energy/laser/captain,
-		/obj/item/gun/energy/laser/pistol,
 		/obj/item/gun/energy/e_gun/hos,
 		/obj/item/gun/ballistic/rifle/boltaction, //fits if you make it an obrez
-		// NOVA EDIT ADDITION START
-		/obj/item/gun/energy/e_gun, // covers e_gun/mini, e_gun/hos,
-		/obj/item/gun/energy/laser, // covers laser/captain, laser/thermal
-		/obj/item/food/grown/banana,
-		/obj/item/gun/energy/recharge/kinetic_accelerator/variant/glock,
-		/obj/item/ammo_box/magazine, // covers all the old magazines (m9mm, m9mm_aps, m10mm, m45, m50)
-		// though realistically someone could consider just hand-adding every pistol magazine. including the nova-specific ones.
-		// additional functionality changes in modular_nova\modules\sec_haul\code\security_clothing\sec_clothing_overrides.dm
-		// NOVA EDIT ADDITION END
 	)
 
 	return ..()
@@ -120,7 +95,6 @@
 		/obj/item/gun/energy/disabler,
 		/obj/item/gun/energy/dueling,
 		/obj/item/gun/energy/laser/captain,
-		/obj/item/gun/energy/laser/pistol,
 		/obj/item/gun/energy/e_gun/hos,
 	)
 

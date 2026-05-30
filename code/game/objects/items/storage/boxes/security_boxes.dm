@@ -1,5 +1,17 @@
 // This file contains everything used by security, or in other combat applications.
 
+///EXONOVA UPDATE: frag grenade boxes
+/obj/item/storage/box/fragnades
+	name = "box of frag grenades (WARNING)"
+	desc = "<B>WARNING: These devices are extremely dangerous and can cause serious bodily injury if used improperly! REMEMBER TO WARN OTHERS: \"FIRE IN THE HOLE!!\"</B>"
+	icon_state = "syndiebox"
+	illustration = "grenade"
+
+/obj/item/storage/box/fragnades/PopulateContents()
+	for(var/i in 1 to 7)
+		new /obj/item/grenade/frag(src)
+///EXONOVA UPDATE END
+
 /obj/item/storage/box/flashbangs
 	name = "box of flashbangs (WARNING)"
 	desc = "<B>WARNING: These devices are extremely dangerous and can cause blindness or deafness in repeated use.</B>"
@@ -93,7 +105,7 @@
 
 /obj/item/storage/box/seccarts/PopulateContents()
 	for(var/i in 1 to 6)
-		new /obj/item/disk/computer/security(src)
+		new /obj/item/computer_disk/security(src)
 
 /obj/item/storage/box/firingpins
 	name = "box of standard firing pins"

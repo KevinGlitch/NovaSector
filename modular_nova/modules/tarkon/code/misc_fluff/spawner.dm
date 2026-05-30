@@ -13,7 +13,7 @@
 	spawner_job_path = /datum/job/tarkon
 	loadout_enabled = TRUE
 	quirks_enabled = TRUE
-	allow_custom_character = GHOSTROLE_TAKE_PREFS_APPEARANCE
+	random_appearance = FALSE
 	computer_area = /area/ruin/space/has_grav/port_tarkon
 
 /datum/outfit/tarkon
@@ -58,14 +58,12 @@
 				back = messenger //faction messenger bag
 			if(DDUFFELBAG)
 				back = duffelbag //faction duffel bag
-			if(TPACKB)
-				back = /obj/item/storage/backpack/tinypakb //tiny packs, because they kinda drippin
-			if(TPACKA)
-				back = /obj/item/storage/backpack/tinypaka
-			if(TPACKC)
-				back = /obj/item/storage/backpack/tinypakc
-			if(UDCPACK)
-				back = /obj/item/storage/backpack/udc //No guncase option as of yet.
+			if (TPACKB)
+				return /obj/item/storage/backpack/tinypakb //tiny packs, because they kinda drippin
+			if (TPACKA)
+				return /obj/item/storage/backpack/tinypaka
+			if (TPACKC)
+				return /obj/item/storage/backpack/tinypakc //No guncase option bc ????engineering company????
 			else
 				back = backpack //faction backpack fallback incase bag pref shits bed
 
@@ -201,7 +199,7 @@
 	spawner_job_path = /datum/job/tarkon/command
 	loadout_enabled = TRUE
 	quirks_enabled = TRUE
-	allow_custom_character = GHOSTROLE_TAKE_PREFS_APPEARANCE
+	random_appearance = FALSE
 
 /datum/outfit/tarkon/director //Look at me, I'm the director now.
 	name = "Port Tarkon Directors Outfit"
@@ -270,7 +268,7 @@
 	playsound(get_turf(src),'sound/effects/explosion/explosionfar.ogg', 200, TRUE)
 	visible_message(span_boldannounce("The nest's entrance starts to crumble before something charges forth!"))
 	var/mob/living/basic/boss_baby = new boss_mob(loc)
-	boss_baby.set_faction(faction)
+	boss_baby.faction = faction
 	new loot_drop(loc)
 	qdel(src)
 

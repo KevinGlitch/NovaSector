@@ -130,12 +130,7 @@
 
 /datum/loadout_item/under/formal/maid_uniform
 	name = "Maid Uniform"
-	item_path = /obj/item/clothing/under/costume/nova/maid_uniform
-	group = "Costumes"
-
-/datum/loadout_item/under/formal/maid_uniform_alt
-	name = "Maid Uniform (Alternative)"
-	item_path = /obj/item/clothing/under/costume/nova/maid_uniform_alt
+	item_path = /obj/item/clothing/under/rank/civilian/janitor/maid
 	group = "Costumes"
 
 /datum/loadout_item/under/miscellaneous/maid_costume
@@ -166,8 +161,8 @@
 /datum/loadout_item/under/miscellaneous/mech_suit
 	name = "Mech Suit"
 	item_path = /obj/item/clothing/under/costume/mech_suit
-	reskin_datum = /datum/atom_skin/mech_suit
 	group = "Costumes"
+	loadout_flags = parent_type::loadout_flags | LOADOUT_FLAG_ALLOW_RESKIN
 
 /datum/loadout_item/under/miscellaneous/cybersleek
 	name = "Modern Coat"
@@ -252,11 +247,6 @@
 /datum/loadout_item/under/miscellaneous/tactical_hawaiian_green
 	name = "Tactical Hawaiian Outfit (Green)"
 	item_path = /obj/item/clothing/under/tachawaiian/green
-	group = "Costumes"
-
-/datum/loadout_item/under/miscellaneous/gagscamo
-	name = "Camouflage Jumpsuit"
-	item_path = /obj/item/clothing/under/camo/gags
 	group = "Costumes"
 
 /datum/loadout_item/under/formal/tmc
@@ -396,7 +386,7 @@
 /datum/loadout_item/under/jumpsuit/akula_wetsuit
 	name = "Shoredress Wetsuit"
 	item_path = /obj/item/clothing/under/akula_wetsuit
-	species_whitelist = list(SPECIES_AKULA)
+	restricted_species = list(SPECIES_AKULA)
 	group = "Species-Unique"
 
 /datum/loadout_item/under/miscellaneous/ethereal_tunic

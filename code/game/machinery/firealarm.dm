@@ -10,13 +10,6 @@
 	result_path = /obj/machinery/firealarm
 	pixel_shift = 26
 
-/obj/item/wallframe/firealarm/try_build(atom/support, mob/user)
-	var/area/A = get_area(user)
-	if(A.always_unpowered)
-		balloon_alert(user, "cannot place in this area!")
-		return FALSE
-	return ..()
-
 /obj/machinery/firealarm
 	name = "fire alarm"
 	desc = "Pull this in case of emergency. Thus, keep pulling it forever."
@@ -72,7 +65,9 @@
 	soundloop = new(src, FALSE)
 	set_wires(new /datum/wires/firealarm(src))
 
-	AddComponent(/datum/component/usb_port, typecacheof(list(/obj/item/circuit_component/firealarm), only_root_path = TRUE))
+	AddComponent(/datum/component/usb_port, list(
+		/obj/item/circuit_component/firealarm,
+	))
 
 	AddComponent( \
 		/datum/component/redirect_attack_hand_from_turf, \
@@ -84,7 +79,7 @@
 
 	register_context()
 	if(mapload)
-		find_and_mount_on_atom()
+		find_and_hang_on_wall()
 	update_appearance()
 
 /obj/machinery/firealarm/Destroy()
@@ -511,7 +506,7 @@
 	return FALSE
 
 /obj/machinery/firealarm/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
-	switch(rcd_data[RCD_DESIGN_MODE])
+	switch(rcd_data["[RCD_DESIGN_MODE]"])
 		if(RCD_WALLFRAME)
 			balloon_alert_to_viewers("circuit installed")
 			buildstage = FIRE_ALARM_BUILD_NO_WIRES
@@ -670,7 +665,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/firealarm, 26)
 	alarm_trigger = add_input_port("Set", PORT_TYPE_SIGNAL)
 	reset_trigger = add_input_port("Reset", PORT_TYPE_SIGNAL)
 
-	is_on = add_output_port("Is On", PORT_TYPE_BOOLEAN)
+	is_on = add_output_port("Is On", PORT_TYPE_NUMBER)
 	triggered = add_output_port("Triggered", PORT_TYPE_SIGNAL)
 	reset = add_output_port("Reset", PORT_TYPE_SIGNAL)
 

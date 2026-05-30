@@ -1,19 +1,17 @@
 // THIS IS A NOVA SECTOR UI FILE
 import {
   CheckboxInput,
-  type Feature,
-  type FeatureChoiced,
-  type FeatureChoicedServerData,
+  Feature,
+  FeatureChoiced,
+  FeatureChoicedServerData,
   FeatureColorInput,
   FeatureNumberInput,
-  type FeatureNumeric,
   FeatureShortTextInput,
-  FeatureSliderInput,
   FeatureTextInput,
-  type FeatureToggle,
+  FeatureToggle,
   FeatureTriBoolInput,
   FeatureTriColorInput,
-  type FeatureValueProps,
+  FeatureValueProps,
 } from '../../base';
 import { FeatureDropdownInput } from '../../dropdowns';
 
@@ -183,15 +181,6 @@ export const allow_emissives_toggle: FeatureToggle = {
 export const eye_emissives: FeatureToggle = {
   name: 'Eye Emissives',
   description: 'Emissive parts glow in the dark.',
-  component: CheckboxInput,
-};
-
-export const skin_tone_toggle: FeatureToggle = {
-  name: 'Skin Tone',
-  description:
-    'If we should use skin tones (an array of options \
-    close to human natural skin colors) or mutant \
-    colors (free color selection).',
   component: CheckboxInput,
 };
 
@@ -509,12 +498,12 @@ export const fluff_emissive: Feature<boolean[]> = {
 };
 
 export const head_acc_toggle: FeatureToggle = {
-  name: 'Head Accessory',
+  name: 'Head Accessories',
   component: CheckboxInput,
 };
 
 export const feature_head_acc: Feature<string> = {
-  name: 'Head Accessory Selection',
+  name: 'Head Accessories Selection',
   component: (
     props: FeatureValueProps<string, string, FeatureChoicedServerData>,
   ) => {
@@ -523,12 +512,12 @@ export const feature_head_acc: Feature<string> = {
 };
 
 export const head_acc_color: Feature<string[]> = {
-  name: 'Head Accessory Colors',
+  name: 'Head Accessories Colors',
   component: FeatureTriColorInput,
 };
 
 export const head_acc_emissive: Feature<boolean[]> = {
-  name: 'Head Accessory Emissives',
+  name: 'Head Accessories Emissives',
   description: 'Emissive parts glow in the dark.',
   component: FeatureTriBoolInput,
 };
@@ -621,19 +610,13 @@ export const feature_hair_opacity: Feature<number> = {
   component: FeatureNumberInput,
 };
 
-export const hair_emissive: Feature<boolean> = {
-  name: 'Hair Emissive',
-  description: 'Emissive parts glow in the dark.',
-  component: CheckboxInput,
-};
-
 export const neck_acc_toggle: FeatureToggle = {
-  name: 'Neck Accessory',
+  name: 'Neck Accessories',
   component: CheckboxInput,
 };
 
 export const feature_neck_acc: Feature<string> = {
-  name: 'Neck Accessory Selection',
+  name: 'Neck Accessories Selection',
   component: (
     props: FeatureValueProps<string, string, FeatureChoicedServerData>,
   ) => {
@@ -642,12 +625,12 @@ export const feature_neck_acc: Feature<string> = {
 };
 
 export const neck_acc_color: Feature<string[]> = {
-  name: 'Neck Accessory Colors',
+  name: 'Neck Accessories Colors',
   component: FeatureTriColorInput,
 };
 
 export const neck_acc_emissive: Feature<boolean[]> = {
-  name: 'Neck Accessory Emissives',
+  name: 'Neck Accessories Emissives',
   component: FeatureTriBoolInput,
 };
 
@@ -704,7 +687,7 @@ export const taur_emissive: Feature<boolean[]> = {
 export const naga_sole: FeatureToggle = {
   name: 'Taur (Naga) disable hardened soles',
   description:
-    'If using a serpentine or fishlike taur body, determines if you are immune to caltrops and a few other effects of being barefoot.',
+    'If using a serpentine taur body, determines if you are immune to caltrops and a few other effects of being barefoot.',
   component: CheckboxInput,
 };
 
@@ -810,24 +793,5 @@ export const pod_hair_color: Feature<string[]> = {
 export const pod_hair_emissive: Feature<boolean> = {
   name: 'Floral Hair Emissive',
   description: 'Emissive parts glow in the dark.',
-  component: CheckboxInput,
-};
-
-export const holo_color: Feature<string> = {
-  name: 'Holosynth Color',
-  component: FeatureColorInput,
-};
-
-export const holo_transparency: FeatureNumeric = {
-  name: 'Holosynth Transparency',
-  description:
-    'How solid your hologram appears. 60 = most see-through, 100 = fully solid.',
-  component: FeatureSliderInput,
-};
-
-export const holo_scanline: Feature<boolean> = {
-  name: 'Holosynth Scanline Flicker',
-  description:
-    'Renders a faint scanline flicker across your body (not visible until you spawn).',
   component: CheckboxInput,
 };

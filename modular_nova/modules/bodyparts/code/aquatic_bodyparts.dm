@@ -18,11 +18,9 @@
 
 /obj/item/bodypart/leg/left/digitigrade/aquatic
 	icon_greyscale = BODYPART_ICON_AQUATIC
-	limb_id = SPECIES_AQUATIC
 
 /obj/item/bodypart/leg/right/digitigrade/aquatic
 	icon_greyscale = BODYPART_ICON_AQUATIC
-	limb_id = SPECIES_AQUATIC
 
 /obj/item/bodypart/leg/left/mutant/aquatic
 	icon_greyscale = BODYPART_ICON_AQUATIC

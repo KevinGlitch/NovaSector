@@ -1,8 +1,8 @@
 /obj/structure/closet/secure_closet/ds2atmos
 	name = "energy axe cabinet"
 	desc = "A cabinet storing an energy fire axe along with basic firefighting tools."
-	icon = 'modular_nova/modules/ds2_fluff/icons/closet_wide.dmi'
-	icon_state = "energyaxe"
+	icon = 'modular_nova/master_files/icons/obj/closet.dmi'
+	icon_state = "riot"
 	req_access = list(ACCESS_SYNDICATE)
 
 /obj/structure/closet/secure_closet/ds2atmos/PopulateContents()

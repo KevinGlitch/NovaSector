@@ -7,11 +7,10 @@ All ShuttleMove procs go here
 // Called on every turf in the shuttle region, returns a bitflag for allowed movements of that turf
 // returns the new move_mode (based on the old)
 /turf/proc/fromShuttleMove(turf/newT, move_mode)
-	. = move_mode
-	if((move_mode & MOVE_AREA) && isshuttleturf(src))
-		. |= MOVE_TURF | MOVE_CONTENTS
-	if(SEND_SIGNAL(src, COMSIG_SHUTTLE_TURF_SHOULD_MOVE_SPECIAL, newT, move_mode))
-		. |= MOVE_SPECIAL
+	if(!(move_mode & MOVE_AREA) || !isshuttleturf(src))
+		return move_mode
+
+	return move_mode | MOVE_TURF | MOVE_CONTENTS
 
 // Called from the new turf before anything has been moved
 // Only gets called if fromShuttleMove returns true first
@@ -92,14 +91,7 @@ All ShuttleMove procs go here
 		oldT.ScrapeAway(shuttle_depth)
 
 	if(rotation)
-		shuttleRotate(rotation, params = ALL) //see shuttle_rotate.dm
-
-	// if we have a lighting object that needs to be updated
-	if(lighting_object?.needs_update)
-		lighting_object.update()
-		lighting_object.needs_update = FALSE
-		SSlighting.objects_queue -= lighting_object
-
+		shuttleRotate(rotation) //see shuttle_rotate.dm
 	SEND_SIGNAL(src, COMSIG_TURF_AFTER_SHUTTLE_MOVE, oldT)
 
 	return TRUE
@@ -140,15 +132,13 @@ All ShuttleMove procs go here
 // Called on atoms after everything has been moved
 /atom/movable/proc/afterShuttleMove(turf/oldT, list/movement_force, shuttle_dir, shuttle_preferred_direction, move_dir, rotation)
 	SHOULD_CALL_PARENT(TRUE)
-
+	SEND_SIGNAL(src, COMSIG_ATOM_AFTER_SHUTTLE_MOVE, oldT)
 	if(light)
 		update_light()
 	if(rotation)
-		shuttleRotate(rotation, params = ALL)
+		shuttleRotate(rotation)
 
 	update_parallax_contents()
-
-	SEND_SIGNAL(src, COMSIG_ATOM_AFTER_SHUTTLE_MOVE, oldT)
 
 	return TRUE
 
@@ -397,7 +387,7 @@ All ShuttleMove procs go here
 
 /obj/structure/cable/afterShuttleMove(turf/oldT, list/movement_force, shuttle_dir, shuttle_preferred_direction, move_dir, rotation)
 	. = ..()
-	connect_cable(TRUE)
+	Connect_cable(TRUE)
 	propagate_if_no_network()
 
 /obj/machinery/power/shuttle_engine/hypotheticalShuttleMove(move_mode)
@@ -427,9 +417,6 @@ All ShuttleMove procs go here
 	return ..()
 
 /************************************Misc move procs************************************/
-
-/atom/movable/lighting_object/onShuttleMove()
-	return FALSE
 
 /obj/docking_port/mobile/hypotheticalShuttleMove(rotation, move_mode, obj/docking_port/mobile/moving_dock)
 	. = ..()

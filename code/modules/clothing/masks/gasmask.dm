@@ -48,7 +48,7 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 		AddComponent(/datum/component/clothing_dirt, dirt_state)
 
 	if(fishing_modifier)
-		AddElement(/datum/element/adjust_fishing_difficulty, fishing_modifier)
+		AddComponent(/datum/component/adjust_fishing_difficulty, fishing_modifier)
 
 	if(!max_filters || !starting_filter_type)
 		return
@@ -219,8 +219,8 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 	flash_protect = FLASH_PROTECTION_WELDER
 	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT*2, /datum/material/glass=SHEET_MATERIAL_AMOUNT)
 	tint = 2
-	toggle_message = "You pull the visor down."
-	alt_toggle_message = "You push the visor up."
+	toggle_message = "You pull the visor down"
+	alt_toggle_message = "You push the visor up"
 	armor_type = /datum/armor/gas_welding
 	actions_types = list(/datum/action/item_action/toggle)
 	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE|HIDESNOUT
@@ -249,9 +249,9 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 	if(!fishing_modifier)
 		return
 	if(up)
-		RemoveElement(/datum/element/adjust_fishing_difficulty)
+		qdel(GetComponent(/datum/component/adjust_fishing_difficulty))
 	else
-		AddElement(/datum/element/adjust_fishing_difficulty, fishing_modifier)
+		AddComponent(/datum/component/adjust_fishing_difficulty, fishing_modifier)
 
 /obj/item/clothing/mask/gas/welding/update_icon_state()
 	. = ..()
@@ -268,7 +268,7 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 	name = "plague doctor mask"
 	desc = "A modernised version of the classic design, this mask will not only protect you from exposure to the Pestilence but it can also be connected to an air supply."
 	icon_state = "plaguedoctor"
-	flags_inv = HIDEEYES|HIDEFACE|HIDEFACIALHAIR|HIDESNOUT
+	flags_inv = HIDEEARS|HIDEEYES|HIDEFACE|HIDEFACIALHAIR|HIDESNOUT|HIDEHAIR
 	inhand_icon_state = "gas_mask"
 	clothing_flags = BLOCK_GAS_SMOKE_EFFECT|MASKINTERNALS
 	dirt_state = "plague_dirt"
@@ -283,19 +283,6 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 	w_class = WEIGHT_CLASS_SMALL
 	fishing_modifier = 0
 	pepper_tint = FALSE
-
-/obj/item/clothing/mask/gas/syndicate/plasmaman
-	starting_filter_type = /obj/item/gas_filter/plasmaman
-
-/obj/item/clothing/mask/gas/syndicate/cybersun
-	name = "\improper Cybersun mask"
-	desc = "It's really more about making a statement than protecting you from environmental hazards."
-	icon_state = "cybersun"
-	flags_cover = MASKCOVERSMOUTH
-	flags_inv = HIDEFACE|HIDEFACIALHAIR|HIDESNOUT
-	visor_flags_inv = HIDEFACE|HIDEFACIALHAIR|HIDESNOUT
-	visor_flags_cover = MASKCOVERSMOUTH
-	alternate_worn_layer = BENEATH_HAIR_LAYER
 
 /obj/item/clothing/mask/gas/clown_hat
 	name = "clown wig and mask"
@@ -410,12 +397,11 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 	if(src && choice && !user.incapacitated && in_range(user,src))
 		// NOVA EDIT ADDITION START - More mask variations
 		var/mob/living/carbon/human/human_user = user
-		var/datum/mutant_bodypart/snout = human_user.dna.mutant_bodyparts[FEATURE_SNOUT]
-		if(snout)
+		if(human_user.dna.species.mutant_bodyparts[FEATURE_SNOUT])
 			icon = 'modular_nova/master_files/icons/obj/clothing/masks.dmi'
 			worn_icon = 'modular_nova/master_files/icons/mob/clothing/mask_muzzled.dmi'
 			var/list/avian_snouts = list("Beak", "Big Beak", "Corvid Beak")
-			if(snout.name in avian_snouts)
+			if(human_user.dna.species.mutant_bodyparts[FEATURE_SNOUT][MUTANT_INDEX_NAME] in avian_snouts)
 				icon_state = "[options[choice]]_b"
 		else
 			icon = 'icons/obj/clothing/masks.dmi'
@@ -474,7 +460,6 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 	icon_state = "carp_mask"
 	inhand_icon_state = null
 	flags_cover = MASKCOVERSEYES
-	clothing_flags = MASKINTERNALS | CARP_STYLE_FACTOR
 	fishing_modifier = -4
 
 /obj/item/clothing/mask/gas/tiki_mask
@@ -482,7 +467,7 @@ GLOBAL_LIST_INIT(clown_mask_options, list(
 	desc = "A creepy wooden mask. Surprisingly expressive for a poorly carved bit of wood."
 	icon_state = "tiki_eyebrow"
 	inhand_icon_state = null
-	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT * 2)
+	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT * 1.25)
 	resistance_flags = FLAMMABLE
 	flags_cover = MASKCOVERSEYES
 	max_integrity = 100

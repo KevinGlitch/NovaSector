@@ -6,7 +6,6 @@
 	preview_outfit = /datum/outfit/marauder_preview
 	show_to_ghosts = TRUE
 	give_uplink = FALSE
-	stinger_sound = 'modular_nova/modules/moretraitoritems/sound/wakeup.ogg'
 
 /datum/outfit/marauder_preview
 	name = "Marauder (Preview only)"
@@ -17,36 +16,40 @@
 /datum/antagonist/traitor/marauder/render_preview_outfit(datum/outfit/outfit, mob/living/carbon/human/dummy)
 	//yes this is an OC, but she is canonically dead so its ok. such is the fate of a gorlex marauder
 	dummy = dummy || new /mob/living/carbon/human/dummy/consistent
+//	dummy.set_species(/datum/species/mermaid, icon_update = FALSE)
 	var/obj/item/bodypart/lame_flesh_arm = dummy.get_bodypart(BODY_ZONE_R_ARM)
 	var/obj/item/bodypart/cool_robot_arm = new /obj/item/bodypart/arm/right/robot()
 	cool_robot_arm.set_icon_static('modular_nova/master_files/icons/mob/augmentation/sgmipc.dmi')
 	cool_robot_arm.current_style = "Shellguard Munitions Standard Series"
-	cool_robot_arm.replace_limb(dummy)
+	cool_robot_arm.replace_limb(dummy, TRUE)
 	qdel(lame_flesh_arm)
 	dummy.equipOutfit(outfit, visuals_only = TRUE)
 	dummy.underwear = "Striped Boxers"
 	dummy.underwear_color = "#5f534a"
-	dummy.set_haircolor("#ffffff", update = FALSE)
-	dummy.set_hair_gradient_color("#bcb4e7", update = FALSE)
-	dummy.set_hair_gradient_style("Fade Up", update = FALSE)
-	dummy.set_hairstyle("Sideways ponytail")
+	dummy.hair_color = "#ffffff"
+	dummy.grad_color[1] = "#bcb4e7"
+	dummy.grad_style[1] = "Fade Up"
+	dummy.hairstyle = "Sideways ponytail"
+
 	dummy.update_body(TRUE)
-	var/datum/universal_icon/antag_icon = get_flat_uni_icon(dummy)
+	var/icon = getFlatIcon(dummy)
 	SSatoms.prepare_deletion(dummy)
-	return antag_icon
+	return icon
 
 /datum/antagonist/traitor/marauder/apply_innate_effects(mob/living/mob_override)
 	. = ..()
 	var/mob/living/owner_mob = mob_override || owner.current
 	var/datum/language_holder/holder = owner_mob.get_language_holder()
 	holder.grant_language(/datum/language/codespeak, source = LANGUAGE_MIND)
-	owner_mob.add_faction(ROLE_SYNDICATE)
+	owner_mob.faction |= ROLE_SYNDICATE
+	owner_mob.faction &= FACTION_NEUTRAL
 
 /datum/antagonist/traitor/marauder/remove_innate_effects(mob/living/mob_override)
 	var/mob/living/owner_mob = mob_override || owner.current
 	if(owner_mob)
 		owner_mob.remove_language(/datum/language/codespeak, source = LANGUAGE_MIND)
-		owner_mob.remove_faction(ROLE_SYNDICATE)
+		owner_mob.faction &= ROLE_SYNDICATE
+		owner_mob.faction |= FACTION_NEUTRAL
 
 /// Removes NT from being the possible employer, because that would be weird
 /datum/antagonist/traitor/marauder/pick_employer()
@@ -122,7 +125,7 @@
 		return
 	if(!uniform.has_sensor)
 		return
-	uniform.set_sensor_mode(SENSOR_OFF)
+	uniform.sensor_mode = NO_SENSORS
 
 /datum/outfit/marauder/plasmaman
 	name = "Marauder (Plasmaman)"

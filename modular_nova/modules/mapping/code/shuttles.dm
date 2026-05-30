@@ -103,10 +103,15 @@
 	possible_destinations = "syndicate_ne;syndicate_nw;syndicate_n;syndicate_se;syndicate_sw;syndicate_s"
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | ACID_PROOF
 
-/obj/machinery/computer/shuttle/slaver/Initialize(mapload)
-	. = ..()
-	AddElement(/datum/element/tool_blocker, TOOL_SCREWDRIVER)
-	AddElement(/datum/element/tool_blocker, TOOL_CROWBAR)
+// formerly NO_DECONSTRUCTION
+/obj/machinery/computer/shuttle/slaver/default_deconstruction_screwdriver(mob/user, icon_state_open, icon_state_closed, obj/item/screwdriver)
+	return NONE
+
+/obj/machinery/computer/shuttle/slaver/default_deconstruction_crowbar(obj/item/crowbar, ignore_panel, custom_deconstruct)
+	return NONE
+
+/obj/machinery/computer/shuttle/slaver/default_pry_open(obj/item/crowbar, close_after_pry = FALSE, open_density = FALSE, closed_density = TRUE)
+	return NONE
 
 /datum/map_template/shuttle/slaver_ship
 	port_id = "slaver ship"
@@ -449,3 +454,57 @@
 /obj/item/gps/computer/space/solfed/engineer
 	gpstag = "*SF - EAS(E)-3921"
 /*----- End of ENGINEERING VESSEL Shuttle Code -----*/
+
+/*----- PHOENIX COLLECTIVE - "AXION PARIAH" Shuttle Code -----*/
+/datum/map_template/shuttle/ert/phoenix
+	prefix = "_maps/shuttles/nova/phoenix/"
+	suffix = "phoenix_arrival_shuttle"
+	name = "\"Axion Pariah\" Phoenix Collective Transport Shuttle"
+
+/datum/map_template/shuttle/ert/phoenix/axionlocked
+	prefix = "_maps/shuttles/nova/phoenix/"
+	suffix = "phoenix_arrival_shuttle_station"
+	name = "Station-Locked \"Axion Pariah\" Phoenix Collective Transport Shuttle"
+
+/obj/machinery/computer/shuttle/phoenix
+	name = "\improper Axion Pariah control console"
+	desc = "Used to control an Axion Pariah model shuttle."
+	circuit = /obj/item/circuitboard/computer/phoenix
+	shuttleId = "phoenix_arrival_shuttle"
+	possible_destinations = "phoenix_general_custom;phoenix_general_home;phoenix_arrivals_stationary;phoenix_arrivals_transfer;whiteship_home"
+	req_access = list(ACCESS_CENT_GENERAL)
+
+/obj/machinery/computer/shuttle/phoenix/axionlocked
+	circuit = /obj/item/circuitboard/computer/phoenix/axionlocked
+	shuttleId = "phoenix_arrival_shuttle_station"
+	possible_destinations = "phoenix_arrivals_stationary;phoenix_arrivals_transfer"
+	req_access = null
+
+/obj/machinery/computer/camera_advanced/shuttle_docker/phoenix
+	name = "\improper Axion Pariah navigation computer"
+	desc = "The navigation console for an Axion Pariah model shuttle."
+	shuttleId = "phoenix_arrival_shuttle"
+	lock_override = CAMERA_LOCK_STATION
+	shuttlePortId = "phoenix_general_custom"
+	jump_to_ports = list( "phoenix_general_home" = 1, "syndicate_nw" = 1, )
+	view_range = 12
+	zlink_range = 1
+	move_up_action = /datum/action/innate/camera_multiz_up
+	move_down_action = /datum/action/innate/camera_multiz_down
+	req_access = list(ACCESS_CENT_GENERAL)
+
+/obj/item/circuitboard/computer/phoenix
+	name = "Axion Pariah Control Console (Computer Board)"
+	build_path = /obj/machinery/computer/shuttle/phoenix
+
+/obj/item/circuitboard/computer/phoenix/axionlocked
+	name = "Station-Locked Axion Pariah Control Console (Computer Board)"
+	build_path = /obj/machinery/computer/shuttle/phoenix/axionlocked
+
+/obj/item/gps/computer/space/phoenix
+	name = "\improper Phoenix Collective GPS transponder"
+	icon = 'modular_nova/modules/mapping/icons/machinery/gps_computer_x32.dmi'	//needs its own file for pixel size ;-;
+	gpstag = "*PC - AXIPAR"
+	pixel_y = 0
+
+/*----- End of SOLFED VESSEL Shuttle Code -----*/

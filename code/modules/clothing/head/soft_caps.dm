@@ -21,6 +21,7 @@
 	..()
 
 /obj/item/clothing/head/soft/verb/flipcap()
+	set category = "Object"
 	set name = "Flip cap"
 
 	flip(usr)
@@ -165,7 +166,7 @@
 	. = ..()
 	AddComponent(/datum/component/speechmod, replacements = strings("crustacean_replacement.json", "crustacean")) //you asked for this.
 	AddElement(/datum/element/skill_reward, /datum/skill/fishing)
-	AddElement(/datum/element/adjust_fishing_difficulty, -5)
+	AddComponent(/datum/component/adjust_fishing_difficulty, -5)
 
 #define PROPHAT_MOOD "prophat"
 

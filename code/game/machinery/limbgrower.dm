@@ -5,7 +5,6 @@
 	desc = "It grows new limbs using Synthflesh."
 	icon = 'icons/obj/machines/limbgrower.dmi'
 	icon_state = "limbgrower_idleoff"
-	base_icon_state = "limbgrower"
 	density = TRUE
 	circuit = /obj/item/circuitboard/machine/limbgrower
 	interaction_flags_atom = parent_type::interaction_flags_atom | INTERACT_ATOM_REQUIRES_ANCHORED
@@ -34,7 +33,7 @@
 	stored_research = GLOB.autounlock_techwebs[/datum/techweb/autounlocking/limbgrower]
 	. = ..()
 	AddComponent(/datum/component/plumbing/simple_demand)
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(/datum/component/simple_rotation)
 	register_context()
 
 /obj/machinery/limbgrower/add_context(atom/source, list/context, obj/item/held_item, mob/user)
@@ -118,10 +117,11 @@
 		)
 		for(var/datum/design/found_design in species_categories[category])
 			var/list/all_reagents = list()
-			for(var/datum/reagent/reagent_id as anything in found_design.reagents_list)
+			for(var/reagent_typepath in found_design.reagents_list)
+				var/datum/reagent/reagent_id = find_reagent_object_from_type(reagent_typepath)
 				var/list/reagent_data = list(
-					name = reagent_id::name,
-					amount = (found_design.reagents_list[reagent_id] * production_coefficient),
+					name = reagent_id.name,
+					amount = (found_design.reagents_list[reagent_typepath] * production_coefficient),
 				)
 				all_reagents += list(reagent_data)
 
@@ -163,16 +163,20 @@
 		return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/limbgrower/screwdriver_act(mob/living/user, obj/item/tool)
+	. = ..()
 	if(check_busy(user))
 		return ITEM_INTERACT_BLOCKING
 
-	return default_deconstruction_screwdriver(user, tool)
+	. = default_deconstruction_screwdriver(user, "limbgrower_panelopen", "limbgrower_idleoff", tool)
+	if(.)
+		ui_close(user)
 
 /obj/machinery/limbgrower/crowbar_act(mob/living/user, obj/item/tool)
+	. = ..()
 	if(check_busy(user))
 		return ITEM_INTERACT_BLOCKING
 
-	return default_deconstruction_crowbar(user, tool)
+	return default_deconstruction_crowbar(tool)
 
 /obj/machinery/limbgrower/wrench_act(mob/living/user, obj/item/tool)
 	. = ..()
@@ -181,15 +185,6 @@
 
 	if(default_unfasten_wrench(user, tool))
 		return ITEM_INTERACT_SUCCESS
-
-/obj/machinery/limbgrower/update_icon_state()
-	. = ..()
-	if(busy)
-		icon_state = "[base_icon_state]_idleon"
-	else if(panel_open)
-		icon_state = "[base_icon_state]_panelopen"
-	else
-		icon_state = "[base_icon_state]_idleoff"
 
 /obj/machinery/limbgrower/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
@@ -231,8 +226,8 @@
 
 			busy = TRUE
 			use_energy(power)
-			update_appearance()
 			flick("limbgrower_fill", src)
+			icon_state = "limbgrower_idleon"
 			selected_category = temp_category
 			addtimer(CALLBACK(src, PROC_REF(build_item), consumed_reagents_list), production_speed * production_coefficient)
 			return TRUE
@@ -263,8 +258,8 @@
 		new built_typepath(loc)
 
 	busy = FALSE
-	update_appearance()
 	flick("limbgrower_unfill", src)
+	icon_state = "limbgrower_idleoff"
 
 /*
  * The process of putting together a limb.

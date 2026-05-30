@@ -23,7 +23,7 @@
 	)
 	crate_name = "mouse crate"
 
-/datum/supply_pack/critter/mouse/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/mouse/generate()
 	. = ..()
 	for(var/i in 1 to 5)
 		new /mob/living/basic/mouse(.)
@@ -37,7 +37,7 @@
 	)
 	crate_name = "chinchilla crate"
 
-/datum/supply_pack/critter/chinchilla/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/chinchilla/generate()
 	. = ..()
 	for(var/i in 1 to 3)
 		new /mob/living/basic/pet/chinchilla(.)
@@ -50,23 +50,6 @@
 	cost = CARGO_CRATE_VALUE * 7
 	contains = list(/mob/living/basic/pet/cat/fennec = 2)
 	crate_name = "fennec crate"
-
-/datum/supply_pack/critter/pitbull/pimpy
-	name = "Pedigree Stud Pitbull Crate"
-	desc = "Contains three pitbulls. Verified at the top of Mount Bullmore to be Pedigree Studs.."
-	cost = CARGO_CRATE_VALUE * 9
-	contains = list(
-		/mob/living/basic/pet/dog/pitbull = 3,
-	)
-	crate_name = "pedigree stud pitbull crate"
-
-/datum/supply_pack/critter/redpanda
-	name = "Red Panda Crate"
-	desc = "Your station needs a little more Wah? Some more red tails? Order this. You'll never escape your sadness."
-	cost = CARGO_CRATE_VALUE * 4
-	contains = list(
-		/mob/living/basic/pet/fox/redpanda = 2,)
-	crate_name = "wah crate"
 
 /*
 *	MEDICAL
@@ -143,7 +126,7 @@
 
 /datum/supply_pack/medical/medigun
 	name = "CWM-479 Medigun"
-	desc = "Contains a single Vey-Medical CWM-479 model medigun; medicells not included."
+	desc = "Contains a single VeyMedical CWM-479 model medical gun; cells not included."
 	cost = CARGO_CRATE_VALUE * 30
 	access = ACCESS_MEDICAL
 	contains = list(/obj/item/storage/briefcase/medicalgunset/standard)
@@ -151,7 +134,7 @@
 
 /datum/supply_pack/medical/medicells
 	name = "Medicell Replacement Crate"
-	desc = "Contains a set of tier I brute, burn, and toxin medicells for Vey-Medical mediguns."
+	desc = "Contains the tier I Medigun cells."
 	cost = CARGO_CRATE_VALUE * 5
 	access = ACCESS_MEDICAL
 	contains = list(
@@ -427,7 +410,7 @@
 	contains = list(/obj/item/gravity_harness)
 
 /datum/supply_pack/misc/commandkeys
-	order_flags = ORDER_EMAG_ONLY
+	hidden = TRUE
 
 /*
 *	FOOD
@@ -697,7 +680,7 @@
 	name = "Authentic Renaissance Faire Crate"
 	desc = "Contains two authentic suits of armor, swords, and two bows and cuirass' for the cowards hiding in the back."
 	cost = CARGO_CRATE_VALUE * 30
-	order_flags = ORDER_CONTRABAND
+	contraband = TRUE
 	contains = list(
 		/obj/item/clothing/suit/armor/riot/knight/larp/red,
 		/obj/item/clothing/gloves/plate/larp/red,
@@ -769,7 +752,7 @@
 	contains = list(/obj/item/grown/log)
 	crate_name = "lumber crate"
 
-/datum/supply_pack/materials/rawlumber/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/materials/rawlumber/generate()
 	. = ..()
 	for(var/i in 1 to 19)
 		new /obj/item/grown/log(.)
@@ -778,11 +761,14 @@
 * VENDING RESTOCKS
 */
 
+// EXOBYTECH UPD: disables LustWish supply crate orders if "disable lewd items" is on
 /datum/supply_pack/vending/dorms
 	name = "LustWish Supply Crate"
 	desc = "This crate contains a single refill for the LustWish vendor."
 	cost = CARGO_CRATE_VALUE * 2
 	contains = list(/obj/item/vending_refill/lustwish)
+	lewd = TRUE
+// EXOBYTECH UPD END
 
 /datum/supply_pack/vending/barber
 	name = "Fab-O-Vend Supply Crate"

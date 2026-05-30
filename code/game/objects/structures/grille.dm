@@ -15,7 +15,6 @@
 	armor_type = /datum/armor/structure_grille
 	max_integrity = 50
 	integrity_failure = 0.4
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT)
 	var/rods_type = /obj/item/stack/rods
 	var/rods_amount = 2
 	/// Whether or not we're disappearing but dramatically
@@ -31,7 +30,6 @@
 /obj/structure/grille/Initialize(mapload)
 	. = ..()
 	AddElement(/datum/element/atmos_sensitive, mapload)
-	register_context()
 
 /obj/structure/grille/Destroy()
 	update_cable_icons_on_turf(get_turf(src))
@@ -60,19 +58,9 @@
 	if(resistance_flags & INDESTRUCTIBLE)
 		return
 	if(anchored)
-		. += span_notice("It's secured in place with [EXAMINE_HINT("screws")]. The rods look like they could be [EXAMINE_HINT("cut")] through.")
+		. += span_notice("It's secured in place with <b>screws</b>. The rods look like they could be <b>cut</b> through.")
 	else
-		. += span_notice("The anchoring screws are [EXAMINE_HINT("unscrewed")]. The rods look like they could be [EXAMINE_HINT("cut")] through.")
-
-/obj/structure/grille/add_context(atom/source, list/context, obj/item/held_item, mob/user)
-	. = ..()
-	if(held_item?.tool_behaviour == TOOL_WIRECUTTER)
-		context[SCREENTIP_CONTEXT_RMB] = "Deconstruct"
-		return CONTEXTUAL_SCREENTIP_SET
-	if(held_item?.tool_behaviour == TOOL_SCREWDRIVER)
-		context[SCREENTIP_CONTEXT_LMB] = "[anchored ? "Unanchor" : "Anchor"]"
-		return CONTEXTUAL_SCREENTIP_SET
-	return .
+		. += span_notice("The anchoring screws are <i>unscrewed</i>. The rods look like they could be <b>cut</b> through.")
 
 /obj/structure/grille/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
 	switch(the_rcd.mode)
@@ -104,7 +92,7 @@
 	return FALSE
 
 /obj/structure/grille/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, list/rcd_data)
-	switch(rcd_data[RCD_DESIGN_MODE])
+	switch(rcd_data["[RCD_DESIGN_MODE]"])
 		if(RCD_DECONSTRUCT)
 			qdel(src)
 			return TRUE
@@ -118,7 +106,7 @@
 			if(!clear_tile(user))
 				return FALSE
 
-			var/obj/structure/window/window_path = rcd_data[RCD_DESIGN_PATH]
+			var/obj/structure/window/window_path = rcd_data["[RCD_DESIGN_PATH]"]
 			if(!ispath(window_path))
 				CRASH("Invalid window path type in RCD: [window_path]")
 
@@ -210,7 +198,7 @@
 		return TRUE
 	return FALSE
 
-/obj/structure/grille/wirecutter_act_secondary(mob/living/user, obj/item/tool)
+/obj/structure/grille/wirecutter_act(mob/living/user, obj/item/tool)
 	add_fingerprint(user)
 	if(shock(user, 100))
 		return
@@ -280,10 +268,6 @@
 					WD = new/obj/structure/window/reinforced/plasma/plastitanium(drop_location())
 				else if(istype(W, /obj/item/stack/sheet/bronze))
 					WD = new/obj/structure/window/bronze/fulltile(drop_location())
-				// NOVA EDIT ADDITION START
-				else if (istype(W, /obj/item/stack/sheet/spaceshipglass))
-					WD = new /obj/structure/window/reinforced/shuttle/spaceship(drop_location())
-				// NOVA EDIT ADDITION END
 				else
 					WD = new/obj/structure/window/fulltile(drop_location()) //normal window
 				WD.setDir(dir_to_set)
@@ -337,21 +321,31 @@
 	update_appearance()
 	return TRUE
 
-/obj/structure/grille/shock(mob/living/shocking, chance = 100, shock_source, siemens_coeff = 1)
+// shock user with probability prb (if all connections & power are working)
+// returns 1 if shocked, 0 otherwise
+
+/obj/structure/grille/proc/shock(mob/user, prb)
 	if(!anchored || broken) // anchored/broken grilles are never connected
 		return FALSE
-	var/turf/grill_loc = get_turf(src)
-	if(grill_loc.overfloor_placed)//cant be a floor in the way!
+	if(!prob(prb))
 		return FALSE
-	var/obj/structure/cable/grill_cable = grill_loc.get_cable_node()
-	if(isnull(grill_cable))
+	if(!in_range(src, user))//To prevent TK and mech users from getting shocked
 		return FALSE
-	shock_source = grill_cable
-	if(!..())
+	var/turf/T = get_turf(src)
+	if(T.overfloor_placed)//cant be a floor in the way!
 		return FALSE
-	// Shocking hurts the grille (to weaken monkey powersinks)
-	if(prob(50))
+
+	var/obj/structure/cable/cable_node = T.get_cable_node()
+	if(isnull(cable_node))
+		return FALSE
+	if(!electrocute_mob(user, cable_node, src, 1, TRUE))
+		return FALSE
+	if(prob(50)) // Shocking hurts the grille (to weaken monkey powersinks)
 		take_damage(1, BURN, FIRE, sound_effect = FALSE)
+	var/datum/effect_system/spark_spread/sparks = new /datum/effect_system/spark_spread
+	sparks.set_up(3, 1, src)
+	sparks.start()
+
 	return TRUE
 
 /obj/structure/grille/should_atmos_process(datum/gas_mixture/air, exposed_temperature)

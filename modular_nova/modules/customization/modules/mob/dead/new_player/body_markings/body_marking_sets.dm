@@ -4,22 +4,12 @@
 	///List of the body markings in this set
 	var/body_marking_list
 	///Which species is this marking recommended to. Important for randomisations.
-	var/list/recommended_species = list(
-		SPECIES_MAMMAL = TRUE,
-		SPECIES_TAJARAN = TRUE,
-		SPECIES_VULP = TRUE,
-		SPECIES_AQUATIC = TRUE,
-		SPECIES_AKULA = TRUE
-	)
-
-/datum/body_marking_set/New()
-	. = ..()
-	if(recommended_species)
-		recommended_species = string_assoc_list(recommended_species)
+	var/recommended_species = list(SPECIES_MAMMAL, SPECIES_TAJARAN, SPECIES_VULP, SPECIES_AQUATIC, SPECIES_AKULA)
 
 /datum/body_marking_set/none
 	name = SPRITE_ACCESSORY_NONE
 	recommended_species = null
+	body_marking_list = list()
 
 /datum/body_marking_set/tajaran
 	name = "Tajaran"
@@ -215,7 +205,7 @@
 
 //AKULA MARKINGS
 /datum/body_marking_set/akula
-	recommended_species = list(SPECIES_AKULA = 1)
+	recommended_species = list(SPECIES_AKULA)
 
 /datum/body_marking_set/akula/akula
 	name = "Akula"
@@ -223,7 +213,7 @@
 
 //VOX MARKINGS
 /datum/body_marking_set/vox
-	recommended_species = list(SPECIES_VOX = 1)
+	recommended_species = list(SPECIES_VOX)
 
 /datum/body_marking_set/vox/vox
 	name = "Vox"
@@ -246,7 +236,7 @@
 	body_marking_list = list("Vox Talon", "Vox Heart Tattoo")
 
 /datum/body_marking_set/synthliz
-	recommended_species = list(SPECIES_SYNTH = 1)
+	recommended_species = list(SPECIES_SYNTH, SPECIES_PCSYNTH)
 
 /datum/body_marking_set/synthliz/scutes
 	name = "Synth Scutes"
@@ -263,7 +253,7 @@
 //MOTH
 
 /datum/body_marking_set/moth
-	recommended_species = list(SPECIES_MOTH = 1)
+	recommended_species = list(SPECIES_MOTH)
 
 /datum/body_marking_set/moth/reddish
 	name = "Reddish"

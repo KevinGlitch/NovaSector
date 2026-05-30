@@ -1,5 +1,7 @@
-/// Amount of travel distance to force open tram doors while moving
-#define TRAM_DOOR_RELEASE_THRESHOLD 17
+#define TRAM_DOOR_WARNING_TIME (0.9 SECONDS)
+#define TRAM_DOOR_CYCLE_TIME (0.6 SECONDS)
+#define TRAM_DOOR_CRUSH_TIME (0.7 SECONDS)
+#define TRAM_DOOR_RECYCLE_TIME (2.7 SECONDS)
 
 /obj/machinery/door/airlock/tram
 	name = "tram door"
@@ -21,7 +23,6 @@
 	var/retry_counter
 	var/crushing_in_progress = FALSE
 	bound_width = 64
-	COOLDOWN_DECLARE(release_cooldown)
 
 /obj/machinery/door/airlock/tram/Initialize(mapload)
 	. = ..()
@@ -39,12 +40,15 @@
 		return FALSE
 
 	SEND_SIGNAL(src, COMSIG_AIRLOCK_OPEN, FALSE)
-	var/animate_open = forced == BYPASS_DOOR_CHECKS ? FALSE : TRUE
-	set_airlock_state(AIRLOCK_OPENING, animate_open, force_type = forced)
+	set_airlock_state(AIRLOCK_OPENING, animated = TRUE)
 
-	var/passable_delay = animation_segment_delay(AIRLOCK_OPENING_PASSABLE)
+	var/passable_delay
 	if(forced >= BYPASS_DOOR_CHECKS)
+		playsound(src, 'sound/machines/airlock/airlockforced.ogg', vol = 40, vary = FALSE)
 		passable_delay = 0
+	else
+		playsound(src, doorOpen, vol = 40, vary = FALSE)
+		passable_delay = animation_segment_delay(AIRLOCK_OPENING_PASSABLE)
 
 	sleep(passable_delay)
 	set_density(FALSE)
@@ -52,7 +56,7 @@
 		filler.set_density(FALSE)
 	flags_1 &= ~PREVENT_CLICK_UNDER_1
 	air_update_turf(TRUE, FALSE)
-	var/open_delay = forced == BYPASS_DOOR_CHECKS ? (0.2 SECONDS) : (animation_segment_delay(AIRLOCK_OPENING_FINISHED) - passable_delay)
+	var/open_delay = animation_segment_delay(AIRLOCK_OPENING_FINISHED) - passable_delay
 	sleep(open_delay)
 	layer = OPEN_DOOR_LAYER
 	set_airlock_state(AIRLOCK_OPEN, animated = FALSE)
@@ -68,7 +72,7 @@
 	if(retry_counter == 1)
 		playsound(src, 'sound/machines/chime.ogg', 40, vary = FALSE, extrarange = SHORT_RANGE_SOUND_EXTRARANGE)
 
-	addtimer(CALLBACK(src, PROC_REF(verify_status)), (2.7 SECONDS))
+	addtimer(CALLBACK(src, PROC_REF(verify_status)), TRAM_DOOR_RECYCLE_TIME)
 	try_to_close()
 
 /**
@@ -88,8 +92,9 @@
 		do_sparks(3, TRUE, src)
 		playsound(src, SFX_SPARKS, vol = 75, vary = FALSE, extrarange = SHORT_RANGE_SOUND_EXTRARANGE)
 	use_energy(50 JOULES)
+	playsound(src, doorClose, vol = 40, vary = FALSE)
 	layer = CLOSED_DOOR_LAYER
-	set_airlock_state(AIRLOCK_CLOSING, animated = TRUE, force_type = forced)
+	set_airlock_state(AIRLOCK_CLOSING, animated = TRUE)
 	var/unpassable_delay = animation_segment_delay(AIRLOCK_CLOSING_UNPASSABLE)
 	sleep(unpassable_delay)
 	if(!hungry_door)
@@ -99,7 +104,7 @@
 					say("Please stand clear of the doors!")
 					playsound(src, 'sound/machines/buzz/buzz-sigh.ogg', 60, vary = FALSE, extrarange = SHORT_RANGE_SOUND_EXTRARANGE)
 					layer = OPEN_DOOR_LAYER
-					set_airlock_state(AIRLOCK_OPEN, animated = FALSE, force_type = forced)
+					set_airlock_state(AIRLOCK_OPEN, animated = FALSE)
 					return FALSE
 	SEND_SIGNAL(src, COMSIG_AIRLOCK_CLOSE)
 	var/opaque_delay = animation_segment_delay(AIRLOCK_CLOSING_OPAQUE) - unpassable_delay
@@ -113,7 +118,7 @@
 	crushing_in_progress = FALSE
 	var/close_delay = animation_segment_delay(AIRLOCK_CLOSING_FINISHED) - unpassable_delay - opaque_delay
 	sleep(close_delay)
-	set_airlock_state(AIRLOCK_CLOSED, animated = FALSE, force_type = forced)
+	set_airlock_state(AIRLOCK_CLOSED, animated = FALSE)
 	retry_counter = 0
 	return TRUE
 
@@ -217,20 +222,22 @@
  * Tram doors can be opened with hands when unpowered
  */
 /obj/machinery/door/airlock/tram/try_safety_unlock(mob/user)
-	if(!COOLDOWN_FINISHED(src, release_cooldown))
+	if(DOING_INTERACTION_WITH_TARGET(user, src))
 		return
 
 	if(!hasPower()  && density)
-		COOLDOWN_START(src, release_cooldown, 1.2 SECONDS)
-		playsound(src, soundin = 'sound/machines/airlock/airlockforced.ogg', vol = 40, vary = FALSE)
-		balloon_alert_to_viewers("pulling emergency exit!", vision_distance = COMBAT_MESSAGE_RANGE)
-		if(do_after(user, 1.2 SECONDS, target = src))
-			open(forced = BYPASS_DOOR_CHECKS)
+		balloon_alert(user, "pulling emergency exit...")
+		if(do_after(user, 4 SECONDS, target = src))
+			try_to_crowbar(null, user, TRUE)
+			return TRUE
 
 /**
  * If you pry (bump) the doors open midtravel, open quickly so you can jump out and make a daring escape.
  */
 /obj/machinery/door/airlock/tram/bumpopen(mob/user, forced = BYPASS_DOOR_CHECKS)
+	if(DOING_INTERACTION_WITH_TARGET(user, src))
+		return
+
 	if(operating || !density)
 		return
 
@@ -238,33 +245,17 @@
 		try_safety_unlock(user)
 		return
 
-	if(!COOLDOWN_FINISHED(src, release_cooldown))
-		return
-
 	var/datum/transport_controller/linear/tram/tram_part = transport_ref?.resolve()
 	add_fingerprint(user)
 	if(!tram_part.controller_active)
 		return
-	if((tram_part.travel_remaining < TRAM_DOOR_RELEASE_THRESHOLD || tram_part.travel_remaining > tram_part.travel_trip_length - TRAM_DOOR_RELEASE_THRESHOLD) && tram_part.controller_active)
+	if((tram_part.travel_remaining < DEFAULT_TRAM_LENGTH || tram_part.travel_remaining > tram_part.travel_trip_length - DEFAULT_TRAM_LENGTH) && tram_part.controller_active)
 		return // we're already animating, don't reset that
-	COOLDOWN_START(src, release_cooldown, 1.2 SECONDS)
-	playsound(src, soundin = 'sound/machines/airlock/airlockforced.ogg', vol = 40, vary = FALSE)
-	balloon_alert_to_viewers("pulling emergency exit!", vision_distance = COMBAT_MESSAGE_RANGE)
+	set_airlock_state(AIRLOCK_OPENING, animated = TRUE)
 	if(do_after(user, delay = 0.6 SECONDS, timed_action_flags = IGNORE_USER_LOC_CHANGE | IGNORE_SLOWDOWNS))
 		open(forced = BYPASS_DOOR_CHECKS)
 
-/obj/machinery/door/airlock/tram/animation_effects(animation, force_type = DEFAULT_DOOR_CHECKS)
-	if(force_type == BYPASS_DOOR_CHECKS)
-		return
-
-	switch(animation)
-		if(DOOR_OPENING_ANIMATION)
-			use_energy(50 JOULES)
-			playsound(src, soundin = doorOpen, vol = 40, vary = FALSE)
-		if(DOOR_CLOSING_ANIMATION)
-			use_energy(50 JOULES)
-			playsound(src, soundin = doorClose, vol = 40, vary = FALSE)
-		if(DOOR_DENY_ANIMATION)
-			addtimer(CALLBACK(src, PROC_REF(handle_deny_end)), 0.6 SECONDS)
-
-#undef TRAM_DOOR_RELEASE_THRESHOLD
+#undef TRAM_DOOR_WARNING_TIME
+#undef TRAM_DOOR_CYCLE_TIME
+#undef TRAM_DOOR_CRUSH_TIME
+#undef TRAM_DOOR_RECYCLE_TIME

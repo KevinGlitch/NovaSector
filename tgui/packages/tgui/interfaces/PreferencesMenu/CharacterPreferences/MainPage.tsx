@@ -1,30 +1,28 @@
 import { sortBy } from 'es-toolkit';
 import { filter, map } from 'es-toolkit/compat';
 import { type ReactNode, useState } from 'react';
-import { useBackend } from 'tgui/backend';
-import { sendAct } from 'tgui/events/act';
+import { type sendAct, useBackend } from 'tgui/backend';
 import {
   Box,
   Button,
+  Dropdown, // NOVA EDIT ADDITION
   Floating,
   Input,
   LabeledList,
   Section,
   Stack,
 } from 'tgui-core/components';
-import { exhaustiveCheck } from 'tgui-core/exhaustive'; // NOVA EDIT ADDITION
 import { classes } from 'tgui-core/react';
 import { createSearch } from 'tgui-core/string';
+
 import { CharacterPreview } from '../../common/CharacterPreview';
-import { PageButton } from '../components/PageButton'; // NOVA EDIT ADDITION
 import { RandomizationButton } from '../components/RandomizationButton';
-import { SideDropdown } from '../components/SideDropdown'; // NOVA EDIT ADDITION
 import { features } from '../preferences/features';
 import {
   type FeatureChoicedServerData,
   FeatureValueInput,
 } from '../preferences/features/base';
-import { GENDERS, Gender } from '../preferences/gender';
+import { Gender, GENDERS } from '../preferences/gender';
 import {
   createSetPreference,
   type PreferencesMenuData,
@@ -45,7 +43,7 @@ const CLOTHING_SELECTION_WIDTH = 5.4;
 const CLOTHING_SELECTION_MULTIPLIER = 5.2;
 
 type CharacterControlsProps = {
-  handleRotate: (backwards: boolean) => void; // NOVA EDIT CHANGE - Original: handleRotate: () => void;
+  handleRotate: () => void;
   handleOpenSpecies: () => void;
   handleFood: () => void; // NOVA EDIT ADDITION
   gender: Gender;
@@ -60,25 +58,13 @@ function CharacterControls(props: CharacterControlsProps) {
     <Stack>
       <Stack.Item>
         <Button
-          onClick={() => props.handleRotate(true)} // NOVA EDIT CHANGE - Original: onClick={props.handleRotate}
+          onClick={props.handleRotate}
           fontSize="22px"
           icon="undo"
           tooltip="Rotate"
           tooltipPosition="top"
         />
       </Stack.Item>
-
-      {/* NOVA EDIT ADDITION START */}
-      <Stack.Item>
-        <Button
-          onClick={() => props.handleRotate(false)}
-          fontSize="22px"
-          icon="redo"
-          tooltip="Rotate"
-          tooltipPosition="top"
-        />
-      </Stack.Item>
-      {/* NOVA EDIT ADDITION END */}
 
       <Stack.Item>
         <Button
@@ -364,8 +350,8 @@ function MainFeature(props: MainFeatureProps) {
 }
 
 const createSetRandomization =
-  (preference: string) => (newSetting: RandomSetting) => {
-    sendAct('set_random_preference', {
+  (act: typeof sendAct, preference: string) => (newSetting: RandomSetting) => {
+    act('set_random_preference', {
       preference,
       value: newSetting,
     });
@@ -424,7 +410,7 @@ export function PreferenceList(props: PreferenceListProps) {
                   {randomSetting && (
                     <Stack.Item>
                       <RandomizationButton
-                        setValue={createSetRandomization(featureId)}
+                        setValue={createSetRandomization(act, featureId)}
                         value={randomSetting}
                       />
                     </Stack.Item>
@@ -454,9 +440,13 @@ export function getRandomization(
   serverData: ServerData | undefined,
   randomBodyEnabled: boolean,
 ): Record<string, RandomSetting> {
+  if (!serverData) {
+    return {};
+  }
+
   const { data } = useBackend<PreferencesMenuData>();
 
-  if (!randomBodyEnabled || !serverData) {
+  if (!randomBodyEnabled) {
     return {};
   }
 
@@ -479,7 +469,6 @@ type MainPageProps = {
 
 export function MainPage(props: MainPageProps) {
   const { act, data } = useBackend<PreferencesMenuData>();
-
   const [deleteCharacterPopupOpen, setDeleteCharacterPopupOpen] =
     useState(false);
   const [multiNameInputOpen, setMultiNameInputOpen] = useState(false);
@@ -521,46 +510,6 @@ export function MainPage(props: MainPageProps) {
     // server doesn't know whether the random toggle is on.
     delete nonContextualPreferences.random_name;
   }
-  // NOVA EDIT ADDITION BEGIN: SWAPPABLE PREF MENUS
-  enum PrefPage {
-    Visual, // The visual parts
-    Profile, // Flavor Text, Age, Records, PDA ringtone, etc
-  }
-
-  const [currentPrefPage, setCurrentPrefPage] = useState(PrefPage.Visual);
-
-  let prefPageContents;
-  switch (currentPrefPage) {
-    case PrefPage.Visual:
-      prefPageContents = (
-        <PreferenceList
-          randomizations={getRandomization(
-            contextualPreferences,
-            serverData,
-            randomBodyEnabled,
-          )}
-          preferences={contextualPreferences}
-          maxHeight="auto"
-        />
-      );
-      break;
-    case PrefPage.Profile:
-      prefPageContents = (
-        <PreferenceList
-          randomizations={getRandomization(
-            nonContextualPreferences,
-            serverData,
-            randomBodyEnabled,
-          )}
-          preferences={nonContextualPreferences}
-          maxHeight="auto"
-        />
-      );
-      break;
-    default:
-      exhaustiveCheck(currentPrefPage);
-  }
-  // NOVA EDIT ADDITION END
 
   return (
     <>
@@ -603,9 +552,8 @@ export function MainPage(props: MainPageProps) {
               <CharacterControls
                 gender={data.character_preferences.misc.gender}
                 handleOpenSpecies={props.openSpecies}
-                handleRotate={(value) => {
-                  // NOVA EDIT CHANGE - Original: handleRotate={() => {
-                  act('rotate', { backwards: value }); // NOVA EDIT CHANGE - Original: act('rotate');
+                handleRotate={() => {
+                  act('rotate');
                 }}
                 setGender={createSetPreference(act, 'gender')}
                 showGender={
@@ -627,14 +575,14 @@ export function MainPage(props: MainPageProps) {
 
             <Stack.Item grow>
               <CharacterPreview
-                height="100%"
+                height="80%" // NOVA EDIT - ORIGINAL: height="100%"
                 id={data.character_preview_view}
               />
             </Stack.Item>
 
             {/* NOVA EDIT ADDITION START */}
             <Stack.Item position="relative">
-              <SideDropdown
+              <Dropdown
                 width="100%"
                 selected={data.preview_selection}
                 options={data.preview_options}
@@ -645,20 +593,6 @@ export function MainPage(props: MainPageProps) {
                 }
               />
             </Stack.Item>
-            {/* NOVA EDIT ADDITION START: Background Selection */}
-            <Stack.Item position="relative">
-              <SideDropdown
-                width="100%"
-                selected={data.character_preferences.misc.background_state}
-                options={serverData?.background_state.choices || []}
-                onSelected={(value) =>
-                  act('update_background', {
-                    new_background: value,
-                  })
-                }
-              />
-            </Stack.Item>
-            {/* NOVA EDIT ADDITION END: Background Selection */}
             {/* NOVA EDIT ADDITION END */}
             <Stack.Item position="relative">
               <NameInput
@@ -701,7 +635,10 @@ export function MainPage(props: MainPageProps) {
                       currentValue={clothing}
                       handleSelect={createSetPreference(act, clothingKey)}
                       randomization={randomizationOfMainFeatures[clothingKey]}
-                      setRandomization={createSetRandomization(clothingKey)}
+                      setRandomization={createSetRandomization(
+                        act,
+                        clothingKey,
+                      )}
                     />
                   )}
                 </Stack.Item>
@@ -710,12 +647,9 @@ export function MainPage(props: MainPageProps) {
           </Stack>
         </Stack.Item>
 
-        {/* NOVA EDIT CHANGE: Swappable pref menus */}
-        {/* ORIGINAL: <Stack.Item grow basis={0}> */}
-        <Stack.Item grow basis={0} ml="4px">
+        <Stack.Item grow basis={0}>
           <Stack vertical fill>
-            {/* // NOVA EDIT REMOVAL START
-             <PreferenceList
+            <PreferenceList
               randomizations={getRandomization(
                 contextualPreferences,
                 serverData,
@@ -734,32 +668,8 @@ export function MainPage(props: MainPageProps) {
               preferences={nonContextualPreferences}
               maxHeight="auto"
             />
-            // NOVA EDIT REMOVAL END */}
-            {/* NOVA EDIT ADDITION BEGIN: Swappable pref menus */}
-            <Stack>
-              <Stack.Item grow={2}>
-                <PageButton
-                  currentPage={currentPrefPage}
-                  page={PrefPage.Visual}
-                  setPage={setCurrentPrefPage}
-                >
-                  Character Visuals
-                </PageButton>
-              </Stack.Item>
-              <Stack.Item grow={2}>
-                <PageButton
-                  currentPage={currentPrefPage}
-                  page={PrefPage.Profile}
-                  setPage={setCurrentPrefPage}
-                >
-                  Character Profile
-                </PageButton>
-              </Stack.Item>
-            </Stack>
-            {prefPageContents}
           </Stack>
         </Stack.Item>
-        {/* NOVA EDIT ADDITION END: Swappable pref menus */}
       </Stack>
     </>
   );

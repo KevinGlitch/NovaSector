@@ -22,11 +22,9 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	light_on = FALSE
 	shift_to_open_context_menu = FALSE
 	var/can_reenter_corpse
-	///This variable is set to 1 when you enter the game as an observer.
-	///If you died in the game and are a ghost - this will remain as FALSE.
-	///Note that this is not a reliable way to determine if admins started as observers, since they change mobs a lot.
-	var/started_as_observer = FALSE
-
+	var/started_as_observer //This variable is set to 1 when you enter the game as an observer.
+							//If you died in the game and are a ghost - this will remain as null.
+							//Note that this is not a reliable way to determine if admins started as observers, since they change mobs a lot.
 	var/atom/movable/following = null
 
 	///The time between being able to use boo(), if fun_verbs is TRUE.
@@ -40,7 +38,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 
 	///Flags of huds the ghost currently has enabled, data huds & ghost vision by default.
 	///Selection: GHOST_DATA_HUDS | GHOST_VISION | GHOST_HEALTH | GHOST_CHEM | GHOST_GAS
-	var/ghost_hud_flags = NONE
+	var/ghost_hud_flags = GHOST_DATA_HUDS | GHOST_VISION
 	///The shape the ghost will make while orbiting mobs.
 	var/ghost_orbit = GHOST_ORBIT_CIRCLE
 
@@ -145,12 +143,11 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 
 	grant_all_languages()
 	setup_hud_traits()
-	toggle_ghost_hud_flag(GHOST_VISION | GHOST_DATA_HUDS)
+	show_data_huds()
 
 	SSpoints_of_interest.make_point_of_interest(src)
 	ADD_TRAIT(src, TRAIT_HEAR_THROUGH_DARKNESS, INNATE_TRAIT)
 	ADD_TRAIT(src, TRAIT_GOOD_HEARING, INNATE_TRAIT)
-	ADD_TRAIT(src, TRAIT_DETECT_STORM, INNATE_TRAIT)
 
 /mob/dead/observer/get_photo_description(obj/item/camera/camera)
 	if(!invisibility || camera.see_ghosts)
@@ -221,16 +218,18 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	if(ghost_accs == GHOST_ACCS_FULL && (icon_state in GLOB.ghost_forms_with_accessories_list)) //check if this form supports accessories and if the client wants to show them
 		if(facial_hairstyle)
 			var/datum/sprite_accessory/S = SSaccessories.facial_hairstyles_list[facial_hairstyle]
-			if(S && S.icon_state != SPRITE_ACCESSORY_NONE)
-				facial_hair_overlay = mutable_appearance(S.icon, S.icon_state, -HAIR_LAYER)
-				facial_hair_overlay.color = facial_hair_color
+			if(S)
+				facial_hair_overlay = mutable_appearance(S.icon, "[S.icon_state]", -HAIR_LAYER)
+				if(facial_hair_color)
+					facial_hair_overlay.color = facial_hair_color
 				facial_hair_overlay.alpha = 200
 				add_overlay(facial_hair_overlay)
 		if(hairstyle)
 			var/datum/sprite_accessory/hair/S = SSaccessories.hairstyles_list[hairstyle]
-			if(S && S.icon_state != SPRITE_ACCESSORY_NONE)
-				hair_overlay = mutable_appearance(S.icon, S.icon_state, -HAIR_LAYER)
-				hair_overlay.color = hair_color
+			if(S)
+				hair_overlay = mutable_appearance(S.icon, "[S.icon_state]", -HAIR_LAYER)
+				if(hair_color)
+					hair_overlay.color = hair_color
 				hair_overlay.alpha = 200
 				hair_overlay.pixel_z = S.y_offset
 				add_overlay(hair_overlay)
@@ -254,22 +253,18 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 		lum = max(read_color[3], 80)
 	return rgb(read_color[1], sat, lum, space = COLORSPACE_HSL)
 
-/**
- * # Ghostize
- *
- * Creates a /mob/dead/observer and moves the player's key into it (among other handling for player->observer)
- * Ignores things like adminghosts and corpselocked (ethereal) players.
- * Args:
- * can_reenter_corse: Whether the new Ghost will be able to click "Re-enter body", TRUE by default.
- * forced: Whether we are forcing this player to be ghosted, ignoring things like corpselocking, FALSE by default.
- */
-/mob/proc/ghostize(can_reenter_corpse = TRUE, forced = FALSE)
+/*
+Transfer_mind is there to check if mob is being deleted/not going to have a body.
+Works together with spawning an observer, noted above.
+*/
+
+/mob/proc/ghostize(can_reenter_corpse = TRUE, admin_ghost = FALSE)
 	if(!key)
 		return
 	if(IS_FAKE_KEY(key)) // Skip aghosts.
 		return
 
-	if(HAS_TRAIT(src, TRAIT_CORPSELOCKED) && !forced)
+	if(HAS_TRAIT(src, TRAIT_CORPSELOCKED) && !admin_ghost)
 		if(can_reenter_corpse) //If you can re-enter the corpse you can't leave when corpselocked
 			return
 		if(ishuman(usr)) //following code only applies to those capable of having an ethereal heart, ie humans
@@ -297,7 +292,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	SEND_SIGNAL(src, COMSIG_MOB_GHOSTIZED)
 	return ghost
 
-/mob/living/ghostize(can_reenter_corpse = TRUE, forced = FALSE)
+/mob/living/ghostize(can_reenter_corpse = TRUE)
 	. = ..()
 	if(. && can_reenter_corpse)
 		var/mob/dead/observer/ghost = .
@@ -389,8 +384,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		return
 	client.view_size.resetToDefault()//Let's reset so people can't become allseeing gods
 	SStgui.on_transfer(src, mind.current) // Transfer NanoUIs.
-	if(mind.current.stat == DEAD && SSlag_switch.measures[DISABLE_DEAD_KEYLOOP] && !client.holder)
-		to_chat(src, span_warning("To leave your body again use the 'Ghost verb' (in the command bar)."))
+	if(mind.current.stat == DEAD && SSlag_switch.measures[DISABLE_DEAD_KEYLOOP])
+		to_chat(src, span_warning("To leave your body again use the Ghost verb."))
 	mind.current.PossessByPlayer(key)
 	mind.current.client.init_verbs()
 	return TRUE
@@ -417,15 +412,13 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		// Update med huds
 		current_mob.med_hud_set_status()
 		current_mob.log_message("had their player ([key_name(src)]) do-not-resuscitate / DNR", LOG_GAME, color = COLOR_GREEN, log_globally = FALSE)
-		// NOVA EDIT ADDITION START - DNR TRAIT (Fixes ghost-DNR'ing not actually DNR'ing)
+		//NOVA EDIT ADDITION START - DNR TRAIT (Fixes ghost-DNR'ing not actually DNR'ing)
 		if(ishuman(current_mob) && !current_mob.has_quirk(/datum/quirk/dnr))
 			current_mob.add_quirk(/datum/quirk/dnr)
 		var/datum/job/job_to_free = SSjob.get_job(current_mob.mind.assigned_role.title)
 		if(job_to_free)
 			job_to_free.current_positions = max(0, job_to_free.current_positions - 1)
-		// NOVA EDIT ADDITION END
-		SEND_SIGNAL(current_mob, COMSIG_LIVING_DNR, src)
-
+		//NOVA EDIT ADDITION END
 	log_message("has opted to do-not-resuscitate / DNR from their body ([current_mob])", LOG_GAME, color = COLOR_GREEN)
 
 	// Disassociates observer mind from the body mind
@@ -542,7 +535,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/toggle_ghostsee()
 	set name = "Toggle Ghost Vision"
 
-	toggle_ghost_hud_flag(GHOST_VISION)
+	ghost_hud_flags ^= GHOST_VISION
 	update_sight()
 	to_chat(usr, span_boldnotice("You [(ghost_hud_flags & GHOST_VISION) ? "now" : "no longer"] have ghost vision."))
 
@@ -608,16 +601,18 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/toggle_data_huds()
 	set name = "Toggle Sec/Med/Diag HUD"
 
-	toggle_ghost_hud_flag(GHOST_DATA_HUDS)
+	ghost_hud_flags ^= GHOST_DATA_HUDS
 	if(ghost_hud_flags & GHOST_DATA_HUDS)
+		show_data_huds()
 		to_chat(src, span_notice("Data HUDs enabled."))
 	else
+		remove_data_huds()
 		to_chat(src, span_notice("Data HUDs disabled."))
 
 /mob/dead/observer/verb/toggle_health_scan()
 	set name = "Toggle Health Scan"
 
-	toggle_ghost_hud_flag(GHOST_HEALTH)
+	ghost_hud_flags ^= GHOST_HEALTH
 	if(ghost_hud_flags & GHOST_HEALTH)
 		to_chat(src, span_notice("Health scan enabled."))
 	else
@@ -626,7 +621,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/toggle_chem_scan()
 	set name = "Toggle Chem Scan"
 
-	toggle_ghost_hud_flag(GHOST_CHEM)
+	ghost_hud_flags ^= GHOST_CHEM
 	if(ghost_hud_flags & GHOST_CHEM)
 		to_chat(src, span_notice("Chem scan enabled."))
 	else
@@ -635,7 +630,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/toggle_gas_scan()
 	set name = "Toggle Gas Scan"
 
-	toggle_ghost_hud_flag(GHOST_GAS)
+	ghost_hud_flags ^= GHOST_GAS
 	if(ghost_hud_flags & GHOST_GAS)
 		to_chat(src, span_notice("Gas scan enabled."))
 	else
@@ -651,19 +646,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if(mind)
 			mind.ghostname = real_name
 		name = real_name
-
-/// Toggles a flag from ghost hud and updates the mob accordingly
-/mob/dead/observer/proc/toggle_ghost_hud_flag(toggled)
-	ghost_hud_flags ^= toggled
-	if(ghost_hud_flags & GHOST_DATA_HUDS)
-		show_data_huds()
-	else
-		remove_data_huds()
-	update_sight()
-	for(var/hud_key in hud_used?.screen_objects)
-		var/atom/movable/screen/ghost/hudbox/hud = hud_used.screen_objects[hud_key]
-		if(istype(hud) && (hud.relevant_flag & toggled))
-			hud.update_appearance(UPDATE_ICON_STATE)
 
 // This is the ghost's follow verb with an argument
 /mob/dead/observer/proc/ManualFollow(atom/movable/target)
@@ -731,6 +713,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	else
 		set_invis_see(SEE_INVISIBLE_OBSERVER)
 
+
 	updateghostimages()
 	..()
 
@@ -786,7 +769,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		return FALSE
 
 	target.PossessByPlayer(key)
-	target.set_faction(list(FACTION_NEUTRAL))
+	target.faction = list(FACTION_NEUTRAL)
 	return TRUE
 
 /mob/dead/observer/_pointed(atom/pointed_at)
@@ -856,13 +839,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	return
 
 /mob/dead/observer/proc/show_data_huds()
-	PRIVATE_PROC(TRUE)
-	ghost_hud_flags |= GHOST_DATA_HUDS // only for safety, it should be set already.
 	add_traits(observer_hud_traits, REF(src))
 
 /mob/dead/observer/proc/remove_data_huds()
-	PRIVATE_PROC(TRUE)
-	ghost_hud_flags &= ~GHOST_DATA_HUDS // only for safety, it should be unset already.
 	remove_traits(observer_hud_traits, REF(src))
 
 /mob/dead/observer/proc/set_ghost_appearance()

@@ -31,7 +31,7 @@
 
 /obj/machinery/power/thermoelectric_generator/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/simple_rotation)
+	AddComponent(/datum/component/simple_rotation)
 	find_circulators()
 	connect_to_network()
 	SSair.start_processing_machine(src)
@@ -87,7 +87,8 @@
 	return TRUE
 
 /obj/machinery/power/thermoelectric_generator/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+	default_deconstruction_crowbar(tool)
+	return TRUE
 
 /obj/machinery/power/thermoelectric_generator/process()
 	//Setting this number higher just makes the change in power output slower, it doesnt actualy reduce power output cause **math**

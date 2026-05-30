@@ -1,9 +1,10 @@
 #define COMBAT_NOTICE_COOLDOWN (10 SECONDS)
-GLOBAL_DATUM_INIT(combat_indicator_vis, /obj/effect/overlay/indicator/combat, new)
+GLOBAL_VAR_INIT(combat_indicator_overlay, GenerateCombatOverlay())
 
-/obj/effect/overlay/indicator/combat
-	icon = 'modular_nova/modules/indicators/icons/combat_indicator.dmi'
-	icon_state = "combat"
+/proc/GenerateCombatOverlay()
+	var/mutable_appearance/combat_indicator = mutable_appearance('modular_nova/modules/indicators/icons/combat_indicator.dmi', "combat", FLY_LAYER)
+	combat_indicator.appearance_flags = APPEARANCE_UI_IGNORE_ALPHA | KEEP_APART
+	return combat_indicator
 
 /mob/living
 	/// Is combat indicator enabled for this mob? Boolean.
@@ -29,13 +30,22 @@ GLOBAL_DATUM_INIT(combat_indicator_vis, /obj/effect/overlay/indicator/combat, ne
 		if(world.time > vehicle_next_combat_popup) // As of the time of writing, COMBAT_NOTICE_COOLDOWN is 10 secs, so this is asking "has 10 secs past between last activation of CI?"
 			vehicle_next_combat_popup = world.time + COMBAT_NOTICE_COOLDOWN
 			playsound(src, 'sound/machines/chime.ogg', vol = 10, vary = FALSE, extrarange = -6, falloff_exponent = 4, frequency = null, channel = 0, pressure_affected = FALSE, ignore_walls = FALSE, falloff_distance = 1)
-			flick_emote_popup_on_obj("combat", 2 SECONDS)
+			flick_emote_popup_on_obj("combat", 20)
 			visible_message(span_boldwarning("[src] prepares for combat!"))
 		combat_indicator_vehicle = TRUE
-		vis_contents |= GLOB.combat_indicator_vis
 	else
 		combat_indicator_vehicle = FALSE
-		vis_contents -= GLOB.combat_indicator_vis
+	update_appearance(UPDATE_ICON|UPDATE_OVERLAYS)
+
+/mob/living/update_overlays()
+	. = ..()
+	if(combat_indicator)
+		. += GLOB.combat_indicator_overlay
+
+/obj/vehicle/sealed/update_overlays()
+	. = ..()
+	if(combat_indicator_vehicle)
+		. += GLOB.combat_indicator_overlay
 
 /**
  * Called whenever a mob's stat changes.
@@ -91,12 +101,12 @@ GLOBAL_DATUM_INIT(combat_indicator_vis, /obj/effect/overlay/indicator/combat, ne
 	if(world.time > nextcombatpopup) // As of the time of writing, COMBAT_NOTICE_COOLDOWN is 10 secs, so this is asking "has 10 secs past between last activation of CI?"
 		nextcombatpopup = world.time + COMBAT_NOTICE_COOLDOWN
 		playsound(src, 'sound/machines/chime.ogg', vol = 10, vary = FALSE, extrarange = -6, falloff_exponent = 4, frequency = null, channel = 0, pressure_affected = FALSE, ignore_walls = FALSE, falloff_distance = 1)
-		flick_emote_popup_on_mob("combat", 2 SECONDS)
+		flick_emote_popup_on_mob("combat", 20)
 		var/ciweapon
 		if(get_active_held_item())
 			ciweapon = get_active_held_item()
 			if(istype(ciweapon, /obj/item/gun))
-				visible_message(span_boldwarning("[src] raises \the [ciweapon] with [p_their()] finger on the trigger, ready for combat!"))
+				visible_message(span_boldwarning("[src] raises \the [ciweapon] with their finger on the trigger, ready for combat!"))
 			else
 				visible_message(span_boldwarning("[src] readies \the [ciweapon] with a tightened grip and offensive stance, ready for combat!"))
 		else
@@ -112,7 +122,7 @@ GLOBAL_DATUM_INIT(combat_indicator_vis, /obj/effect/overlay/indicator/combat, ne
 	apply_status_effect(/datum/status_effect/grouped/surrender, src)
 	log_message("<font color='red'>[src] has turned ON the combat indicator!</font>", LOG_ATTACK)
 	RegisterSignal(src, COMSIG_MOB_STATCHANGE , PROC_REF(ci_on_stat_change))
-	vis_contents |= GLOB.combat_indicator_vis
+	update_appearance(UPDATE_ICON|UPDATE_OVERLAYS)
 
 /**
  * Called whenever a mob disables CI. Or when they die or fall unconscious.
@@ -129,7 +139,7 @@ GLOBAL_DATUM_INIT(combat_indicator_vis, /obj/effect/overlay/indicator/combat, ne
 	else
 		log_message("<font color='cyan'>[src] has turned OFF the combat indicator!</font>", LOG_ATTACK)
 	UnregisterSignal(src, COMSIG_MOB_STATCHANGE)
-	vis_contents -= GLOB.combat_indicator_vis
+	update_appearance(UPDATE_ICON|UPDATE_OVERLAYS)
 
 /**
  * Called whenever the user hits their combat indicator keybind, defaulted to C.
@@ -159,7 +169,7 @@ GLOBAL_DATUM_INIT(combat_indicator_vis, /obj/effect/overlay/indicator/combat, ne
 		return
 	if (user.combat_indicator && !combat_indicator_vehicle) // Finally, if all conditions prior are not met, and the mob has CI enabled and the vehicle doesn't, enable CI.
 		combat_indicator_vehicle = TRUE
-		vis_contents |= GLOB.combat_indicator_vis
+		update_appearance(UPDATE_ICON|UPDATE_OVERLAYS)
 
 /**
  * Called whenever a mob exits a vehicle/sealed, after everything else.
@@ -186,7 +196,7 @@ GLOBAL_DATUM_INIT(combat_indicator_vis, /obj/effect/overlay/indicator/combat, ne
 					break
 		if (!has_occupant_with_ci)
 			combat_indicator_vehicle = FALSE
-			vis_contents -= GLOB.combat_indicator_vis
+			update_appearance(UPDATE_ICON|UPDATE_OVERLAYS)
 
 #undef COMBAT_NOTICE_COOLDOWN
 

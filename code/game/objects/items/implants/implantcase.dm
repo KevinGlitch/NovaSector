@@ -36,9 +36,9 @@
 	icon_state = "implantcase-[imp ? imp.implant_color : 0]"
 	return ..()
 
-/obj/item/implantcase/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(istype(tool, /obj/item/implanter))
-		var/obj/item/implanter/used_implanter = tool
+/obj/item/implantcase/attackby(obj/item/used_item, mob/living/user, list/modifiers, list/attack_modifiers)
+	if(istype(used_item, /obj/item/implanter))
+		var/obj/item/implanter/used_implanter = used_item
 		if(used_implanter.imp && !imp)
 			//implanter to case implant transfer
 			used_implanter.imp.forceMove(src)
@@ -55,10 +55,8 @@
 			reagents = null
 			update_appearance()
 			used_implanter.update_appearance()
-		return ITEM_INTERACT_SUCCESS
-	if(imp)
-		return imp.base_item_interaction(user, tool, modifiers)
-	return ..()
+	else
+		return ..()
 
 /obj/item/implantcase/nameformat(input, user)
 	return "implant case[input?  " - '[input]'" : null]"

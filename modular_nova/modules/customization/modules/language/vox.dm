@@ -14,6 +14,10 @@
 	icon = 'modular_nova/master_files/icons/misc/language.dmi'
 	default_priority = 99
 
+	mutual_understanding = list(
+		/datum/language/creole = 33,
+	)
+
 /datum/language/vox/get_random_name(
 	gender = NEUTER,
 	name_count = default_name_count,

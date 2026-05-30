@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import {
   Button,
   Dropdown,
-  Icon,
   Input,
   NumberInput,
   Slider,
@@ -13,20 +12,20 @@ import {
 
 import { useBackend } from '../../backend';
 import {
+  directionIcons,
   directionNames,
-  directionRotation,
   spawnLocationIcons,
   spawnLocationOptions,
 } from './constants';
 import type { IconSettings } from './index';
 
-export type SpawnPanelData = {
+export interface SpawnPanelData {
   icon: string;
   iconState: string;
   iconStates: string[];
   selected_object?: string;
   precise_mode: string;
-};
+}
 
 interface CreateObjectSettingsProps {
   onCreateObject?: (obj: Record<string, unknown>) => void;
@@ -45,7 +44,6 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
   const [objectName, setObjectName] = useState('');
   const [offset, setOffset] = useState('');
 
-  const dirValues = [1, 5, 4, 6, 2, 10, 8, 9];
   const updateAmount = (value: number) => {
     setAmount(value);
     sendUpdatedSettings({ atom_amount: value });
@@ -68,7 +66,7 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
   const updateDirection = (value: number) => {
     setDirection(value);
     storage.set('spawnpanel-direction', value);
-    sendUpdatedSettings({ atom_dir: dirValues[value] });
+    sendUpdatedSettings({ atom_dir: [1, 2, 4, 8][value] });
   };
 
   const updateObjectName = (value: string) => {
@@ -89,7 +87,7 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
       if (!offsetStr.trim()) return [0, 0, 0];
 
       const parts = offsetStr.split(',').map((part) => {
-        return parseInt(part.trim(), 10);
+        return parseInt(part.trim());
       });
 
       while (parts.length < 3) {
@@ -109,7 +107,7 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
       if (!offsetStr.trim()) return [0, 0, 0];
 
       const parts = offsetStr.split(',').map((part) => {
-        return parseInt(part.trim(), 10);
+        return parseInt(part.trim());
       });
 
       while (parts.length < 3) {
@@ -123,7 +121,7 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
       atom_amount: amount,
       offset_type: cordsType ? 'Absolute offset' : 'Relative offset',
       where_target_type: spawnLocation,
-      atom_dir: dirValues[direction],
+      atom_dir: [1, 2, 4, 8][direction],
       offset: parseOffset(offset),
       atom_name: objectName,
       atom_icon_size: iconSettings.iconSize,
@@ -159,7 +157,7 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
       atom_amount: defaultAmount,
       offset_type: defaultCordsType ? 'Absolute offset' : 'Relative offset',
       where_target_type: defaultSpawnLocation,
-      atom_dir: dirValues[defaultDirection],
+      atom_dir: [1, 2, 4, 8][defaultDirection],
       offset: defaultOffset,
       atom_name: defaultObjectName,
     });
@@ -209,7 +207,7 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
       if (!offsetStr.trim()) return [0, 0, 0];
 
       const parts = offsetStr.split(',').map((part) => {
-        return parseInt(part.trim(), 10);
+        return parseInt(part.trim());
       });
 
       while (parts.length < 3) {
@@ -223,7 +221,7 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
       atom_amount: amount,
       offset_type: cordsType ? 'Absolute offset' : 'Relative offset',
       where_target_type: spawnLocation,
-      atom_dir: dirValues[direction],
+      atom_dir: [1, 2, 4, 8][direction],
       offset: parseOffset(offset),
       atom_name: objectName,
       atom_icon_size: iconSettings.iconSize,
@@ -290,32 +288,31 @@ export function CreateObjectSettings(props: CreateObjectSettingsProps) {
                   <Stack.Item>Dir:</Stack.Item>
                   <Stack.Item>
                     <Button
-                      tooltip={directionNames[dirValues[direction]]}
+                      icon={directionIcons[[1, 2, 4, 8][direction]]}
+                      tooltip={directionNames[[1, 2, 4, 8][direction]]}
                       tooltipPosition="top"
                       fontSize="14"
                       onClick={() => {
-                        updateDirection((direction + 1) % dirValues.length);
+                        const values = [1, 2, 4, 8];
+                        const currentIndex = values.indexOf(values[direction]);
+                        const nextIndex = (currentIndex + 1) % 4;
+                        updateDirection(nextIndex);
                       }}
                       disabled={isAnyPreciseModeActive}
-                    >
-                      <Icon
-                        name="arrow-up"
-                        style={{
-                          transform: `rotate(${directionRotation[dirValues[direction]]}deg)`,
-                        }}
-                      />
-                    </Button>
+                    />
                   </Stack.Item>
                   <Stack.Item grow>
                     <Slider
-                      tickWhileDragging
                       minValue={0}
-                      maxValue={7}
+                      maxValue={3}
                       step={1}
                       lineHeight={1}
                       stepPixelSize={25}
                       value={direction}
-                      format={(value) => dirValues[value].toString()}
+                      format={(value) => {
+                        const values = [1, 2, 4, 8];
+                        return values[value].toString();
+                      }}
                       onChange={(e, value) => updateDirection(value)}
                       disabled={isAnyPreciseModeActive}
                     />

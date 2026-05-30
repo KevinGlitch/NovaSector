@@ -13,7 +13,8 @@
 		//If a specific bodypart is targeted, check how that bodypart is protected and return the value.
 
 	//If you don't specify a bodypart, it checks ALL your bodyparts for protection, and averages out the values
-	for(var/obj/item/bodypart/BP as anything in get_bodyparts())
+	for(var/X in bodyparts)
+		var/obj/item/bodypart/BP = X
 		armorval += check_armor(BP, type)
 		organnum++
 	return (armorval/max(organnum, 1))
@@ -139,8 +140,8 @@
 	if(!HAS_TRAIT(src, TRAIT_BRAWLING_KNOCKDOWN_BLOCKED))
 		Knockdown(SHOVE_KNOCKDOWN_COLLATERAL, daze_amount = 3 SECONDS)
 	target.visible_message(span_danger("[shover] shoves [target.name] into [name]!"),
-		span_userdanger("You're shoved into [name] by [shover]!"), span_hear("You hear aggressive shuffling followed by a loud thud!"), COMBAT_MESSAGE_RANGE, list(shover))
-	to_chat(shover, span_danger("You shove [target.name] into [name]!"))
+		span_userdanger("You're shoved into [name] by [shover]!"), span_hear("You hear aggressive shuffling followed by a loud thud!"), COMBAT_MESSAGE_RANGE, src)
+	to_chat(src, span_danger("You shove [target.name] into [name]!"))
 	log_combat(shover, target, "shoved", addition = "into [name][weapon ? " with [weapon]" : ""]")
 	return COMSIG_LIVING_SHOVE_HANDLED
 
@@ -204,7 +205,7 @@
 		else if(!HAS_TRAIT(src, TRAIT_INCAPACITATED))
 			playsound(loc, 'sound/items/weapons/pierce.ogg', 25, TRUE, -1)
 			var/shovetarget = get_edge_target_turf(user, get_dir(user, get_step_away(src, user)))
-			adjust_stamina_loss(35)
+			adjustStaminaLoss(35)
 			throw_at(shovetarget, 4, 2, user, force = MOVE_FORCE_OVERPOWERING)
 			log_combat(user, src, "shoved")
 			visible_message(span_danger("[user] tackles [src] down!"), \
@@ -330,7 +331,8 @@
 			if(EXPLODE_DEVASTATE)
 				max_limb_loss = 4
 				probability = 50
-		for(var/obj/item/bodypart/BP as anything in get_bodyparts())
+		for(var/X in bodyparts)
+			var/obj/item/bodypart/BP = X
 			if(prob(probability) && !prob(getarmor(BP, BOMB)) && BP.body_zone != BODY_ZONE_HEAD && BP.body_zone != BODY_ZONE_CHEST)
 				BP.receive_damage(INFINITY, wound_bonus = CANT_WOUND) //Capped by proc
 				BP.dismember()
@@ -506,7 +508,7 @@
 			emote("scream")
 			set_facial_hairstyle("Shaved", update = FALSE)
 			set_hairstyle("Bald") //This calls update_body_parts()
-			ADD_TRAIT(affecting, TRAIT_DISFIGURED, TRAIT_GENERIC)
+			ADD_TRAIT(src, TRAIT_DISFIGURED, TRAIT_GENERIC)
 
 		apply_damage(acidity * damage_mod, BRUTE, affecting)
 		apply_damage(acidity * damage_mod * 2, BURN, affecting)
@@ -555,12 +557,10 @@
 
 	combined_msg += span_notice("<b>You check yourself for injuries.</b>")
 
+	var/list/missing = get_all_limbs()
 
-	for(var/part_zone, body_part_untyped in get_bodyparts_by_zones())
-		var/obj/item/bodypart/body_part = body_part_untyped
-		if(isnull(body_part) || IS_STUMP(body_part))
-			combined_msg += span_boldannounce("&rdsh; Your [parse_zone(body_part?.body_zone || part_zone)] is missing!")
-			continue
+	for(var/obj/item/bodypart/body_part as anything in bodyparts)
+		missing -= body_part.body_zone
 		if(body_part.bodypart_flags & BODYPART_PSEUDOPART) //don't show injury text for fake bodyparts; ie chainsaw arms or synthetic armblades
 			continue
 
@@ -568,7 +568,15 @@
 		if(bodypart_report)
 			combined_msg += "[span_notice("&rdsh;")] [bodypart_report]"
 
-	var/tox = get_tox_loss() + (disgust / 5) + (HAS_TRAIT(src, TRAIT_SELF_AWARE) ? 0 : (rand(-3, 0) * 5))
+		//NOVA EDIT ADDITION BEGIN - MEDICAL
+		if(body_part.current_gauze)
+			combined_msg += "\t [span_notice("Your [body_part.name] is [body_part.current_gauze.get_gauze_usage_prefix()] with <a href='byond://?src=[REF(body_part.current_gauze)];remove=1'>[body_part.current_gauze.get_gauze_description()]</a>.")]"
+		//NOVA EDIT END
+
+	for(var/t in missing)
+		combined_msg += span_boldannounce("&rdsh; Your [parse_zone(t)] is missing!")
+
+	var/tox = getToxLoss() + (disgust / 5) + (HAS_TRAIT(src, TRAIT_SELF_AWARE) ? 0 : (rand(-3, 0) * 5))
 	switch(tox)
 		if(10 to 20)
 			combined_msg += span_danger("You feel sick.")
@@ -577,8 +585,7 @@
 		if(40 to INFINITY)
 			combined_msg += span_danger("You feel very unwell!")
 
-	var/cached_blood_volume = HAS_TRAIT(src, TRAIT_NOBLOOD) ? BLOOD_VOLUME_NORMAL : get_blood_volume(apply_modifiers = TRUE)
-	var/oxy = get_oxy_loss() + (losebreath * 4) + (cached_blood_volume < BLOOD_VOLUME_NORMAL ? ((BLOOD_VOLUME_NORMAL - cached_blood_volume) * 0.1) : 0) + (HAS_TRAIT(src, TRAIT_SELF_AWARE) ? 0 : (rand(-3, 0) * 5))
+	var/oxy = getOxyLoss() + (losebreath * 4) + (blood_volume < BLOOD_VOLUME_NORMAL ? ((BLOOD_VOLUME_NORMAL - blood_volume) * 0.1) : 0) + (HAS_TRAIT(src, TRAIT_SELF_AWARE) ? 0 : (rand(-3, 0) * 5))
 	switch(oxy)
 		if(10 to 20)
 			combined_msg += span_danger("You feel lightheaded.")
@@ -587,8 +594,8 @@
 		if(40 to INFINITY)
 			combined_msg += span_danger("You feel like you're about to pass out!")
 
-	if(get_stamina_loss())
-		if(get_stamina_loss() > 30)
+	if(getStaminaLoss())
+		if(getStaminaLoss() > 30)
 			combined_msg += span_info("You're completely exhausted.")
 		else
 			combined_msg += span_info("You feel fatigued.")
@@ -721,10 +728,3 @@
 	if (HAS_TRAIT(src, TRAIT_IGNORE_FIRE_PROTECTION))
 		no_protection = TRUE
 	fire_handler.harm_human(seconds_per_tick, no_protection)
-
-/mob/living/carbon/human/expose_reagents(list/reagents, datum/reagents/source, methods, volume_modifier, show_message)
-	if(external || internal)
-		methods &= ~INHALE
-		if(methods == NONE)
-			return
-	return ..()

@@ -1,8 +1,7 @@
 /obj/structure/closet/secure_closet/des_two/sa_locker
-	icon_door = "admiral"
-	icon_state = "admiral"
-	name = "\proper ship admiral's locker"
-	icon = 'modular_nova/modules/ds2_fluff/icons/closet_wide.dmi'
+	icon_door = "cap"
+	icon_state = "cap"
+	name = "\proper station admiral's locker"
 
 /obj/item/clothing/accessory/medal/gold/admiral
 	name = "medal of admiralty"
@@ -10,7 +9,7 @@
 		It signifies the codified responsibilities of an Admiral to the Sothran Syndicate, and their undisputable authority over their crew."
 
 /obj/item/storage/bag/garment/station_admiral
-	name = "ship admiral's garment bag"
+	name = "station admiral's garment bag"
 	desc = "A bag for storing extra clothes and shoes. This one belongs to the station admiral."
 
 /obj/item/storage/bag/garment/station_admiral/PopulateContents()
@@ -31,11 +30,10 @@
 	new /obj/item/storage/lockbox/medal/nova/synd(src)
 
 /obj/structure/closet/secure_closet/des_two/maa_locker
-	icon_door = "masteratarms"
-	icon_state = "masteratarms"
+	icon_door = "warden"
+	icon_state = "warden"
 	name = "master at arms' locker"
 	req_access = list("syndicate_leader")
-	icon = 'modular_nova/modules/ds2_fluff/icons/closet_wide.dmi'
 
 /obj/item/clothing/accessory/medal/silver/maa_medal
 	name = "military excellence medal"
@@ -76,9 +74,8 @@
 	new /obj/item/gun/energy/disabler(src)
 
 /obj/structure/closet/secure_closet/des_two/cl_locker
-	icon = 'modular_nova/modules/ds2_fluff/icons/closet_wide.dmi'
-	icon_door = "liason"
-	icon_state = "liason"
+	icon_door = "hop"
+	icon_state = "hop"
 	name = "\proper corporate liaison's locker"
 	req_access = list("syndicate_leader")
 

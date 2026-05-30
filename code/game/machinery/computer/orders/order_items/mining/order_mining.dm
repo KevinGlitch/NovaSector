@@ -38,6 +38,10 @@
 	purchase_path = /obj/item/clothing/gloves/fingerless/punch_mitts
 	cost_per_order = 1000
 
+/datum/orderable_item/mining/crusher_retool_kit
+	purchase_path = /obj/item/crusher_trophy/retool_kit
+	cost_per_order = 150
+
 /datum/orderable_item/mining/resonator
 	purchase_path = /obj/item/resonator
 	cost_per_order = 710
@@ -92,7 +96,7 @@
 	cost_per_order = 7000
 
 /datum/orderable_item/mining/kheiralcuffs
-	purchase_path = /obj/item/clothing/accessory/kheiral_cuffs
+	purchase_path = /obj/item/kheiral_cuffs
 	cost_per_order = 675
 
 /datum/orderable_item/mining/bhop
@@ -122,4 +126,4 @@
 
 /datum/orderable_item/mining/grapple_gun
 	purchase_path = /obj/item/grapple_gun
-	cost_per_order = 1500
+	cost_per_order = 3000

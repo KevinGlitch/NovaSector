@@ -119,7 +119,14 @@
 	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/smartfridge/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+	if(default_deconstruction_screwdriver(user, icon_state, icon_state, tool))
+		if(panel_open)
+			add_overlay("[base_icon_state]-panel")
+		else
+			cut_overlay("[base_icon_state]-panel")
+		SStgui.update_uis(src)
+		return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
 
 /obj/machinery/smartfridge/can_be_unfasten_wrench(mob/user, silent)
 	if(welded_down)
@@ -139,11 +146,15 @@
 		power_change()
 		return ITEM_INTERACT_SUCCESS
 
-/obj/machinery/smartfridge/can_crowbar_deconstruct()
-	return ..() && !welded_down
-
 /obj/machinery/smartfridge/crowbar_act(mob/living/user, obj/item/tool)
-	return default_pry_open(user, tool, close_after_pry = TRUE, deconstruct_on_fail = TRUE)
+	if(default_pry_open(tool, close_after_pry = TRUE))
+		return ITEM_INTERACT_SUCCESS
+
+	if(welded_down)
+		balloon_alert(user, "unweld first!")
+	else
+		default_deconstruction_crowbar(tool)
+	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/smartfridge/add_context(atom/source, list/context, obj/item/held_item, mob/living/user)
 	if(isnull(held_item))
@@ -220,9 +231,6 @@
 
 /obj/machinery/smartfridge/update_overlays()
 	. = ..()
-
-	if(panel_open)
-		. += "[base_icon_state]-panel"
 
 	var/shown_contents_length = visible_items()
 	if(visible_contents && shown_contents_length)
@@ -506,7 +514,7 @@
 		use_energy(active_power_usage)
 
 /obj/machinery/smartfridge/drying/accept_check(obj/item/O)
-	return HAS_TRAIT(O, TRAIT_DRYABLE) && !HAS_TRAIT(O, TRAIT_DRIED)
+	return HAS_TRAIT(O, TRAIT_DRYABLE)
 
 /**
  * Toggles drying on or off
@@ -542,14 +550,14 @@
 	base_build_path = /obj/machinery/smartfridge/drying/rack
 	use_power = NO_POWER_USE
 	idle_power_usage = 0
-	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT * 10)
 
 /obj/machinery/smartfridge/drying/rack/Initialize(mapload)
 	. = ..()
 	//so we don't drop any of the parent smart fridge parts upon deconstruction
 	clear_components()
-	AddElement(/datum/element/tool_blocker, TOOL_WELDER)
-	AddElement(/datum/element/tool_blocker, TOOL_SCREWDRIVER)
+
+/obj/machinery/smartfridge/drying/rack/welder_act_secondary(mob/living/user, obj/item/tool)
+	return NONE // Can't repair wood with welder
 
 /obj/machinery/smartfridge/drying/rack/add_context(atom/source, list/context, obj/item/held_item, mob/living/user)
 	if(isnull(held_item))
@@ -560,7 +568,7 @@
 		context[SCREENTIP_CONTEXT_LMB] = "Deconstruct"
 		tool_tip_set = TRUE
 	else if(held_item.tool_behaviour == TOOL_WRENCH)
-		context[SCREENTIP_CONTEXT_LMB] = "[anchored ? "Unan" : "An"]chor"
+		context[SCREENTIP_CONTEXT_LMB] = "[anchored ? "Un" : ""]anchore"
 		tool_tip_set = TRUE
 
 	return tool_tip_set ? CONTEXTUAL_SCREENTIP_SET : NONE
@@ -569,6 +577,9 @@
 	. = ..()
 	. += span_info("The whole rack can be [EXAMINE_HINT("pried")] apart.")
 
+/obj/machinery/smartfridge/drying/rack/default_deconstruction_screwdriver()
+	return NONE
+
 /obj/machinery/smartfridge/drying/rack/exchange_parts()
 	return
 
@@ -576,10 +587,8 @@
 	new /obj/item/stack/sheet/mineral/wood(drop_location(), 10)
 
 /obj/machinery/smartfridge/drying/rack/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
-
-/obj/machinery/smartfridge/drying/rack/can_crowbar_deconstruct()
-	return TRUE
+	if(default_deconstruction_crowbar(tool, ignore_panel = TRUE))
+		return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/smartfridge/drying/rack/update_overlays()
 	. = ..()

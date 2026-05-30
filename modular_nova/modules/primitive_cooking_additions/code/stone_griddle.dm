@@ -11,12 +11,12 @@
 	resistance_flags = FIRE_PROOF
 	processing_flags = START_PROCESSING_MANUALLY
 	variant = 1
-	custom_materials = list(/datum/material/stone = SHEET_MATERIAL_AMOUNT * 5)
 
-/obj/machinery/griddle/stone/Initialize(mapload)
+/obj/machinery/griddle/Initialize(mapload)
 	. = ..()
-	variant = 1
-	update_appearance()
+	grill_loop = new(src, FALSE)
+	if(isnum(variant))
+		variant = 1
 
 /obj/machinery/griddle/stone/examine(mob/user)
 	. = ..()

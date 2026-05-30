@@ -128,7 +128,6 @@ GLOBAL_LIST_INIT(nova_cloth_recipes, list(
 // Leather
 
 GLOBAL_LIST_INIT(nova_leather_recipes, list(
-	new/datum/stack_recipe("bag of dice", /obj/item/storage/dice/empty, 2, category = CAT_CONTAINERS),
 ))
 
 GLOBAL_LIST_INIT(nova_leather_belt_recipes, list(
@@ -152,22 +151,12 @@ GLOBAL_LIST_INIT(nova_leather_belt_recipes, list(
 // Titanium
 
 GLOBAL_LIST_INIT(nova_titanium_recipes, list(
-	new/datum/stack_recipe("spaceship plating", /obj/item/stack/sheet/spaceship, 1, 1, max_res_amount = 50, category = CAT_MISC),
+	new/datum/stack_recipe("spaceship plating", /obj/item/stack/sheet/spaceship, 1, time = 5, category = CAT_MISC),
 ))
 
 /obj/item/stack/sheet/mineral/titanium/get_main_recipes()
 	. = ..()
 	. += GLOB.nova_titanium_recipes
-
-// Titanium Glass
-
-GLOBAL_LIST_INIT(nova_titaniumglass_recipes, list(
-	new/datum/stack_recipe("spaceship glass", /obj/item/stack/sheet/spaceshipglass, 1, 1, max_res_amount = 50, category = CAT_MISC),
-))
-
-/obj/item/stack/sheet/titaniumglass/get_main_recipes()
-	. = ..()
-	. += GLOB.nova_titaniumglass_recipes
 
 // Snow
 
@@ -202,7 +191,7 @@ GLOBAL_LIST_INIT(nova_sand_recipes, list(
 // Sandstone
 
 GLOBAL_LIST_INIT(nova_sandstone_recipes, list(
-	new/datum/stack_recipe("brick well", /obj/structure/water_source/brick_well, 5, crafting_flags = CRAFT_CHECK_DENSITY | CRAFT_ONE_PER_TURF | CRAFT_ON_SOLID_GROUND | CRAFT_SKIP_MATERIALS_PARITY, category = CAT_STRUCTURE),
+	new/datum/stack_recipe("brick well", /obj/structure/water_source/brick_well, 5, crafting_flags = CRAFT_CHECK_DENSITY | CRAFT_ONE_PER_TURF | CRAFT_ON_SOLID_GROUND, category = CAT_STRUCTURE),
 ))
 
 /obj/item/stack/sheet/mineral/sandstone/get_main_recipes()

@@ -5,7 +5,7 @@
 /mob/living/silicon/ai/Initialize(mapload, datum/ai_laws/L, mob/target_ai)
 	. = ..()
 	if(!target_ai) //If there is no player/brain inside.
-		new/obj/structure/ai_core(loc, CORE_STATE_FINISHED) //New empty terminal.
+		new/obj/structure/ai_core/deactivated(loc) //New empty terminal.
 		return INITIALIZE_HINT_QDEL //Delete AI.
 
 	ADD_TRAIT(src, TRAIT_NO_TELEPORT, AI_ANCHOR_TRAIT)
@@ -39,14 +39,12 @@
 	to_chat(src, "To use something, simply click on it.")
 	to_chat(src, "For department channels, use the following say commands:")
 	to_chat(src, ":o - AI Private, :c - Command, :s - Security, :e - Engineering, :u - Supply, :v - Service, :m - Medical, :n - Science, :h - Holopad.")
-
-	INVOKE_ASYNC(src, PROC_REF(show_laws))
-
+	show_laws()
 	to_chat(src, span_bold("These laws may be changed by other players, random events, or by you becoming malfunctioning."))
 
 	job = "AI"
 
-	INVOKE_ASYNC(src, PROC_REF(create_modularInterface))
+	create_modularInterface()
 
 	// /mob/living/silicon/ai/apply_prefs_job() uses these to set these procs at mapload
 	// this is used when a person is being inserted into an AI core during a round
@@ -55,9 +53,10 @@
 		INVOKE_ASYNC(src, PROC_REF(apply_pref_hologram_display), client)
 		set_gender(client)
 
-	INVOKE_ASYNC(src, PROC_REF(set_core_display_icon), null, client)
+	INVOKE_ASYNC(src, PROC_REF(set_core_display_icon))
 
-	spark_system = new /datum/effect_system/basic/spark_spread(src, 5, FALSE)
+	spark_system = new /datum/effect_system/spark_spread()
+	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)
 
 	add_verb(src, /mob/living/silicon/ai/proc/show_laws_verb)
@@ -97,7 +96,6 @@
 	RegisterSignal(ai_tracking_tool, COMSIG_TRACKABLE_GLIDE_CHANGED, PROC_REF(tracked_glidesize_changed))
 
 	add_traits(list(TRAIT_PULL_BLOCKED, TRAIT_AI_ACCESS, TRAIT_HANDS_BLOCKED, TRAIT_CAN_GET_AI_TRACKING_MESSAGE, TRAIT_LOUD_BINARY), INNATE_TRAIT)
-	AddElement(/datum/element/block_area_power_fail)
 
 	//Heads up to other binary chat listeners that a new AI is online and listening to Binary.
 	if(announce_init_to_others && !is_centcom_level(z)) //Skip new syndicate AIs and also new AIs on centcom Z
@@ -154,7 +152,7 @@
 	current = null
 	bot_ref = null
 	controlled_equipment = null
-	break_core_link()
+	linked_core = null
 	apc_override = null
 	if(ai_voicechanger)
 		ai_voicechanger.owner = null
@@ -172,28 +170,14 @@
 /mob/living/silicon/ai/ignite_mob(silent)
 	return FALSE
 
-/mob/living/silicon/ai
-	var/selected_display_name
-	var/mutable_appearance/portrait_appearance
-
 /mob/living/silicon/ai/proc/set_core_display_icon(input, client/C)
-	portrait_appearance = null
-
-	var/preferred_choice
-	if(input)
-		preferred_choice = input
-	else if(C && C.prefs)
-		preferred_choice = C.prefs.read_preference(/datum/preference/choiced/ai_core_display)
-	else if(client && client.prefs)
-		preferred_choice = client.prefs.read_preference(/datum/preference/choiced/ai_core_display)
-
-	display_icon_override = resolve_ai_icon(preferred_choice)
-
-	update_appearance()
-
-	if(istype(loc, /obj/item/aicard))
-		var/obj/item/aicard/card = loc
-		card.update_appearance()
+	if(client && !C)
+		C = client
+	if(!input && !C?.prefs?.read_preference(/datum/preference/choiced/ai_core_display))
+		icon_state = initial(icon_state)
+	else
+		var/preferred_icon = input ? input : C.prefs.read_preference(/datum/preference/choiced/ai_core_display)
+		icon_state = resolve_ai_icon(preferred_icon)
 
 /// Apply an AI's hologram preference
 /mob/living/silicon/ai/proc/apply_pref_hologram_display(client/player_client)
@@ -236,10 +220,6 @@
 	if(!core_display_picker)
 		core_display_picker = new(src)
 	core_display_picker.ui_interact(src)
-
-	if(istype(loc, /obj/item/aicard))
-		var/obj/item/aicard/card = loc
-		card.update_appearance()
 
 /mob/living/silicon/ai/verb/pick_status_display()
 	set category = "AI Commands"
@@ -383,44 +363,52 @@
 		status_flags &= ~CANPUSH //we dont want the core to be push-able when anchored
 		ADD_TRAIT(src, TRAIT_NO_TELEPORT, AI_ANCHOR_TRAIT)
 
-/// Creates an MMI of the AI based on its configuration.
-/mob/living/silicon/ai/proc/make_mmi(atom/destination) as /obj/item/mmi
-	RETURN_TYPE(/obj/item/mmi)
-	//FIXME: this code is really bad, we shouldn't be doing most of this ourselves. MMI code needs a good refactoring....
-	var/obj/item/mmi/copied_mmi
-	if(posibrain_inside)
-		copied_mmi = new /obj/item/mmi/posibrain(destination, FALSE)
-		copied_mmi.name = "[initial(copied_mmi.name)] ([real_name])"
-	else
-		copied_mmi = new /obj/item/mmi(destination)
-		copied_mmi.name = "[initial(copied_mmi.name)]: [real_name]"
-		copied_mmi.brain = new /obj/item/organ/brain(copied_mmi)
-		copied_mmi.brain.organ_flags |= ORGAN_FROZEN
-		copied_mmi.brain.name = "[real_name]'s brain"
-		copied_mmi.set_brainmob(new /mob/living/brain(copied_mmi))
-		copied_mmi.brainmob.container = copied_mmi
-
-	copied_mmi.brainmob.name = real_name
-	copied_mmi.brainmob.real_name = real_name
-	copied_mmi.brainmob.gender = gender
-
-	var/suicided = HAS_TRAIT(src, TRAIT_SUICIDED)
-	copied_mmi.brainmob.set_suicide(suicided)
-	copied_mmi.brain?.suicided = suicided // we can't guarantee that the MMI has a brain... sigh
-
-	if(copied_mmi.brainmob.stat == DEAD && !suicided)
-		copied_mmi.brainmob.set_stat(CONSCIOUS)
-
-	copied_mmi.update_appearance()
-	return copied_mmi
-
 /mob/living/silicon/ai/proc/ai_mob_to_structure()
 	disconnect_shell()
 	ShutOffDoomsdayDevice()
-	var/obj/structure/ai_core/ai_core = new(get_turf(src), CORE_STATE_FINISHED, make_mmi())
-	mind?.transfer_to(ai_core.core_mmi.brainmob)
-	qdel(src)
+	var/obj/structure/ai_core/deactivated/ai_core = new(get_turf(src), /* skip_mmi_creation = */ TRUE)
+	if(make_mmi_drop_and_transfer(ai_core.core_mmi, the_core = ai_core))
+		qdel(src)
 	return ai_core
+
+/mob/living/silicon/ai/proc/break_core_link()
+	to_chat(src, span_danger("Your core has been destroyed!"))
+	linked_core = null
+
+/mob/living/silicon/ai/proc/make_mmi_drop_and_transfer(obj/item/mmi/the_mmi, the_core)
+	var/mmi_type
+	if(posibrain_inside)
+		mmi_type = new/obj/item/mmi/posibrain(src, /* autoping = */ FALSE)
+	else
+		mmi_type = new/obj/item/mmi(src)
+	if(hack_software)
+		new/obj/item/malf_upgrade(get_turf(src))
+	the_mmi = mmi_type
+	the_mmi.brain = new /obj/item/organ/brain(the_mmi)
+	the_mmi.brain.organ_flags |= ORGAN_FROZEN
+	the_mmi.brain.name = "[real_name]'s brain"
+	the_mmi.name = "[initial(the_mmi.name)]: [real_name]"
+	the_mmi.set_brainmob(new /mob/living/brain(the_mmi))
+	the_mmi.brainmob.name = src.real_name
+	the_mmi.brainmob.real_name = src.real_name
+	the_mmi.brainmob.container = the_mmi
+	the_mmi.brainmob.gender = src.gender
+
+	var/has_suicided_trait = HAS_TRAIT(src, TRAIT_SUICIDED)
+	the_mmi.brainmob.set_suicide(has_suicided_trait)
+	the_mmi.brain.suicided = has_suicided_trait
+	if(the_core)
+		var/obj/structure/ai_core/core = the_core
+		core.core_mmi = the_mmi
+		the_mmi.forceMove(the_core)
+	else
+		the_mmi.forceMove(get_turf(src))
+	if(the_mmi.brainmob.stat == DEAD && !has_suicided_trait)
+		the_mmi.brainmob.set_stat(CONSCIOUS)
+	if(mind)
+		mind.transfer_to(the_mmi.brainmob)
+	the_mmi.update_appearance()
+	return TRUE
 
 /mob/living/silicon/ai/Topic(href, href_list)
 	..()
@@ -715,7 +703,7 @@
 	if(!istype(apc))
 		to_chat(owner, span_notice("You are already in your Main Core."))
 		return
-	if(astype(owner, /mob/living/silicon/ai)?.linked_core)
+	if(SEND_SIGNAL(owner, COMSIG_SILICON_AI_CORE_STATUS) & COMPONENT_CORE_ALL_GOOD)
 		apc.malfvacate()
 	else
 		to_chat(owner, span_danger("Linked core not detected!"))
@@ -737,15 +725,6 @@
 	light_cameras()
 
 	to_chat(src, "Camera lights activated.")
-
-// Allows AIs to turn their hologram instead on alt-move
-/mob/living/silicon/ai/keybind_face_direction(direction)
-	var/obj/machinery/holopad/active_pad = current
-	if(istype(active_pad) && active_pad.masters[src])
-		var/obj/effect/overlay/holo_pad_hologram/ai_holo = active_pad.masters[src]
-		ai_holo.setDir(direction)
-		return
-	return ..()
 
 //AI_CAMERA_LUMINOSITY
 
@@ -808,7 +787,7 @@
 		balloon_alert(user, "no intelligence detected!") // average tg coder am i right
 		return
 	ShutOffDoomsdayDevice()
-	var/obj/structure/ai_core/new_core = new /obj/structure/ai_core(loc, CORE_STATE_FINISHED, make_mmi())
+	var/obj/structure/ai_core/new_core = new /obj/structure/ai_core/deactivated(loc, posibrain_inside)//Spawns a deactivated terminal at AI location.
 	new_core.circuit.battery = battery
 	ai_restore_power()//So the AI initially has power.
 	set_control_disabled(TRUE) //Can't control things remotely if you're stuck in a card!
@@ -943,11 +922,10 @@
 
 /mob/living/silicon/ai/revive(full_heal_flags = NONE, excess_healing = 0, force_grab_ghost = FALSE)
 	. = ..()
-	if(!.)
+	if(!.) //successfully ressuscitated from death
 		return
 
-	update_appearance()
-
+	set_core_display_icon(display_icon_override)
 	set_eyeobj_visible(TRUE)
 
 /mob/living/silicon/ai/proc/malfhacked(obj/machinery/power/apc/apc)
@@ -988,14 +966,10 @@
 	playsound(get_turf(src), 'sound/machines/ding.ogg', 50, TRUE, ignore_walls = FALSE)
 	to_chat(src, "Hack complete. [apc] is now under your exclusive control.")
 
-/mob/living/silicon/ai/verb/deploy_to_shell()
+/mob/living/silicon/ai/verb/deploy_to_shell(mob/living/silicon/robot/target)
 	set category = "AI Commands"
-	set desc = "Transfer to an available remote body."
 	set name = "Deploy to Shell"
 
-	select_shell()
-
-/mob/living/silicon/ai/proc/select_shell(mob/living/silicon/robot/target)
 	if(incapacitated)
 		return
 	if(control_disabled)
@@ -1011,7 +985,6 @@
 
 	if(!LAZYLEN(possible))
 		to_chat(src, "No usable AI shell beacons detected.")
-		return
 
 	if(!target || !(target in possible)) //If the AI is looking for a new shell, or its pre-selected shell is no longer valid
 		target = tgui_input_list(src, "Which body to control?", "Direct Control", sort_names(possible))
@@ -1036,12 +1009,10 @@
 	button_icon_state = "ai_shell"
 
 /datum/action/innate/deploy_shell/Trigger(mob/clicker, trigger_flags)
-	if(!..())
-		return
 	var/mob/living/silicon/ai/AI = owner
 	if(!AI)
 		return
-	AI.select_shell()
+	AI.deploy_to_shell()
 
 /datum/action/innate/deploy_last_shell
 	name = "Reconnect to shell"
@@ -1051,13 +1022,11 @@
 	var/mob/living/silicon/robot/last_used_shell
 
 /datum/action/innate/deploy_last_shell/Trigger(mob/clicker, trigger_flags)
-	if(!..())
-		return
 	if(!owner)
 		return
 	if(last_used_shell)
 		var/mob/living/silicon/ai/AI = owner
-		AI.select_shell(last_used_shell)
+		AI.deploy_to_shell(last_used_shell)
 	else
 		Remove(owner) //If the last shell is blown, destroy it.
 
@@ -1085,10 +1054,16 @@
 		end_multicam()
 
 /mob/living/silicon/ai/up()
+	set name = "Move Upwards"
+	set category = "IC"
+
 	if(eyeobj.zMove(UP, z_move_flags = ZMOVE_FEEDBACK))
 		to_chat(src, span_notice("You move upwards."))
 
 /mob/living/silicon/ai/down()
+	set name = "Move Down"
+	set category = "IC"
+
 	if(eyeobj.zMove(DOWN, z_move_flags = ZMOVE_FEEDBACK))
 		to_chat(src, span_notice("You move down."))
 
@@ -1116,10 +1091,10 @@
 
 	switchCamera(chosen_camera)
 
-/mob/living/silicon/ai/on_handsblocked_start()
+/mob/living/silicon/on_handsblocked_start()
 	return // AIs have no hands
 
-/mob/living/silicon/ai/on_handsblocked_end()
+/mob/living/silicon/on_handsblocked_end()
 	return // AIs have no hands
 
 /mob/living/silicon/ai/get_exp_list(minutes)
@@ -1134,157 +1109,6 @@
 /mob/living/silicon/ai/proc/set_control_disabled(control_disabled)
 	SEND_SIGNAL(src, COMSIG_SILICON_AI_SET_CONTROL_DISABLED, control_disabled)
 	src.control_disabled = control_disabled
-
-
-/// Establishes a "core link" with a supplied core structure.
-/// This will register multiple signals and give the AI a strong reference to it.
-/// See [proc/resolve_core_link] or [proc/break_core_link] for ways to end the connection.
-/mob/living/silicon/ai/proc/create_core_link(obj/structure/ai_core/core)
-	if(linked_core) //uh oh
-		break_core_link(linked_core)
-	linked_core = core
-
-	//this block is kind of sketchy, but I don't think this should cause any problems
-	qdel(core.core_mmi)
-	core.core_mmi = make_mmi(core)
-
-	RegisterSignals(linked_core, list(COMSIG_ATOM_DESTRUCTION, COMSIG_QDELETING), PROC_REF(on_core_destroyed))
-	RegisterSignals(linked_core, list(
-		COMSIG_ATOM_ITEM_INTERACTION,
-		COMSIG_ATOM_TOOL_ACT(TOOL_CROWBAR),
-		COMSIG_ATOM_TOOL_ACT(TOOL_WRENCH),
-		COMSIG_ATOM_TOOL_ACT(TOOL_WELDER),
-		COMSIG_ATOM_TOOL_ACT(TOOL_WIRECUTTER),
-		COMSIG_ATOM_TOOL_ACT(TOOL_SCREWDRIVER),
-	), PROC_REF(on_core_item_interaction))
-	RegisterSignal(linked_core, COMSIG_ATOM_TAKE_DAMAGE, PROC_REF(on_core_take_damage))
-	RegisterSignal(linked_core, COMSIG_ATOM_EXITED, PROC_REF(on_core_exited))
-
-/// Elegantly closes the AI's link to a core structure,
-/// moving them to its location and cleaning it up. This is generally what you want to call.
-/// Prefer calling [proc/break_core_link] directly if the connection is meant to be suddenly severed.
-/mob/living/silicon/ai/proc/resolve_core_link()
-	if(!linked_core) //oh no bro
-		CRASH("tried to resolve a core link with no core!!!!")
-
-	forceMove(linked_core.loc)
-	var/obj/structure/ai_core/unlinked_core = linked_core
-	break_core_link()
-	qdel(unlinked_core)
-	cancel_camera()
-
-/// Handles unregistering the AI from its core. The core itself will not be cleaned up.
-/// Prefer calling [proc/resolve_core_link] if the connection is being closed elegantly.
-/mob/living/silicon/ai/proc/break_core_link()
-	if(!linked_core)
-		return
-
-	UnregisterSignal(linked_core, list(
-		COMSIG_QDELETING, COMSIG_ATOM_DESTRUCTION, //on_core_destroyed
-		//on_core_item_interaction
-		COMSIG_ATOM_ITEM_INTERACTION,
-		COMSIG_ATOM_TOOL_ACT(TOOL_CROWBAR),
-		COMSIG_ATOM_TOOL_ACT(TOOL_WRENCH),
-		COMSIG_ATOM_TOOL_ACT(TOOL_WELDER),
-		COMSIG_ATOM_TOOL_ACT(TOOL_WIRECUTTER),
-		COMSIG_ATOM_TOOL_ACT(TOOL_SCREWDRIVER),
-		COMSIG_ATOM_TAKE_DAMAGE, //on_core_take_damage
-		COMSIG_ATOM_EXITED, //on_core_exited
-		))
-	linked_core = null
-
-/mob/living/silicon/ai/proc/on_core_item_interaction(datum/source, mob/living/user, obj/item/tool, list/processing_recipes)
-	SIGNAL_HANDLER
-	if(user.combat_mode)
-		return NONE
-
-	to_chat(src, span_danger("CORE TAMPERING DETECTED!"))
-	return NONE
-
-/mob/living/silicon/ai/proc/on_core_take_damage(datum/source, damage_taken, ...)
-	SIGNAL_HANDLER
-
-	if(damage_taken > 0)
-		to_chat(src, span_danger("CORE DAMAGE DETECTED!"))
-	return NONE
-
-/mob/living/silicon/ai/proc/on_core_destroyed(datum/source, damage_flag)
-	SIGNAL_HANDLER
-
-	to_chat(src, span_danger("Your core has been destroyed!"))
-	ShutOffDoomsdayDevice()
-	break_core_link()
-
-/mob/living/silicon/ai/proc/on_core_exited(datum/source, atom/movable/gone, direction)
-	SIGNAL_HANDLER
-
-	if(istype(gone, /obj/item/mmi))
-		var/obj/item/mmi/mmi_gone = gone
-		on_core_destroyed(source, NONE)
-		if(!IS_MALF_AI(src)) //don't pull back shunted malf AIs
-			death(gibbed = TRUE, drop_mmi = FALSE)
-			///the drop_mmi param determines whether the MMI is dropped at their current location
-			///which in this case would be somewhere else, so we drop their MMI at the core instead
-			mind?.transfer_to(mmi_gone.brainmob)
-			qdel(src)
-
-
-/mob/living/silicon/ai/update_icon_state()
-	icon_state = "ai-core"
-	return ..()
-
-/mob/living/silicon/ai/update_overlays()
-	. = ..()
-
-	var/screen_state // Display
-	var/lights_state // Lights
-
-	if(!client && !mind)
-		screen_state = "ai-empty"
-
-		lights_state = "lights_active"
-
-		set_light(0.2, 0.2, LIGHT_COLOR_FAINT_CYAN)
-
-	else if(stat == DEAD)
-		var/base = display_icon_override || "ai"
-		var/dead_state = "[base]_dead"
-
-		if(icon_exists(icon, dead_state))
-			screen_state = dead_state
-		else
-			screen_state = "ai_dead"
-
-		var/mutable_appearance/screen_overlay = mutable_appearance(icon, screen_state)
-		screen_overlay.appearance_flags = RESET_COLOR | KEEP_APART
-		. += screen_overlay
-
-		lights_state = "lights_dead"
-		set_light(0.2, 0.2, LIGHT_COLOR_FAINT_CYAN)
-
-	else
-		lights_state = "lights_active"
-		set_light(0.3, 0.3, LIGHT_COLOR_CYAN)
-
-		if(portrait_appearance)
-			. += portrait_appearance
-		else
-			screen_state = display_icon_override || "ai"
-			var/mutable_appearance/screen_overlay = mutable_appearance(icon, screen_state)
-			screen_overlay.layer = FLOAT_LAYER + 0.1
-			screen_overlay.appearance_flags = RESET_COLOR | KEEP_APART
-			. += screen_overlay
-			. += emissive_appearance(icon, screen_state, src)
-
-
-	// Lights
-	var/mutable_appearance/lights_overlay = mutable_appearance(icon, lights_state)
-	lights_overlay.layer = FLOAT_LAYER
-	lights_overlay.appearance_flags = RESET_COLOR | KEEP_APART
-	. += lights_overlay
-
-	. += emissive_appearance(icon, lights_state, src)
-
 
 #undef HOLOGRAM_CHOICE_CHARACTER
 #undef CHARACTER_TYPE_SELF

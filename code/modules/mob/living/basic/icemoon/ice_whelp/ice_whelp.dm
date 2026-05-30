@@ -51,22 +51,22 @@
 
 /mob/living/basic/mining/ice_whelp/early_melee_attack(atom/target, list/modifiers, ignore_cooldown)
 	. = ..()
-	if(.)
-		return
+	if(!.)
+		return FALSE
 
 	if(istype(target, /obj/structure/flora/rock/icy))
 		create_sculpture(target)
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 	if(!istype(target, type))
-		return BASIC_MOB_CONTINUE_ATTACK_CHAIN
+		return TRUE
 
 	var/mob/living/victim = target
 	if(victim.stat != DEAD)
-		return BASIC_MOB_CONTINUE_ATTACK_CHAIN
+		return TRUE
 
 	cannibalize_victim(victim)
-	return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+	return FALSE
 
 /// Carve a stone into a beautiful self-portrait
 /mob/living/basic/mining/ice_whelp/proc/create_sculpture(atom/target)
@@ -87,7 +87,7 @@
 	if(!do_after(src, 5 SECONDS, target))
 		return
 	target.gib(DROP_ALL_REMAINS)
-	adjust_brute_loss(-1 * heal_on_cannibalize)
+	adjustBruteLoss(-1 * heal_on_cannibalize)
 
 ///Ash whelp, the "lava" variant of ice whelps.
 /mob/living/basic/mining/ice_whelp/ash

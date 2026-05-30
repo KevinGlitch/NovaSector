@@ -11,8 +11,11 @@
 	/// Innate skill levels unlocked at roundstart. Based on config.jobs_have_minimal_access config setting, for example with a full crew. Format is list(/datum/skill/foo = SKILL_EXP_NOVICE) with exp as an integer or as per code/_DEFINES/skills.dm
 	var/list/minimal_skills
 
+	/// Determines who can demote this position
+	var/department_head = list()
+
 	/// Tells the given channels that the given mob is the new department head. See communications.dm for valid channels.
-	var/head_announce
+	var/list/head_announce = null
 
 	/// Bitflags for the job
 	var/auto_deadmin_role_flags = NONE
@@ -68,7 +71,7 @@
 
 	var/display_order = JOB_DISPLAY_ORDER_DEFAULT
 
-	///What types of bounty tasks can this job receive past the default? TODO, move to id trims.
+	///What types of bounty tasks can this job receive past the default?
 	var/bounty_types = CIV_JOB_BASIC
 
 	/// Goodies that can be received via the mail system.
@@ -136,9 +139,6 @@
 	/// If set, look for a policy with this instead of the job title
 	var/policy_override
 
-	/// How desensitized this job is to seeing death as a base - applied with the job
-	var/desensitized_base = 1.0
-
 /datum/job/New()
 	. = ..()
 	// NOVA EDIT START
@@ -157,8 +157,6 @@
 	SHOULD_CALL_PARENT(TRUE)
 	if(length(mind_traits))
 		spawned.mind.add_traits(mind_traits, JOB_TRAIT)
-
-	spawned.mind.desensitized_level = clamp(desensitized_base, DESENSITIZED_MINIMUM, spawned.mind.desensitized_level)
 
 	var/obj/item/organ/liver/liver = spawned.get_organ_slot(ORGAN_SLOT_LIVER)
 	if(liver && length(liver_traits))
@@ -197,7 +195,7 @@
 /// Note the joining mob has no client at this point.
 /datum/job/proc/announce_job(mob/living/joining_mob, job_title) // NOVA EDIT CHANGE - ALTERNATIVE_JOB_TITLES - Original: /datum/job/proc/announce_job(mob/living/joining_mob)
 	if(head_announce)
-		announce_head(joining_mob, list(head_announce), job_title) // NOVA EDIT CHANGE - ALTERNATIVE_JOB_TITLES - Original: announce_head(joining_mob, list(head_announce))
+		announce_head(joining_mob, head_announce, job_title) // NOVA EDIT CHANGE - ALTERNATIVE_JOB_TITLES - Original: announce_head(joining_mob, head_announce)
 
 
 //Used for a special check of whether to allow a client to latejoin as this job.
@@ -450,29 +448,23 @@
 		var/datum/bank_account/account = SSeconomy.bank_accounts_by_id["[equipped.account_id]"]
 
 		if(account && account.account_id == equipped.account_id)
-			card.set_account(account)
+			card.registered_account = account
+			account.bank_cards += card
 
 		equipped.update_ID_card()
 
-	if(!pda_slot) //This job outfit doesn't have a PDA.
-		return
-
 	var/obj/item/modular_computer/pda/pda = equipped.get_item_by_slot(pda_slot)
-	if(pda && !istype(pda)) //we found something but it isn't a PDA, check if it's inside it instead.
-		pda = locate() in pda
 
-	if(!istype(pda)) //We couldn't find a PDA at all.
-		stack_trace("pda_slot was set but we couldn't find a PDA!")
-		return
+	if(istype(pda))
+		pda.imprint_id(equipped.real_name, equipped_job.title)
+		pda.update_ringtone(equipped_job.job_tone)
+		pda.UpdateDisplay()
 
-	pda.imprint_id(equipped.real_name, equipped_job?.title || equipped.job)
-	pda.update_ringtone(equipped_job?.job_tone)
-	pda.UpdateDisplay()
+		var/client/equipped_client = GLOB.directory[ckey(equipped.mind?.key)]
 
-	var/client/equipped_client = GLOB.directory[ckey(equipped.mind?.key)]
+		if(equipped_client)
+			pda.update_pda_prefs(equipped_client)
 
-	if(equipped_client)
-		pda.update_pda_prefs(equipped_client)
 
 /datum/outfit/job/get_chameleon_disguise_info()
 	var/list/types = ..()

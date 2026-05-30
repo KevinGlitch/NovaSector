@@ -31,17 +31,6 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Brick Aligned Corner Inverse", "type" = /obj/item/stack/tile/iron/brick_aligned_corner_inverse, "tile_cost" = 6),
 			list("name" = "Brick Aligned Corner Vertical", "type" = /obj/item/stack/tile/iron/brick_aligned_corner_vertical, "tile_cost" = 6),
 			list("name" = "Brick Aligned Corner Vertical Inverse", "type" = /obj/item/stack/tile/iron/brick_aligned_corner_vertical_inverse, "tile_cost" = 6),
-			list("name" = "Diagonal Brick Tile", "type" = /obj/item/stack/tile/iron/pattern_1, "tile_cost" = 6),
-			list("name" = "Diamond Spiral Brick Tile", "type" = /obj/item/stack/tile/iron/pattern_2, "tile_cost" = 6),
-			list("name" = "Brick Crosshatch Tile", "type" = /obj/item/stack/tile/iron/pattern_3, "tile_cost" = 6),
-			list("name" = "Brick Spiral Tile", "type" = /obj/item/stack/tile/iron/pattern_4, "tile_cost" = 6),
-			list("name" = "Hex Tile Pattern Tile", "type" = /obj/item/stack/tile/iron/pattern_5, "tile_cost" = 6),
-			list("name" = "Hex Tile Pattern Grid Tile", "type" = /obj/item/stack/tile/iron/pattern_6, "tile_cost" = 6),
-			list("name" = "Diagonal Brick", "type" = /obj/item/stack/tile/iron/pattern_7, "tile_cost" = 6),
-			list("name" = "Large Diagonal Floor Tile", "type" = /obj/item/stack/tile/iron/pattern_8, "tile_cost" = 6),
-			list("name" = "Offset Floor Pattern Tile", "type" = /obj/item/stack/tile/iron/pattern_9, "tile_cost" = 6),
-			list("name" = "Arrow Pattern Brick Tile", "type" = /obj/item/stack/tile/iron/pattern_10, "tile_cost" = 6),
-			list("name" = "Large Hex Floor Tile", "type" = /obj/item/stack/tile/iron/pattern_11, "tile_cost" = 6),
 			/// NOVA EDIT ADDITION END
 		),
 		//Looks slightly transparent or faded
@@ -97,17 +86,6 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Brick Aligned Corner Inverse", "type" = /obj/item/stack/tile/iron/dark/brick_aligned_corner_inverse, "tile_cost" = 6),
 			list("name" = "Brick Aligned Corner Vertical", "type" = /obj/item/stack/tile/iron/dark/brick_aligned_corner_vertical, "tile_cost" = 6),
 			list("name" = "Brick Aligned Corner Vertical Inverse", "type" = /obj/item/stack/tile/iron/dark/brick_aligned_corner_vertical_inverse, "tile_cost" = 6),
-			list("name" = "Diagonal Brick Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_1, "tile_cost" = 6),
-			list("name" = "Diamond Spiral Brick Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_2, "tile_cost" = 6),
-			list("name" = "Brick Crosshatch Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_3, "tile_cost" = 6),
-			list("name" = "Brick Spiral Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_4, "tile_cost" = 6),
-			list("name" = "Hex Tile Pattern Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_5, "tile_cost" = 6),
-			list("name" = "Hex Tile Pattern Grid Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_6, "tile_cost" = 6),
-			list("name" = "Diagonal Brick", "type" = /obj/item/stack/tile/iron/dark/pattern_7, "tile_cost" = 6),
-			list("name" = "Large Diagonal Floor Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_8, "tile_cost" = 6),
-			list("name" = "Offset Floor Pattern Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_9, "tile_cost" = 6),
-			list("name" = "Arrow Pattern Brick Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_10, "tile_cost" = 6),
-			list("name" = "Large Hex Floor Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_11, "tile_cost" = 6),
 			/// NOVA EDIT ADDITION END
 		),
 
@@ -138,17 +116,6 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Brick Aligned Corner Inverse", "type" = /obj/item/stack/tile/iron/white/brick_aligned_corner_inverse, "tile_cost" = 6),
 			list("name" = "Brick Aligned Corner Vertical", "type" = /obj/item/stack/tile/iron/white/brick_aligned_corner_vertical, "tile_cost" = 6),
 			list("name" = "Brick Aligned Corner Vertical Inverse", "type" = /obj/item/stack/tile/iron/white/brick_aligned_corner_vertical_inverse, "tile_cost" = 6),
-			list("name" = "Diagonal Brick Tile", "type" = /obj/item/stack/tile/iron/white/pattern_1, "tile_cost" = 6),
-			list("name" = "Diamond Spiral Brick Tile", "type" = /obj/item/stack/tile/iron/white/pattern_2, "tile_cost" = 6),
-			list("name" = "Brick Crosshatch Tile", "type" = /obj/item/stack/tile/iron/white/pattern_3, "tile_cost" = 6),
-			list("name" = "Brick Spiral Tile", "type" = /obj/item/stack/tile/iron/white/pattern_4, "tile_cost" = 6),
-			list("name" = "Hex Tile Pattern Tile", "type" = /obj/item/stack/tile/iron/white/pattern_5, "tile_cost" = 6),
-			list("name" = "Hex Tile Pattern Grid Tile", "type" = /obj/item/stack/tile/iron/white/pattern_6, "tile_cost" = 6),
-			list("name" = "Diagonal Brick", "type" = /obj/item/stack/tile/iron/white/pattern_7, "tile_cost" = 6),
-			list("name" = "Large Diagonal Floor Tile", "type" = /obj/item/stack/tile/iron/white/pattern_8, "tile_cost" = 6),
-			list("name" = "Offset Floor Pattern Tile", "type" = /obj/item/stack/tile/iron/white/pattern_9, "tile_cost" = 6),
-			list("name" = "Arrow Pattern Brick Tile", "type" = /obj/item/stack/tile/iron/white/pattern_10, "tile_cost" = 6),
-			list("name" = "Large Hex Floor Tile", "type" = /obj/item/stack/tile/iron/white/pattern_11, "tile_cost" = 6),
 			/// NOVA EDIT ADDITION END
 		),
 
@@ -164,6 +131,16 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Textured Dark Half", "type" = /obj/item/stack/tile/iron/dark/textured_half, "tile_cost" = 5),
 			list("name" = "Textured Dark Corner", "type" = /obj/item/stack/tile/iron/dark/textured_corner, "tile_cost" = 5),
 			list("name" = "Textured Dark Large", "type" = /obj/item/stack/tile/iron/dark/textured_large, "tile_cost" = 7),
+		),
+
+		"Contrast" = list(
+			list("name" = "Contrast Tile", "type" = /obj/item/stack/tile/iron/contrast, "tile_cost" = 5),
+			list("name" = "Contrast Edge", "type" = /obj/item/stack/tile/iron/contrast/edge, "tile_cost" = 5),
+			list("name" = "Contrast Inverted Edge", "type" = /obj/item/stack/tile/iron/contrast/edge_inverted, "tile_cost" = 5),
+			list("name" = "Contrast Half", "type" = /obj/item/stack/tile/iron/contrast/half, "tile_cost" = 5),
+			list("name" = "Contrast Corner", "type" = /obj/item/stack/tile/iron/contrast/corner, "tile_cost" = 5),
+			list("name" = "Contrast Inverted Corner", "type" = /obj/item/stack/tile/iron/contrast/corner_inverted, "tile_cost" = 5),
+			list("name" = "Contrast Checkered Tile", "type" = /obj/item/stack/tile/iron/contrast/checkered, "tile_cost" = 5),
 		)
 	),
 

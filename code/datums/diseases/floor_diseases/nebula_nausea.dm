@@ -4,8 +4,7 @@
 	desc = "You can't contain the colorful beauty of the cosmos inside."
 	form = "Condition"
 	agent = "Stars"
-	cure_text = /datum/reagent/space_cleaner::name
-	spread_text = "None"
+	cure_text = "Space Cleaner"
 	cures = list(/datum/reagent/space_cleaner)
 	viable_mobtypes = list(/mob/living/carbon/human)
 	spread_flags = DISEASE_SPREAD_NON_CONTAGIOUS
@@ -13,7 +12,7 @@
 	required_organ = ORGAN_SLOT_STOMACH
 	max_stages = 5
 
-/datum/disease/advance/nebula_nausea/stage_act(seconds_per_tick)
+/datum/disease/advance/nebula_nausea/stage_act(seconds_per_tick, times_fired)
 	. = ..()
 	if(!.)
 		return

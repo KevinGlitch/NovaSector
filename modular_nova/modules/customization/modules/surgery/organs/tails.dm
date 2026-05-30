@@ -1,5 +1,6 @@
 /obj/item/organ/tail
 	mutantpart_key = FEATURE_TAIL
+	mutantpart_info = list(MUTANT_INDEX_NAME = "Smooth", MUTANT_INDEX_COLOR_LIST = list("#FFFFFF"))
 	var/can_wag = TRUE
 	var/wagging = FALSE
 
@@ -27,8 +28,7 @@
 	if(wearer.owned_turf?.name in used_in_turf)
 		return FALSE
 
-	var/obj/item/clothing/suit/mod/worn_suit = wearer.wear_suit
-	if(isnull(wearer.w_uniform) && isnull(worn_suit))
+	if(!wearer.w_uniform && !wearer.wear_suit)
 		return ..()
 
 	// Can hide if wearing uniform
@@ -36,7 +36,7 @@
 		return FALSE
 
 	// Exception for MODs
-	if(istype(worn_suit))
+	if(istype(wearer.wear_suit, /obj/item/clothing/suit/mod))
 		return TRUE
 
 	return !(bodypart_owner.owner?.obscured_slots & HIDETAIL)
@@ -46,14 +46,17 @@
 		wag_flags |= WAG_ABLE
 	return ..()
 
+/obj/item/organ/tail/cat
+	mutantpart_info = list(MUTANT_INDEX_NAME = "Cat", MUTANT_INDEX_COLOR_LIST = list("#FFAA00"))
+
 /obj/item/organ/tail/monkey
 	wag_flags = WAG_ABLE // waggable monkey tails
+	mutantpart_info = list(MUTANT_INDEX_NAME = "Monkey", MUTANT_INDEX_COLOR_LIST = list("#FFFFFF"))
+
+/obj/item/organ/tail/lizard
+	mutantpart_info = list(MUTANT_INDEX_NAME = "Smooth", MUTANT_INDEX_COLOR_LIST = list("#DDFFDD"))
 
 /obj/item/organ/tail/fluffy
 	name = "fluffy tail"
 
 /obj/item/organ/tail/fluffy/no_wag
-
-/obj/item/organ/tail/cat
-
-/obj/item/organ/tail/lizard

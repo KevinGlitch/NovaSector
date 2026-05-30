@@ -25,6 +25,10 @@
 	default_name_syllable_max = 5
 	random_name_spacer = "-"
 
+	mutual_understanding = list(
+		/datum/language/creole = 33,
+	)
+
 /datum/language/draconic/get_random_name(
 	gender = NEUTER,
 	name_count = default_name_count,

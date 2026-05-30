@@ -2,24 +2,18 @@
 //Put handheld rocket launchers here if someone ever decides to make something so hilarious ~Paprika
 
 /obj/item/gun/ballistic/revolver/grenadelauncher
-	name = "break-action grenade launcher"
-	desc = "A break-action grenade launcher. Archaic by modern standards, but it still works, so who can complain?"
-	icon_state = "grenade_launcher"
-	inhand_icon_state = "grenade_launcher"
-	worn_icon_state = "shotgun"
+	name = "grenade launcher"
+	desc = "A break-operated grenade launcher."
+	icon_state = "dshotgun_sawn"
+	inhand_icon_state = "gun"
 	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/grenadelauncher
 	fire_sound = 'sound/items/weapons/gun/general/grenade_launch.ogg'
-	w_class = WEIGHT_CLASS_BULKY
-	slot_flags = ITEM_SLOT_BACK
+	w_class = WEIGHT_CLASS_NORMAL
 	pin = /obj/item/firing_pin/implant/pindicate
 	bolt_type = BOLT_TYPE_NO_BOLT
-	can_muzzle_flash = FALSE
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted
 	pin = /obj/item/firing_pin
-
-/obj/item/gun/ballistic/revolver/grenadelauncher/unrestricted/tear
-	spawn_magazine_type = /obj/item/ammo_box/magazine/internal/grenadelauncher/tear
 
 /obj/item/gun/ballistic/revolver/grenadelauncher/attackby(obj/item/A, mob/user, list/modifiers, list/attack_modifiers)
 	..()
@@ -66,8 +60,7 @@
 	fire_sound = 'sound/items/weapons/gun/general/grenade_launch.ogg'
 	accepted_magazine_type = /obj/item/ammo_box/magazine/m75
 	burst_size = 1
-	fire_delay = 0 SECONDS
-	actions_types = list()
+	fire_delay = 0
 	casing_ejector = FALSE
 
 /obj/item/gun/ballistic/rocketlauncher
@@ -88,7 +81,7 @@
 	can_suppress = FALSE
 	pin = /obj/item/firing_pin/implant/pindicate
 	burst_size = 1
-	fire_delay = 0 SECONDS
+	fire_delay = 0
 	casing_ejector = FALSE
 	weapon_weight = WEAPON_HEAVY
 	bolt_type = BOLT_TYPE_NO_BOLT
@@ -96,7 +89,6 @@
 	cartridge_wording = "rocket"
 	empty_indicator = TRUE
 	tac_reloads = FALSE
-	can_muzzle_flash = FALSE
 	/// Do we shit flames behind us when we fire?
 	var/backblast = TRUE
 

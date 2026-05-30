@@ -1,5 +1,4 @@
 /mob/living/carbon/alien
-	abstract_type = /mob/living/carbon/alien
 	name = "alien"
 	icon = 'icons/mob/nonhuman-player/alien.dmi'
 	gender = FEMALE //All xenos are girls!!
@@ -70,7 +69,7 @@
 /mob/living/carbon/alien/assess_threat(judgement_criteria, lasercolor = "", datum/callback/weaponcheck=null) // beepsky won't hunt aliums
 	return -10
 
-/mob/living/carbon/alien/handle_environment(datum/gas_mixture/environment, seconds_per_tick)
+/mob/living/carbon/alien/handle_environment(datum/gas_mixture/environment, seconds_per_tick, times_fired)
 	// Run base mob body temperature proc before taking damage
 	// this balances body temp to the environment and natural stabilization
 	. = ..()
@@ -200,6 +199,3 @@ Des: Removes all infected images from the alien.
 
 /mob/living/carbon/alien/get_footprint_sprite()
 	return FOOTPRINT_SPRITE_CLAWS
-
-/mob/living/carbon/alien/get_fire_overlay(stacks, on_fire)
-	return make_generic_fire_overlay()

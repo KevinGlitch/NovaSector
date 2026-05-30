@@ -295,11 +295,7 @@ function SpeciesPageInner(props: SpeciesPageInnerProps) {
                   <Button
                     key={speciesKey}
                     onClick={() => {
-                      if (
-                        data.nova_star_restrictions &&
-                        species.nova_stars_only &&
-                        !data.is_nova_star
-                      ) {
+                      if (species.nova_stars_only && !data.is_nova_star) {
                         return;
                       }
                       setSpecies(speciesKey);
@@ -320,12 +316,8 @@ function SpeciesPageInner(props: SpeciesPageInnerProps) {
                     />
                   </Button>
                 );
-                if (
-                  data.nova_star_restrictions &&
-                  species.nova_stars_only &&
-                  !data.is_nova_star
-                ) {
-                  const tooltipContent =
+                if (species.nova_stars_only && !data.is_nova_star) {
+                  let tooltipContent =
                     species.name +
                     ' - You need to be a Nova star to select this race, apply today!';
                   speciesPage = (

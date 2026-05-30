@@ -393,7 +393,7 @@ effective or pretty fucking useless.
 	for (var/obj/item/radio/radio in target.get_all_contents() + target)
 		if(ignore_syndie && (radio.special_channels & RADIO_SPECIAL_SYNDIE))
 			continue
-		radio.set_broadcasting(FALSE, actual_setting = FALSE)
+		radio.set_broadcasting(FALSE)
 
 /obj/item/jammer/Destroy()
 	GLOB.active_jammers -= src
@@ -404,7 +404,6 @@ effective or pretty fucking useless.
 	desc = "A jury-rigged device that disrupts nearby radio communication. Its crude construction provides a significantly smaller area of effect compared to its Syndicate counterpart."
 	range = 5
 	disruptor_range = 3
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 0.5, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 0.5)
 
 /obj/item/jammer/makeshift/Initialize(mapload)
 	. = ..()
@@ -429,7 +428,7 @@ effective or pretty fucking useless.
 
 /obj/machinery/porta_turret/syndicate/toolbox/examine(mob/user)
 	. = ..()
-	if(faction_check_atom(user))
+	if(faction_check(faction, user.faction))
 		. += span_notice("You can repair it by <b>left-clicking</b> with a combat wrench.")
 		. += span_notice("You can fold it by <b>right-clicking</b> with a combat wrench.")
 
@@ -494,7 +493,7 @@ effective or pretty fucking useless.
 		qdel(src)
 
 /obj/machinery/porta_turret/syndicate/toolbox/ui_status(mob/user, datum/ui_state/state)
-	if(faction_check_atom(user))
+	if(faction_check(user.faction, faction))
 		return ..()
 
 	return UI_CLOSE
@@ -555,16 +554,14 @@ effective or pretty fucking useless.
 
 /obj/item/clothing/shoes/jackboots/dagger/equipped(mob/living/user, slot)
 	. = ..()
-
 	if(!(slot & ITEM_SLOT_FEET) || !istype(user))
-		return
-	modified_bodyparts += user.get_bodypart(BODY_ZONE_L_LEG)
-	modified_bodyparts += user.get_bodypart(BODY_ZONE_R_LEG)
-	for(var/obj/item/bodypart/bodypart in modified_bodyparts)
-		bodypart.unarmed_sharpness |= SHARP_EDGED
-		bodypart.unarmed_attack_effect = ATTACK_EFFECT_SLASH
-		RegisterSignals(bodypart, list(COMSIG_BODYPART_REMOVED, COMSIG_QDELETING), PROC_REF(clear_modification))
-	RegisterSignal(user, COMSIG_CARBON_POST_ATTACH_LIMB, PROC_REF(modify_legs))
+		modified_bodyparts += user.get_bodypart(BODY_ZONE_L_LEG)
+		modified_bodyparts += user.get_bodypart(BODY_ZONE_R_LEG)
+		for(var/obj/item/bodypart/bodypart in modified_bodyparts)
+			bodypart.unarmed_sharpness |= SHARP_EDGED
+			bodypart.unarmed_attack_effect = ATTACK_EFFECT_SLASH
+			RegisterSignals(bodypart, list(COMSIG_BODYPART_REMOVED, COMSIG_QDELETING), PROC_REF(clear_modification))
+		RegisterSignal(user, COMSIG_CARBON_POST_ATTACH_LIMB, PROC_REF(modify_legs))
 
 /obj/item/clothing/shoes/jackboots/dagger/dropped(mob/user)
 	. = ..()
@@ -598,5 +595,4 @@ effective or pretty fucking useless.
 
 /obj/item/clothing/shoes/jackboots/dagger/examine_more(mob/user)
 	. = ..()
-	if(user.is_holding(src))
-		. += span_notice("Upon closer inspection, you notice a dagger embedded into the sole.")
+	. += span_notice("Upon closer inspection, you notice a dagger embedded into the sole.")

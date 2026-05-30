@@ -57,8 +57,6 @@ GLOBAL_LIST_EMPTY(antagonists)
 	var/hardcore_random_bonus = FALSE
 	/// A path to the audio stinger that plays upon gaining this datum.
 	var/stinger_sound
-	/// Multiplicative modifier to the mind's desensitized level when this antagonist is applied. Minimum is 0.1.
-	var/desensitized_modifier = 1.0
 
 	//ANTAG UI
 
@@ -149,13 +147,13 @@ GLOBAL_LIST_EMPTY(antagonists)
 
 //button for antags to review their descriptions/info
 /datum/action/antag_info
-	name = "Open Special Role Information"
+	name = "Open Special Role Information:"
 	button_icon_state = "round_end"
 	show_to_observers = FALSE
 
 /datum/action/antag_info/New(Target)
 	. = ..()
-	name = "Open [target] Information"
+	name = "Open [target] Information:"
 
 /datum/action/antag_info/Trigger(mob/clicker, trigger_flags)
 	. = ..()
@@ -196,10 +194,6 @@ GLOBAL_LIST_EMPTY(antagonists)
 		if(old_body)
 			info_button.Remove(old_body)
 		info_button.Grant(new_body)
-	if (antag_moodlet)
-		if (old_body)
-			clear_antag_moodies(old_body)
-		give_antag_moodies(new_body)
 	apply_innate_effects(new_body)
 	if(new_body.stat != DEAD)
 		new_body.add_to_current_living_antags()
@@ -264,7 +258,6 @@ GLOBAL_LIST_EMPTY(antagonists)
 		if(type_policy)
 			to_chat(owner.current, type_policy)
 
-	owner.desensitized_level *= max(DESENSITIZED_MINIMUM, desensitized_modifier)
 	apply_innate_effects()
 	give_antag_moodies()
 	RegisterSignal(owner, COMSIG_PRE_MINDSHIELD_IMPLANT, PROC_REF(pre_mindshield))
@@ -323,7 +316,6 @@ GLOBAL_LIST_EMPTY(antagonists)
 	if(!owner)
 		CRASH("Antag datum with no owner.")
 
-	owner.desensitized_level /= max(DESENSITIZED_MINIMUM, desensitized_modifier)
 	if(owner.current)
 		remove_innate_effects()
 	clear_antag_moodies()
@@ -376,20 +368,18 @@ GLOBAL_LIST_EMPTY(antagonists)
 /**
  * Proc that assigns this antagonist's ascribed moodlet to the player.
  */
-/datum/antagonist/proc/give_antag_moodies(mob/living/mob_override)
+/datum/antagonist/proc/give_antag_moodies()
 	if(!antag_moodlet)
 		return
-	var/mob/living/target = mob_override || owner.current
-	target.add_mood_event("antag_moodlet_[type]", antag_moodlet)
+	owner.current.add_mood_event("antag_moodlet_[type]", antag_moodlet)
 
 /**
  * Proc that removes this antagonist's ascribed moodlet from the player.
  */
-/datum/antagonist/proc/clear_antag_moodies(mob/living/mob_override)
+/datum/antagonist/proc/clear_antag_moodies()
 	if(!antag_moodlet)
 		return
-	var/mob/living/target = mob_override || owner.current
-	target.clear_mood_event("antag_moodlet_[type]")
+	owner.current.clear_mood_event("antag_moodlet_[type]")
 
 /**
  * Proc that will return the team this antagonist belongs to, when called. Helpful with antagonists that may belong to multiple potential teams in a single round.
@@ -479,7 +469,7 @@ GLOBAL_LIST_EMPTY(antagonists)
 /datum/antagonist/proc/get_admin_commands()
 	. = list()
 
-/// Creates a /datum/universal_icon from the preview outfit.
+/// Creates an icon from the preview outfit.
 /// Custom implementors of `get_preview_icon` should use this, as the
 /// result of `get_preview_icon` is expected to be the completed version.
 /datum/antagonist/proc/render_preview_outfit(datum/outfit/outfit, mob/living/carbon/human/dummy)
@@ -487,35 +477,34 @@ GLOBAL_LIST_EMPTY(antagonists)
 	dummy.equipOutfit(outfit, visuals_only = TRUE)
 	dummy.wear_suit?.update_greyscale()
 	dummy.set_combat_mode(TRUE)
-	var/datum/universal_icon/antag_icon = get_flat_uni_icon(dummy)
+	var/icon = getFlatIcon(dummy)
 
 	// We don't want to qdel the dummy right away, since its items haven't initialized yet.
 	SSatoms.prepare_deletion(dummy)
 
-	return antag_icon
+	return icon
 
-/// Given a /datum/universal_icon, will crop it to be consistent of those in the preferences menu.
+/// Given an icon, will crop it to be consistent of those in the preferences menu.
 /// Not necessary, and in fact will look bad if it's anything other than a human.
-/datum/antagonist/proc/finish_preview_icon(datum/universal_icon/antag_icon)
+/datum/antagonist/proc/finish_preview_icon(icon/icon)
 	// Zoom in on the top of the head and the chest
 	// I have no idea how to do this dynamically.
-	antag_icon.scale(115, 115)
+	icon.Scale(115, 115)
 
 	// This is probably better as a Crop, but I cannot figure it out.
-	antag_icon.shift(WEST, 8)
-	antag_icon.shift(SOUTH, 30)
+	icon.Shift(WEST, 8)
+	icon.Shift(SOUTH, 30)
 
-	antag_icon.crop(1, 1, ANTAGONIST_PREVIEW_ICON_SIZE, ANTAGONIST_PREVIEW_ICON_SIZE)
+	icon.Crop(1, 1, ANTAGONIST_PREVIEW_ICON_SIZE, ANTAGONIST_PREVIEW_ICON_SIZE)
 
-	return antag_icon
+	return icon
 
-/// Returns the /datum/universal_icon to shown on the preferences menu.
+/// Returns the icon to show on the preferences menu.
 /datum/antagonist/proc/get_preview_icon()
 	if (isnull(preview_outfit))
 		return null
 
-	var/datum/universal_icon/preview_icon = render_preview_outfit(preview_outfit)
-	return finish_preview_icon(preview_icon)
+	return finish_preview_icon(render_preview_outfit(preview_outfit))
 
 /datum/antagonist/proc/edit_memory(mob/user)
 	var/new_memo = tgui_input_text(user, "Write a new memory", "Antag Memory", antag_memory, multiline = TRUE)

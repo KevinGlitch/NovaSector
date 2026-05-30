@@ -158,11 +158,16 @@ export const RADIO_CHANNELS = [
     name: 'AI Private',
     freq: 1447,
     color: '#d65d95',
-  },
+    },
+    {
+        name: 'Common',
+        freq: 1459,
+        color: '#1ecc43',
+    },
   {
-    name: 'Common',
-    freq: 1459,
-    color: '#1ecc43',
+    name: 'Phoenix',
+    freq: 1519,
+    color: '#ff5d00',
   },
 ] as const;
 

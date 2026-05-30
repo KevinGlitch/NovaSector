@@ -38,4 +38,5 @@
 	/datum/language/draconic = 70,
 	/datum/language/common = 50,
 	/datum/language/uncommon = 33,
+	/datum/language/creole = 20,
 	)

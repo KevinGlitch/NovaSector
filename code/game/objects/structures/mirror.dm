@@ -15,9 +15,6 @@
 #define PRIDE_MIRROR_OPTIONS list(CHANGE_HAIR, CHANGE_BEARD, CHANGE_RACE, CHANGE_SEX, CHANGE_EYES)
 #define MAGIC_MIRROR_OPTIONS list(CHANGE_HAIR, CHANGE_BEARD, CHANGE_RACE, CHANGE_SEX, CHANGE_EYES, CHANGE_NAME)
 
-// Chance for the mirror to be haunted at creation
-#define ROUNDSTART_CURSED_CHANCE 0.2
-
 /obj/structure/mirror
 	name = "mirror"
 	desc = "Mirror mirror on the wall, who's the most robust of them all?"
@@ -28,12 +25,10 @@
 	anchored = TRUE
 	integrity_failure = 0.5
 	max_integrity = 200
-	custom_materials = /obj/item/wallframe/mirror::custom_materials
 	///Can this mirror be removed from walls with tools?
 	var/deconstructable = TRUE
 	var/list/mirror_options = INERT_MIRROR_OPTIONS
-	// Can a revenant be imprisoned in this mirror?
-	var/cursable = TRUE
+
 	///Flags this race must have to be selectable with this type of mirror.
 	var/race_flags = MIRROR_MAGIC
 	///List of all Races that can be chosen, decided by its Initialize.
@@ -60,17 +55,15 @@
 		check_reflect_signals = list(SIGNAL_ADDTRAIT(TRAIT_NO_MIRROR_REFLECTION), SIGNAL_REMOVETRAIT(TRAIT_NO_MIRROR_REFLECTION)), \
 	)
 	if(mapload)
-		find_and_mount_on_atom()
-		if(prob(ROUNDSTART_CURSED_CHANCE) && cursable)
-			AddComponent(/datum/component/revenant_prison, create_on_release = TRUE)
+		find_and_hang_on_wall()
 	update_choices()
 	register_context()
 
 /obj/structure/mirror/proc/can_reflect(atom/movable/target)
-	// I'm doing it this way too, because the signal is sent before the broken variable is set to TRUE.
-	if(atom_integrity <= integrity_failure * max_integrity || broken)
+	///I'm doing it this way too, because the signal is sent before the broken variable is set to TRUE.
+	if(atom_integrity <= integrity_failure * max_integrity)
 		return FALSE
-	if(!isliving(target) || HAS_TRAIT(target, TRAIT_NO_MIRROR_REFLECTION))
+	if(broken || !isliving(target) || HAS_TRAIT(target, TRAIT_NO_MIRROR_REFLECTION))
 		return FALSE
 	return TRUE
 
@@ -78,12 +71,10 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror, 28)
 
 /obj/structure/mirror/broken
 	icon_state = "mirror_broke"
-	cursable = FALSE
-	broken = TRUE
-	desc = "Oh no, seven years of bad luck!"
 
 /obj/structure/mirror/broken/Initialize(mapload)
 	. = ..()
+	atom_break(null, mapload)
 
 MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 
@@ -215,7 +206,7 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 			race_changer.skin_tone = new_s_tone
 			race_changer.dna.update_ui_block(/datum/dna_block/identity/skin_tone)
 	else if(HAS_TRAIT(race_changer, TRAIT_MUTANT_COLORS) && !HAS_TRAIT(race_changer, TRAIT_FIXED_MUTANT_COLORS))
-		var/new_mutantcolor = tgui_color_picker(race_changer, "Choose your skin color:", "Race change", race_changer.dna.features[FEATURE_MUTANT_COLOR])
+		var/new_mutantcolor = input(race_changer, "Choose your skin color:", "Race change", race_changer.dna.features[FEATURE_MUTANT_COLOR]) as color|null
 		if(new_mutantcolor && can_use_mirror(race_changer))
 			var/list/mutant_hsv = rgb2hsv(new_mutantcolor)
 			if(mutant_hsv[3] >= 50) // mutantcolors must be bright
@@ -265,12 +256,12 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 	sexy.update_clothing(ITEM_SLOT_ICLOTHING) // update gender shaped clothing
 
 /obj/structure/mirror/proc/change_eyes(mob/living/carbon/human/user)
-	var/new_eye_color = tgui_color_picker(user, "Choose your eye color", "Eye Color", user.eye_color_left)
+	var/new_eye_color = input(user, "Choose your eye color", "Eye Color", user.eye_color_left) as color|null
 	if(isnull(new_eye_color) || !can_use_mirror(user))
 		return
 	user.set_eye_color(sanitize_hexcolor(new_eye_color))
 	user.dna.update_ui_block(/datum/dna_block/identity/eye_colors)
-	user.update_eyes()
+	user.update_body()
 	to_chat(user, span_notice("You gaze at your new eyes with your new eyes. Perfect!"))
 
 /obj/structure/mirror/examine(mob/user)
@@ -310,12 +301,13 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 		to_chat(unlucky_dude, span_warning("A chill runs down your spine as [src] shatters..."))
 		unlucky_dude.AddComponent(/datum/component/omen, incidents_left = 7)
 
-/obj/structure/mirror/atom_break(damage_flag)
+/obj/structure/mirror/atom_break(damage_flag, mapload)
 	. = ..()
 	if(broken)
 		return
 	icon_state = "mirror_broke"
-	playsound(src, SFX_SHATTER, 70, TRUE)
+	if(!mapload)
+		playsound(src, SFX_SHATTER, 70, TRUE)
 	if(desc == initial(desc))
 		desc = "Oh no, seven years of bad luck!"
 	broken = TRUE
@@ -358,7 +350,10 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 	desc = "An unmounted mirror. Attach it to a wall to use."
 	icon = 'icons/obj/watercloset.dmi'
 	icon_state = "mirror"
-	custom_materials = list(/datum/material/glass = SHEET_MATERIAL_AMOUNT * 5, /datum/material/silver = SHEET_MATERIAL_AMOUNT * 2)
+	custom_materials = list(
+		/datum/material/glass = SHEET_MATERIAL_AMOUNT,
+		/datum/material/silver = SHEET_MATERIAL_AMOUNT,
+	)
 	result_path = /obj/structure/mirror
 	pixel_shift = 28
 
@@ -368,7 +363,6 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 	icon_state = "magic_mirror"
 	mirror_options = MAGIC_MIRROR_OPTIONS
 	deconstructable = FALSE
-	cursable = FALSE
 
 /obj/structure/mirror/magic/Initialize(mapload)
 	. = ..()
@@ -395,14 +389,14 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 	if(hairchoice == "Style") //So you just want to use a mirror then?
 		return ..()
 
-	var/new_hair_color = tgui_color_picker(user, "Choose your hair color", "Hair Color", user.hair_color)
+	var/new_hair_color = input(user, "Choose your hair color", "Hair Color", user.hair_color) as color|null
 	if(!new_hair_color || !can_use_mirror(user))
 		return
 	if(new_hair_color)
 		user.set_haircolor(sanitize_hexcolor(new_hair_color))
 		user.dna.update_ui_block(/datum/dna_block/identity/hair_color)
 	if(user.physique == MALE)
-		var/new_face_color = tgui_color_picker(user, "Choose your facial hair color", "Hair Color", user.facial_hair_color)
+		var/new_face_color = input(user, "Choose your facial hair color", "Hair Color", user.facial_hair_color) as color|null
 		if(new_face_color && can_use_mirror(user))
 			user.set_facial_haircolor(sanitize_hexcolor(new_face_color))
 			user.dna.update_ui_block(/datum/dna_block/identity/facial_color)
@@ -471,5 +465,3 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/structure/mirror/broken, 28)
 #undef INERT_MIRROR_OPTIONS
 #undef PRIDE_MIRROR_OPTIONS
 #undef MAGIC_MIRROR_OPTIONS
-
-#undef ROUNDSTART_CURSED_CHANCE

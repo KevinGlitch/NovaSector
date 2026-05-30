@@ -17,7 +17,7 @@
 /datum/preference/color/chat_color/serialize(input)
 	return process_chat_color(sanitize_hexcolor(input))
 
-/atom/proc/apply_preference_chat_color(value)
+/mob/living/carbon/human/proc/apply_preference_chat_color(value)
 	if(isnull(value))
 		return FALSE
 

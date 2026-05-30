@@ -90,10 +90,10 @@
 
 	if(istype(inserted_component, /obj/item/stock_parts/power_store))
 		var/obj/item/stock_parts/power_store/inserted_cell = inserted_component
-		if(inserted_cell.corrupted)
-			message_admins("[ADMIN_LOOKUPFLW(usr)] has inserted corrupted [inserted_cell] into [src].")
-			usr.log_message("has inserted corrupted [inserted_cell] into [src].", LOG_GAME)
-			usr.log_message("inserted corrupted [inserted_cell] into [src]", LOG_ATTACK)
+		if(inserted_cell.rigged || inserted_cell.corrupted)
+			message_admins("[ADMIN_LOOKUPFLW(usr)] has inserted rigged/corrupted [inserted_cell] into [src].")
+			usr.log_message("has inserted rigged/corrupted [inserted_cell] into [src].", LOG_GAME)
+			usr.log_message("inserted rigged/corrupted [inserted_cell] into [src]", LOG_ATTACK)
 		return
 
 	var/datum/reagents/target_holder = inserted_component.reagents
@@ -150,7 +150,6 @@
 		new /obj/item/stock_parts/micro_laser/quadultra(src)
 		new /obj/item/stock_parts/matter_bin/bluespace(src)
 		new /obj/item/stock_parts/power_store/cell/bluespace(src)
-		new /obj/item/stack/cable_coil/thirty(src)
 
 //used in a cargo crate
 /obj/item/storage/part_replacer/cargo/PopulateContents()
@@ -160,6 +159,21 @@
 		new /obj/item/stock_parts/servo(src)
 		new /obj/item/stock_parts/micro_laser(src)
 		new /obj/item/stock_parts/matter_bin(src)
+
+// EXOBYTECHNOVA UPD: Custom-set overloaded tier 4 RPED for admin outfits n shiz.
+/obj/item/storage/part_replacer/bluespace/tier4maxout
+
+/obj/item/storage/part_replacer/bluespace/tier4maxout/PopulateContents()
+	var/static/list/items_inside = list(
+		/obj/item/stock_parts/capacitor/quadratic = 50,
+		/obj/item/stock_parts/scanning_module/triphasic = 50,
+		/obj/item/stock_parts/servo/femto = 50,
+		/obj/item/stock_parts/micro_laser/quadultra = 50,
+		/obj/item/stock_parts/matter_bin/bluespace = 50,
+		/obj/item/stock_parts/power_store/battery/bluespace/empty = 50,
+		/obj/item/stock_parts/power_store/cell/bluespace/empty = 50,
+	)
+	generate_items_inside(items_inside, src)
 
 ///Cyborg variant
 /obj/item/storage/part_replacer/cyborg

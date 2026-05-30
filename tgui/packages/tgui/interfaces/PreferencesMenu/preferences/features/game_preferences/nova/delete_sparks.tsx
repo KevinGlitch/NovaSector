@@ -1,5 +1,5 @@
 // THIS IS A NOVA SECTOR UI FILE
-import { CheckboxInput, type FeatureToggle } from '../../base';
+import { CheckboxInput, FeatureToggle } from '../../base';
 
 export const delete_sparks_pref: FeatureToggle = {
   name: 'Deletion sparks',

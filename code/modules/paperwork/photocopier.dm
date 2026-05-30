@@ -62,7 +62,6 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 	desc = "Used to copy important documents and anatomy studies."
 	icon = 'icons/obj/service/library.dmi'
 	icon_state = "photocopier"
-	base_icon_state = "photocopier"
 	density = TRUE
 	power_channel = AREA_USAGE_EQUIP
 	max_integrity = 300
@@ -424,6 +423,9 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 	if(get_paper_count(created_paper) < paper_use * copies_amount)
 		copies_amount = FLOOR(get_paper_count(created_paper) / paper_use, 1)
 		error_message = span_warning("An error message flashes across \the [src]'s screen: \"Not enough paper to perform [copies_amount >= 1 ? "full " : ""]operation.\"")
+	if(!(obj_flags & EMAGGED) && (copies_amount > 0) && (attempt_charge(src, user, (copies_amount - 1) * usage_cost) & COMPONENT_OBJ_CANCEL_CHARGE))
+		copies_amount = 0
+		error_message = span_warning("An error message flashes across \the [src]'s screen: \"Failed to charge bank account. Aborting.\"")
 
 	copies_left = copies_amount
 
@@ -436,7 +438,6 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 		to_chat(user, error_message)
 
 	// if you managed to cancel the copy operation, tough luck. you aren't getting your money back.
-	var/list/copies_made = list()
 	for(var/i in 1 to copies_amount)
 		if(machine_stat & (BROKEN|NOPOWER))
 			break
@@ -453,21 +454,9 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 		sleep(time_to_print)
 
 		// reveal our copied item
-		if(!QDELETED(copied_obj))
-			copied_obj.forceMove(drop_location())
-			give_pixel_offset(copied_obj)
-			copies_made += copied_obj
+		copied_obj.forceMove(drop_location())
+		give_pixel_offset(copied_obj)
 		copies_left--
-
-	if(copies_made.len)
-		if(!(obj_flags & EMAGGED) && attempt_charge(src, user, (copies_made.len - 1) * usage_cost) & COMPONENT_OBJ_CANCEL_CHARGE)
-			visible_message(
-				span_warning("An error message flashes across \the [src]'s screen."), \
-				span_warning("Failed to charge bank account. Scrapping copies.") \
-			)
-			QDEL_LIST(copies_made)
-	else
-		to_chat(user, span_warning("Failed to copy object!"))
 
 	copies_left = 0
 	reset_busy()
@@ -660,15 +649,15 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 
 	to_chat(user, span_notice("You take [object] out of [src]. [busy ? "The [src] comes to a halt." : ""]"))
 
-/obj/machinery/photocopier/update_icon_state()
-	. = ..()
-	icon_state = panel_open ? "[base_icon_state]2" : base_icon_state
-
 /obj/machinery/photocopier/screwdriver_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_screwdriver(user, tool)
+	. = ..()
+	if(default_deconstruction_screwdriver(user, "photocopier2", "photocopier", tool))
+		return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/photocopier/crowbar_act(mob/living/user, obj/item/tool)
-	return default_deconstruction_crowbar(user, tool)
+	. = ..()
+	if(default_deconstruction_crowbar(tool))
+		return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/photocopier/wrench_act(mob/living/user, obj/item/tool)
 	. = ..()
@@ -882,11 +871,9 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 	icon = 'icons/obj/service/bureaucracy.dmi'
 	icon_state = "tonercartridge"
 	w_class = WEIGHT_CLASS_SMALL
+	grind_results = list(/datum/reagent/iodine = 40, /datum/reagent/iron = 10)
 	var/charges = 5
 	var/max_charges = 5
-
-/obj/item/toner/grind_results()
-	return list(/datum/reagent/iodine = 40, /datum/reagent/iron = 10)
 
 /obj/item/toner/examine(mob/user)
 	. = ..()
@@ -895,11 +882,9 @@ GLOBAL_LIST_INIT(paper_blanks, init_paper_blanks())
 /obj/item/toner/large
 	name = "large toner cartridge"
 	desc = "A hefty cartridge of Nanotrasen ValueBrand toner. Fits photocopiers and autopainters alike."
+	grind_results = list(/datum/reagent/iodine = 90, /datum/reagent/iron = 10)
 	charges = 25
 	max_charges = 25
-
-/obj/item/toner/large/grind_results()
-	return list(/datum/reagent/iodine = 90, /datum/reagent/iron = 10)
 
 /obj/item/toner/extreme
 	name = "extremely large toner cartridge"

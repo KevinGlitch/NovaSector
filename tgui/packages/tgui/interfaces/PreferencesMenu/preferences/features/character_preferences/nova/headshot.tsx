@@ -1,5 +1,5 @@
 // THIS IS A NOVA SECTOR UI FILE
-import { type Feature, FeatureShortTextInput } from '../../base';
+import { Feature, FeatureShortTextInput } from '../../base';
 
 const description =
   'Requires a link ending with .png, .jpeg, or .jpg, starting with \

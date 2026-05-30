@@ -4,11 +4,12 @@
  * Returns STYLE_TAUR_* or NONE.
  */
 /mob/living/carbon/human/proc/get_taur_mode()
-	var/datum/mutant_bodypart/taur_mutant_bodypart = dna.mutant_bodyparts[FEATURE_TAUR]
+	var/taur_mutant_bodypart = dna.species.mutant_bodyparts[FEATURE_TAUR]
 	if(!taur_mutant_bodypart)
 		return NONE
 
-	var/datum/sprite_accessory/taur/taur = SSaccessories.sprite_accessories[FEATURE_TAUR][taur_mutant_bodypart.name]
+	var/bodypart_name = taur_mutant_bodypart[MUTANT_INDEX_NAME]
+	var/datum/sprite_accessory/taur/taur = SSaccessories.sprite_accessories[FEATURE_TAUR][bodypart_name]
 	if(!taur)
 		return NONE
 
@@ -25,7 +26,6 @@
 	flags_for_organ = SPRITE_ACCESSORY_HIDE_SHOES
 	/// Must be a single specific tauric suit variation bitflag. Don't do FLAG_1|FLAG_2
 	var/taur_mode = NONE
-	taur_mode = STYLE_TAUR_GENERIC /// So that every taur would crop clothes
 	/// Must be a single specific tauric suit variation bitflag. Don't do FLAG_1|FLAG_2
 	var/alt_taur_mode = NONE
 
@@ -56,22 +56,9 @@
 					if (worn_suit.worn_icon_taur_hoof)
 						return TRUE
 
-	var/obj/item/clothing/under/worn_uniform = target.w_uniform
-	if (istype(worn_uniform))
-		if (worn_uniform.flags_inv & HIDETAUR)
-			switch (taur_mode)
-				if (STYLE_TAUR_SNAKE)
-					if (worn_suit.worn_icon_taur_snake)
-						return TRUE
-				if (STYLE_TAUR_PAW)
-					if (worn_suit.worn_icon_taur_paw)
-						return TRUE
-				if (STYLE_TAUR_HOOF)
-					if (worn_suit.worn_icon_taur_hoof)
-						return TRUE
-
 	if(target.owned_turf)
-		if(target.owned_turf.name == "tail")
+		var/list/used_in_turf = list("tail")
+		if(target.owned_turf.name in used_in_turf)
 			return TRUE
 
 	return FALSE
@@ -81,7 +68,6 @@
 	dimension_x = 32
 	center = FALSE
 	factual = FALSE
-	natural_spawn = FALSE
 	color_src = null
 	flags_for_organ = NONE
 
@@ -145,23 +131,6 @@
 	alt_taur_mode = STYLE_TAUR_PAW
 	can_lay_down = TRUE
 	laydown_offset = -3
-
-/datum/sprite_accessory/taur/fishlike
-	name = "Mermaid"
-	icon_state = "mermaid"
-	organ_type = /obj/item/organ/taur_body/fishlike
-	taur_mode = STYLE_TAUR_SNAKE
-	color_src = USE_ONE_COLOR
-
-/datum/sprite_accessory/taur/fishlike/mermaid_alt
-	name = "Mermaid (Koi Fish)"
-	icon_state = "mermaid_alt"
-	color_src = USE_MATRIXED_COLORS
-
-/datum/sprite_accessory/taur/fishlike/orca
-	name = "Orca"
-	icon_state = "orca"
-	color_src = null
 
 /datum/sprite_accessory/taur/naga
 	name = "Naga"
@@ -250,13 +219,12 @@
 /datum/sprite_accessory/taur/biglegs
 	name = "Big Legs"
 	icon_state = "biglegs"
-	taur_mode = STYLE_TAUR_BIG_LEGS
+	taur_mode = STYLE_TAUR_PAW
 	organ_type = /obj/item/organ/taur_body/anthro
 
 /datum/sprite_accessory/taur/biglegs/stanced
 	name = "Big Legs, Stanced"
 	icon_state = "biglegs_stanced"
-	taur_mode = STYLE_TAUR_BIG_LEGS_STANCED
 
 /datum/sprite_accessory/taur/biglegs/bird
 	name = "Big Legs, Bird"

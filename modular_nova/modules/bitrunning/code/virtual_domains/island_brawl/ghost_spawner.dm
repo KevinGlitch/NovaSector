@@ -1,5 +1,5 @@
 /obj/effect/mob_spawn/ghost_role/human/virtual_domain/islander
-	allow_custom_character = GHOSTROLE_TAKE_PREFS_APPEARANCE
+	random_appearance = FALSE
 
 /datum/outfit/beachbum_combat/post_equip(mob/living/carbon/human/bum, visualsOnly)
 	. = ..()

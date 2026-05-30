@@ -42,6 +42,7 @@
 
 	var/law_change_counter = 0
 	var/obj/machinery/camera/silicon/builtInCamera
+	var/updating = FALSE //portable camera camerachunk update
 	///Whether we have been emagged
 	var/emagged = FALSE
 	var/hack_software = FALSE //Will be able to use hacking actions
@@ -53,9 +54,10 @@
 
 /mob/living/silicon/Initialize(mapload)
 	. = ..()
-	voice = SStts.random_tts_voice()
+	if(SStts.tts_enabled)
+		voice = pick(SStts.available_speakers)
 	GLOB.silicon_mobs += src
-	add_faction(FACTION_SILICON)
+	faction += FACTION_SILICON
 	if(ispath(radio))
 		radio = new radio(src)
 	var/datum/atom_hud/data/diagnostic/diag_hud = GLOB.huds[DATA_HUD_DIAGNOSTIC]
@@ -444,11 +446,11 @@
 /mob/living/silicon/get_inactive_held_item()
 	return FALSE
 
-/mob/living/silicon/handle_high_gravity(gravity, seconds_per_tick)
+/mob/living/silicon/handle_high_gravity(gravity, seconds_per_tick, times_fired)
 	return
 
 /mob/living/silicon/rust_heretic_act()
-	adjust_brute_loss(500)
+	adjustBruteLoss(500)
 
 /mob/living/silicon/on_floored_start()
 	return // Silicons are always standing by default.
@@ -487,7 +489,7 @@
 		create_modularInterface()
 	var/mob/living/silicon/robot/robo = modularInterface.silicon_owner
 	if(istype(robo))
-		modularInterface.borglog += "[round_timestamp()] - [string]"
+		modularInterface.borglog += "[station_time_timestamp()] - [string]"
 	var/datum/computer_file/program/robotact/program = modularInterface.get_robotact()
 	if(program)
 		var/datum/tgui/active_ui = SStgui.get_open_ui(src, program.computer)

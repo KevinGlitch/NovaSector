@@ -164,16 +164,6 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Textured Dark Half", "type" = /obj/item/stack/tile/iron/dark/textured_half, "tile_cost" = 5),
 			list("name" = "Textured Dark Corner", "type" = /obj/item/stack/tile/iron/dark/textured_corner, "tile_cost" = 5),
 			list("name" = "Textured Dark Large", "type" = /obj/item/stack/tile/iron/dark/textured_large, "tile_cost" = 7),
-		),
-
-		"Contrast" = list(
-			list("name" = "Contrast Tile", "type" = /obj/item/stack/tile/iron/contrast, "tile_cost" = 5),
-			list("name" = "Contrast Edge", "type" = /obj/item/stack/tile/iron/contrast/edge, "tile_cost" = 5),
-			list("name" = "Contrast Inverted Edge", "type" = /obj/item/stack/tile/iron/contrast/edge_inverted, "tile_cost" = 5),
-			list("name" = "Contrast Half", "type" = /obj/item/stack/tile/iron/contrast/half, "tile_cost" = 5),
-			list("name" = "Contrast Corner", "type" = /obj/item/stack/tile/iron/contrast/corner, "tile_cost" = 5),
-			list("name" = "Contrast Inverted Corner", "type" = /obj/item/stack/tile/iron/contrast/corner_inverted, "tile_cost" = 5),
-			list("name" = "Contrast Checkered Tile", "type" = /obj/item/stack/tile/iron/contrast/checkered, "tile_cost" = 5),
 		)
 	),
 

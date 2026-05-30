@@ -652,7 +652,7 @@
 	desc = "A massively improved iteration over the existing Rapid Construction Devices, this one being granted additional matter capacity, ranged capabilities, and 95% faster construction."
 	icon = 'icons/obj/tools.dmi'
 	icon_state = "arcrcd"
-	worn_icon_state = "rcd"
+	worn_icon_state = "RCD"
 	lefthand_file = 'icons/mob/inhands/equipment/tools_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/tools_righthand.dmi'
 	max_matter = 240

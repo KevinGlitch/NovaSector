@@ -45,6 +45,16 @@
 		/obj/item/stack/tile/iron/dark/textured_half,
 		/obj/item/stack/tile/iron/dark/textured_corner,
 		/obj/item/stack/tile/iron/dark/textured_large,
+
+		// INSERT CONTRAST TILES HERE
+		// textured_contrast
+		// textured_contrast_edge
+		// textured_contrast_edge_inverted
+		// textured_contrast_half
+		// textured_contrast_corner
+		// textured_contrast_corner_inverted
+		// textured_contrast_checkered
+
 		/obj/item/stack/tile/iron/white,
 		/obj/item/stack/tile/iron/white/smooth_edge,
 		/obj/item/stack/tile/iron/white/smooth_half,
@@ -334,6 +344,63 @@
 	icon_state = "tile_textured_dark_large"
 	turf_type = /turf/open/floor/iron/dark/textured_large
 	merge_type = /obj/item/stack/tile/iron/dark/textured_large
+
+// Contrast Tile Types added by Azre.
+/obj/item/stack/tile/iron/contrast
+	name = "contrast tile"
+	singular_name = "contrast floor tile"
+	icon_state = "tile_contrast"
+	turf_type = /turf/open/floor/iron/contrast
+	merge_type = /obj/item/stack/tile/iron/contrast
+	tile_rotate_dirs = list(SOUTH, NORTH, EAST, WEST)
+
+/obj/item/stack/tile/iron/contrast/edge
+	name = "contrast edge tile"
+	singular_name = "contrast edge tile"
+	icon_state = "tile_contrast_edge"
+	turf_type = /turf/open/floor/iron/contrast_edge
+	merge_type = /obj/item/stack/tile/iron/contrast/edge
+	tile_rotate_dirs = list(SOUTH, NORTH, EAST, WEST)
+
+/obj/item/stack/tile/iron/contrast/edge_inverted
+	name = "inverted contrast edge tile"
+	singular_name = "inverted contrast edge tile"
+	icon_state = "tile_contrast_edge_inverted"
+	turf_type = /turf/open/floor/iron/contrast_edge_inverted
+	merge_type = /obj/item/stack/tile/iron/contrast/edge_inverted
+	tile_rotate_dirs = list(SOUTH, NORTH, EAST, WEST)
+
+/obj/item/stack/tile/iron/contrast/half
+	name = "contrast half tile"
+	singular_name = "contrast half tile"
+	icon_state = "tile_contrast_half"
+	turf_type = /turf/open/floor/iron/contrast_half
+	merge_type = /obj/item/stack/tile/iron/contrast/half
+	tile_rotate_dirs = list(SOUTH, NORTH, EAST, WEST)
+
+/obj/item/stack/tile/iron/contrast/corner
+	name = "contrast corner tile"
+	singular_name = "contrast corner tile"
+	icon_state = "tile_contrast_corner"
+	turf_type = /turf/open/floor/iron/contrast_corner
+	merge_type = /obj/item/stack/tile/iron/contrast/corner
+	tile_rotate_dirs = list(SOUTH, NORTH, EAST, WEST)
+
+/obj/item/stack/tile/iron/contrast/corner_inverted
+	name = "inverted contrast corner tile"
+	singular_name = "inverted contrast corner tile"
+	icon_state = "tile_contrast_corner_inverted"
+	turf_type = /turf/open/floor/iron/contrast_corner_inverted
+	merge_type = /obj/item/stack/tile/iron/contrast/corner_inverted
+	tile_rotate_dirs = list(SOUTH, NORTH, EAST, WEST)
+
+/obj/item/stack/tile/iron/contrast/checkered
+	name = "contrast checkered tile"
+	singular_name = "contrast checkered tile"
+	icon_state = "tile_contrast_checkered"
+	turf_type = /turf/open/floor/iron/contrast_checkered
+	merge_type = /obj/item/stack/tile/iron/contrast/checkered
+	tile_rotate_dirs = list(SOUTH, NORTH)
 
 /obj/item/stack/tile/iron/dark/small
 	name = "dark small tile"

@@ -131,6 +131,41 @@
 	base_icon_state = "darkcorner"
 	floor_tile = /obj/item/stack/tile/iron/dark_corner
 
+/turf/open/floor/iron/contrast
+	icon_state = "textured_contrast"
+	base_icon_state = "textured_contrast"
+	floor_tile = /obj/item/stack/tile/iron/contrast
+
+/turf/open/floor/iron/contrast_edge
+	icon_state = "textured_contrast_edge"
+	base_icon_state = "textured_contrast_edge"
+	floor_tile = /obj/item/stack/tile/iron/contrast/edge
+
+/turf/open/floor/iron/contrast_edge_inverted
+	icon_state = "textured_contrast_edge_inverted"
+	base_icon_state = "textured_contrast_edge_inverted"
+	floor_tile = /obj/item/stack/tile/iron/contrast/edge_inverted
+
+/turf/open/floor/iron/contrast_half
+	icon_state = "textured_contrast_half"
+	base_icon_state = "textured_contrast_half"
+	floor_tile = /obj/item/stack/tile/iron/contrast/half
+
+/turf/open/floor/iron/contrast_corner
+	icon_state = "textured_contrast_corner"
+	base_icon_state = "textured_contrast_corner"
+	floor_tile = /obj/item/stack/tile/iron/contrast/corner
+
+/turf/open/floor/iron/contrast_corner_inverted
+	icon_state = "textured_contrast_corner_inverted"
+	base_icon_state = "textured_contrast_corner_inverted"
+	floor_tile = /obj/item/stack/tile/iron/contrast/corner_inverted
+
+/turf/open/floor/iron/contrast_checkered
+	icon_state = "textured_contrast_checkered"
+	base_icon_state = "textured_contrast_checkered"
+	floor_tile = /obj/item/stack/tile/iron/contrast/checkered
+
 /turf/open/floor/iron/checker
 	icon_state = "checker"
 	base_icon_state = "checker"

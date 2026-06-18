@@ -51,7 +51,7 @@ Edit =
 
 Name = Trial Admin
 Include = @ SPAWN VAREDIT BAN
-Exclude =
+Exclude = AUTOADMIN
 Edit =
 
 Name = Badmin
@@ -66,13 +66,8 @@ Edit =
 
 Name = Game Master
 Include = EVERYTHING
-Exclude =
-Edit = EVERYTHING
-
-Name = Lazy Master
-Include = EVERYTHING
-Exclude = AUTOADMIN
-Edit = EVERYTHING
+Exclude = AUTOADMIN PERMISSIONS DBRANKS
+Edit = 
 
 Name = Host
 Include = EVERYTHING

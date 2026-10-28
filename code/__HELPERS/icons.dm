@@ -553,8 +553,8 @@ world
 				)
 
 				flatX1 = addX1
-				flatX2 = addY1
-				flatY1 = addX2
+				flatX2 = addX2
+				flatY1 = addY1
 				flatY2 = addY2
 
 			// Blend the overlay into the flattened icon
@@ -628,6 +628,21 @@ world
 	mask_icon.MapColors(0,0,0,0, 0,0,0,0, 0,0,0,0, 255,255,255,-255, 1,1,1,1)
 	return mask_icon
 
+/**
+ * A simple helper proc to apply a mask to an icon
+ * Arguments:
+ * * base_icon - the icon which the proc will apply the mask on
+ * * mask_to_use - the mask to use from code\__DEFINES\icon_masks.dm
+ * * replacement - an icon to overlay after the masking
+ */
+/proc/apply_icon_mask(icon/base_icon, mask_to_use, icon/replacement)
+	if(isnull(mask_to_use))
+		return
+	var/icon/mask = icon('icons/mob/clothing/under/masking_helpers.dmi', mask_to_use)
+	base_icon.Blend(mask, ICON_SUBTRACT)
+	if(!isnull(replacement))
+		base_icon.Blend(replacement, ICON_OVERLAY)
+	return base_icon
 
 /mob/proc/AddCamoOverlay(atom/A)//A is the atom which we are using as the overlay.
 	var/icon/opacity_icon = new(A.icon, A.icon_state)//Don't really care for overlays/underlays.
@@ -1235,7 +1250,7 @@ GLOBAL_LIST_EMPTY(transformation_animation_objects)
 		return TRUE
 
 	var/static/list/screams = list()
-	if(!isnull(screams[file]))
+	if(isnull(screams[file]))
 		screams[file] = TRUE
 		stack_trace("State [state] in file [file] does not exist.")
 

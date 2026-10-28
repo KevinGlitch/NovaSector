@@ -103,6 +103,7 @@
 	if(cell && resistance_flags & INDESTRUCTIBLE)
 		cell.resistance_flags |= INDESTRUCTIBLE
 	cell.resistance_flags |= BOMB_PROOF
+	cell.custom_materials = null //do not give printed energy guns more mats than they already have.
 	update_ammo_types()
 	recharge_newshot(TRUE)
 	if(selfcharge)
@@ -196,7 +197,7 @@
 
 /obj/item/gun/energy/can_shoot()
 	var/obj/item/ammo_casing/energy/shot = ammo_type[select]
-	return !QDELETED(cell) ? (cell.charge >= shot.e_cost) : FALSE
+	return ..() && !QDELETED(cell) && (cell.charge >= shot.e_cost)
 
 /obj/item/gun/energy/recharge_newshot(no_cyborg_drain)
 	if (!ammo_type || !cell)

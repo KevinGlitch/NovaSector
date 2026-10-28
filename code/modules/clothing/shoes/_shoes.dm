@@ -16,6 +16,7 @@
 	slowdown = SHOES_SLOWDOWN
 	strip_delay = 1 SECONDS
 	article = "a pair of"
+	item_flags = CAN_BE_OVERSLOT
 
 	var/offset = 0
 	var/equipped_before_drop = FALSE
@@ -29,6 +30,10 @@
 	///An active alert
 	var/datum/weakref/our_alert_ref
 	var/footprint_sprite = FOOTPRINT_SPRITE_SHOES
+
+/obj/item/clothing/shoes/Initialize(mapload)
+	. = ..()
+	register_context()
 
 /obj/item/clothing/shoes/add_context(atom/source, list/context, obj/item/held_item, mob/user)
 	. = ..()
@@ -45,7 +50,7 @@
 /datum/armor/clothing_shoes
 	bio = 50
 
-/obj/item/clothing/shoes/suicide_act(mob/living/carbon/user)
+/obj/item/clothing/shoes/suicide_act(mob/living/user)
 	if(prob(50))
 		user.visible_message(span_suicide("[user] begins fastening \the [src] up waaay too tightly! It looks like [user.p_theyre()] trying to commit suicide!"))
 		var/obj/item/bodypart/leg/left = user.get_bodypart(BODY_ZONE_L_LEG)
@@ -63,18 +68,18 @@
 			playsound(user, 'sound/items/weapons/genhit2.ogg', 50, TRUE)
 		return BRUTELOSS
 
-/obj/item/clothing/shoes/worn_overlays(mutable_appearance/standing, isinhands = FALSE, mutant_styles = NONE) // NOVA EDIT CHANGE - ORIGINAL: /obj/item/clothing/shoes/worn_overlays(mutable_appearance/standing, isinhands = FALSE)
+/obj/item/clothing/shoes/worn_overlays(mutable_appearance/standing, isinhands = FALSE, icon_file, bodyshape = NONE)
 	. = ..()
 	if(isinhands)
 		return
 	if(damaged_clothes)
 		. += mutable_appearance('icons/effects/item_damage.dmi', "damagedshoe")
 
-/obj/item/clothing/shoes/separate_worn_overlays(mutable_appearance/standing, mutable_appearance/draw_target, isinhands = FALSE, icon_file, mutant_styles = NONE) // NOVA EDIT CHANGE - ORIGINAL: /obj/item/clothing/shoes/separate_worn_overlays(mutable_appearance/standing, mutable_appearance/draw_target, isinhands = FALSE, icon_file)
+/obj/item/clothing/shoes/separate_worn_overlays(mutable_appearance/standing, mutable_appearance/draw_target, isinhands = FALSE, icon_file, bodyshape = NONE)
 	. = ..()
 	if (isinhands)
 		return
-	var/blood_overlay = get_blood_overlay("shoe", mutant_styles) // NOVA EDIT CHANGE - ORIGINAL: var/blood_overlay = get_blood_overlay("shoe")
+	var/blood_overlay = get_blood_overlay("shoe", bodyshape)
 	if (blood_overlay)
 		. += blood_overlay
 
@@ -102,6 +107,7 @@
 	if(fastening_type != SHOES_SLIPON && tied == SHOES_UNTIED)
 		our_alert_ref = WEAKREF(user.throw_alert(ALERT_SHOES_KNOT, /atom/movable/screen/alert/shoes/untied))
 		RegisterSignal(src, COMSIG_SHOES_STEP_ACTION, PROC_REF(check_trip), override=TRUE)
+	oh_what_a_neat_hat(user, TRUE)
 
 /obj/item/clothing/shoes/proc/restore_offsets(mob/user)
 	equipped_before_drop = FALSE
@@ -117,6 +123,7 @@
 	if(offset && equipped_before_drop)
 		restore_offsets(user)
 	. = ..()
+	oh_what_a_neat_hat(user, FALSE)
 
 /obj/item/clothing/shoes/update_clothes_damaged_state(damaged_state = CLOTHING_DAMAGED)
 	..()
@@ -215,7 +222,8 @@
 		if(HAS_TRAIT(user, TRAIT_STICKY_FINGERS)) // Clowns with thieving gloves will be a menace
 			mod_time *= 0.5
 		// NOVA EDIT ADDITION END
-		if(do_after(user, mod_time, target = our_guy, extra_checks = CALLBACK(src, PROC_REF(still_shoed), our_guy), hidden = TRUE))
+
+		if(do_after(user, mod_time, target = our_guy, extra_checks = CALLBACK(src, PROC_REF(still_shoed), our_guy), cog_icon = null))
 			to_chat(user, span_notice("You [tied ? "un[fasten_verb()]" : "knot"] the [fastening_type] on [loc]'s [src.name]."))
 			if(tied == SHOES_UNTIED)
 				adjust_laces(SHOES_KNOTTED, user)
@@ -238,6 +246,8 @@
 	SIGNAL_HANDLER
 	var/mob/living/carbon/human/our_guy = loc
 	if(!istype(our_guy)) // are they REALLY /our guy/?
+		return
+	if(our_guy.head == src) //a cerulean couldnt even fathom creating a triphazard by putting shoes on your feet
 		return
 
 	if(tied == SHOES_KNOTTED)
@@ -262,9 +272,9 @@
 
 			if(6 to 13) // .7% chance to stumble and fling what we're holding
 				var/have_anything = FALSE
-				for(var/obj/item/I in our_guy.held_items)
+				for(var/obj/item/item as anything in our_guy.get_held_items())
 					have_anything = TRUE
-					our_guy.accident(I)
+					our_guy.accident(item)
 				to_chat(our_guy, span_danger("You trip on your [fastening_type] a bit[have_anything ? ", flinging what you were holding" : ""]!"))
 
 			if(14 to 25) // 1.3ish% chance to stumble and be a bit off balance (like being disarmed)
@@ -350,3 +360,31 @@
 			return "fastening"
 
 	return "doing something mysterious to"
+
+/obj/item/clothing/shoes/attach_clothing_traits(traits)
+	if(!(astype(loc, /mob)?.get_slot_by_item(src) & ITEM_SLOT_FEET))
+		return
+	return ..()
+
+/// when the shoes are worn on the headslot we have to override the overlay's icon to look for the correct file
+/obj/item/clothing/shoes/worn_overlays(mutable_appearance/standing, isinhands = FALSE, icon_file, bodyshape = NONE)
+	. = ..()
+	if(isinhands || !(bodyshape & BODYSHAPE_CERULEAN))
+		return
+	var/list/current_overlays = .
+	var/icon_to_use = worn_icon || DEFAULT_SHOES_FILE
+	var/mutable_appearance/standing_overlay = current_overlays[1]
+	standing_overlay.icon = icon_to_use
+	standing.icon = icon_to_use
+	worn_y_offset = 28 //about how many px up to draw on the head
+
+/// ceruleans wear shoes as a hat. are they doing a bit or are they dumb? i guess we will never know
+/obj/item/clothing/shoes/proc/oh_what_a_neat_hat(mob/living/carbon/user, up_or_down)
+	if(user && !(user?.bodyshape & BODYSHAPE_CERULEAN))
+		return
+	if(up_or_down)
+		slot_flags |= ITEM_SLOT_HEAD
+		detach_clothing_traits(clothing_traits)
+	else
+		slot_flags = initial(slot_flags)
+		worn_y_offset = initial(worn_y_offset)

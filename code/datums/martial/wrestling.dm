@@ -5,18 +5,9 @@ The original authors are: cogwerks, pistoleer, spyguy, angriestibm, marquesas, a
 If you make a derivative work from this code, you must include this notification header alongside it.
 */
 
-/mob/living/proc/wrestling_help()
-	set name = "Recall Teachings"
-	set desc = "Remember how to wrestle."
-	set category = "Wrestling"
-
-	to_chat(usr, "<b><i>You flex your muscles and have a revelation...</i></b>")
-	to_chat(usr, "[span_notice("Clinch")]: Grab. Passively gives you a chance to immediately aggressively grab someone. Not always successful.")
-	to_chat(usr, "[span_notice("Suplex")]: Shove someone you are grabbing. Suplexes your target to the floor. Greatly injures them and leaves both you and your target on the floor.")
-	to_chat(usr, "[span_notice("Advanced grab")]: Grab. Passively causes stamina damage when grabbing someone.")
-
 /datum/martial_art/wrestling
 	name = "Wrestling"
+	help_verb = "SNAP INTO A THIN TIM"
 	id = MARTIALART_WRESTLING
 	VAR_PRIVATE/datum/action/slam/slam
 	VAR_PRIVATE/datum/action/throw_wrassle/throw_wrassle
@@ -47,7 +38,7 @@ If you make a derivative work from this code, you must include this notification
 	switch(streak)
 		if("drop")
 			streak = ""
-			drop(attacker, defender)
+			INVOKE_ASYNC(src, PROC_REF(drop), attacker, defender)
 			return TRUE
 		if("strike")
 			streak = ""
@@ -59,11 +50,11 @@ If you make a derivative work from this code, you must include this notification
 			return TRUE
 		if("throw")
 			streak = ""
-			throw_wrassle(attacker, defender)
+			INVOKE_ASYNC(src, PROC_REF(throw_wrassle), attacker, defender)
 			return TRUE
 		if("slam")
 			streak = ""
-			slam(attacker, defender)
+			INVOKE_ASYNC(src, PROC_REF(slam), attacker, defender)
 			return TRUE
 	return FALSE
 
@@ -224,7 +215,7 @@ If you make a derivative work from this code, you must include this notification
 		playsound(attacker.loc, SFX_SWING_HIT, 50, TRUE)
 		var/turf/T = get_edge_target_turf(attacker, attacker.dir)
 		if (T && isturf(T))
-			if (!defender.stat)
+			if (!IS_UNCONSCIOUS_OR_CRIT(defender))
 				defender.emote("scream")
 			defender.throw_at(T, 10, 4, attacker, TRUE, TRUE, callback = CALLBACK(defender, TYPE_PROC_REF(/mob/living, Paralyze), 20))
 	log_combat(attacker, defender, "has thrown with wrestling")
@@ -324,7 +315,7 @@ If you make a derivative work from this code, you must include this notification
 						span_userdanger("You're [fluff]ed by [attacker]!"), span_hear("You hear a sickening sound of flesh hitting flesh!"), COMBAT_MESSAGE_RANGE, attacker)
 		to_chat(attacker, span_danger("You [fluff] [defender]!"))
 		playsound(attacker.loc, SFX_SWING_HIT, 50, TRUE)
-		if (!defender.stat)
+		if (!IS_UNCONSCIOUS_OR_CRIT(defender))
 			defender.emote("scream")
 			defender.Paralyze(4 SECONDS)
 
@@ -453,7 +444,7 @@ If you make a derivative work from this code, you must include this notification
 		attacker.emote("scream")
 
 		if (falling == 1)
-			if (prob(33) || defender.stat)
+			if (prob(33) || IS_UNCONSCIOUS_OR_CRIT(defender))
 				EX_ACT(defender, EXPLODE_LIGHT)
 			else
 				defender.adjust_brute_loss(rand(20,30))

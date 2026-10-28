@@ -195,7 +195,7 @@
 
 /obj/item/storage/toolbox/guncase/revolver
 	name = "revolver gun case"
-	weapon_to_spawn = /obj/item/gun/ballistic/revolver/badass/nuclear
+	weapon_to_spawn = /obj/item/gun/ballistic/revolver/syndicate/badass/nuclear
 	extra_to_spawn = /obj/item/ammo_box/speedloader/c357
 
 /obj/item/storage/toolbox/guncase/sword_and_board
@@ -274,7 +274,7 @@
 	if(atom_storage.locked == STORAGE_NOT_LOCKED)
 		return TRUE
 
-	if(is_simian(user))
+	if(HAS_TRAIT(user, TRAIT_SIMIAN))
 		atom_storage.locked = STORAGE_NOT_LOCKED
 		to_chat(user, span_notice("You place your paw on the paw scanner, and hear a soft click as [src] unlocks!"))
 		playsound(src, 'sound/items/click.ogg', 25, TRUE)

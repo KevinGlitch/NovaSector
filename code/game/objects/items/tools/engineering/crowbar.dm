@@ -302,8 +302,8 @@
 	)
 	custom_materials = list(
 		/datum/material/iron = SHEET_MATERIAL_AMOUNT * 4.75,
-		/datum/material/silver = SHEET_MATERIAL_AMOUNT * 2.50,
 		/datum/material/titanium = SHEET_MATERIAL_AMOUNT * 1.75,
+		/datum/material/silver = SHEET_MATERIAL_AMOUNT * 1.25,
 		/datum/material/glass = SHEET_MATERIAL_AMOUNT * 1.25,
 	)
 	radio_alert = TRUE
@@ -373,11 +373,7 @@
 /obj/item/crowbar/mechremoval/Initialize(mapload)
 	. = ..()
 	transform = transform.Translate(0, -8)
-	AddComponent(/datum/component/two_handed, force_unwielded = 5, force_wielded = 19, icon_wielded = "[base_icon_state]1")
-
-/obj/item/crowbar/mechremoval/update_icon_state()
-	icon_state = "[base_icon_state]0"
-	return ..()
+	AddComponent(/datum/component/two_handed, force_unwielded = 5, force_wielded = 19, update_icon_state = TRUE)
 
 /obj/item/crowbar/mechremoval/proc/empty_mech(obj/vehicle/sealed/mecha/mech, mob/user)
 	if(!HAS_TRAIT(src, TRAIT_WIELDED))

@@ -185,6 +185,9 @@
 		overlays.Cut()
 
 	LAZYNULL(managed_overlays)
+	// SSvis_overlays shares these between atoms and deletes them on its own, so don't hold them while we wait in the gc queue
+	if(managed_vis_overlays)
+		managed_vis_overlays = null
 	if(ai_controller)
 		QDEL_NULL(ai_controller)
 	if(light)
@@ -194,6 +197,15 @@
 
 	if(smoothing_flags & SMOOTH_QUEUED)
 		SSicon_smooth.remove_from_queues(src)
+
+#ifndef DISABLE_DREAMLUAU
+	// These lists cease existing when src does, so we need to clear any lua refs to them that exist.
+	if(!(datum_flags & DF_STATIC_OBJECT))
+		DREAMLUAU_CLEAR_REF_USERDATA(contents)
+		DREAMLUAU_CLEAR_REF_USERDATA(filters)
+		DREAMLUAU_CLEAR_REF_USERDATA(overlays)
+		DREAMLUAU_CLEAR_REF_USERDATA(underlays)
+#endif
 
 	return ..()
 
@@ -225,7 +237,12 @@
 	if(!mover.generic_canpass)
 		return mover.CanPassThrough(src, REVERSE_DIR(border_dir), .)
 
-/// Returns true or false to allow the mover to move through src
+/**
+ * Returns true or false to allow the mover to move through src
+ * @params
+ * 	mover: The mob trying to move into this atom.
+ * 	border_dir: Typically the direction that mover has in relation to src.
+ */
 /atom/proc/CanAllowThrough(atom/movable/mover, border_dir)
 	SHOULD_CALL_PARENT(TRUE)
 	//SHOULD_BE_PURE(TRUE)
@@ -383,11 +400,8 @@
 	return null
 
 ///Return the current air environment in this atom
-/atom/proc/return_air()
-	if(loc)
-		return loc.return_air()
-	else
-		return null
+/atom/proc/return_air() as /datum/gas_mixture
+	return loc?.return_air()
 
 ///Return the air if we can analyze it
 /atom/proc/return_analyzable_air()
@@ -556,7 +570,7 @@
  *
  * (e.g. A mob with nightvision loses its nightvision while looking through a normal camera)
  */
-/atom/proc/update_remote_sight(mob/living/user)
+/atom/proc/update_remote_sight(mob/living/user, list/new_sight)
 	return
 
 
@@ -589,14 +603,10 @@
 /atom/proc/wash(clean_types)
 	SHOULD_CALL_PARENT(TRUE)
 	. = SEND_SIGNAL(src, COMSIG_COMPONENT_CLEAN_ACT, clean_types)
-	if(.)
-		return
-
 	// Basically "if has washable coloration"
 	if(length(atom_colours) >= WASHABLE_COLOUR_PRIORITY && atom_colours[WASHABLE_COLOUR_PRIORITY])
 		remove_atom_colour(WASHABLE_COLOUR_PRIORITY)
-		return COMPONENT_CLEANED|COMPONENT_CLEANED_GAIN_XP
-	return NONE
+		. |= COMPONENT_CLEANED|COMPONENT_CLEANED_GAIN_XP
 
 ///Where atoms should drop if taken from this atom
 /atom/proc/drop_location()
@@ -681,7 +691,7 @@
 	for(var/i = 1 to amount_to_create)
 		var/atom/created_atom = new atom_to_create(drop_location())
 		created_atom.OnCreatedFromProcessing(user, process_item, chosen_option, src)
-		if(custom_materials)
+		if(custom_materials || IS_EDIBLE(src)) //materials are ALWAYS inherited for food, even if the source has none
 			created_atom.set_custom_materials(custom_materials, 1 / amount_to_create)
 		created_atom.pixel_x = pixel_x
 		created_atom.pixel_y = pixel_y

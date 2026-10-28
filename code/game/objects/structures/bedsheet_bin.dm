@@ -20,6 +20,8 @@ LINEN BINS
 	throw_speed = 1
 	throw_range = 2
 	w_class = WEIGHT_CLASS_TINY
+	supports_variations_flags = CLOTHING_CERULEAN_MASK_INBETWEEN
+	bodyshapes_with_variations = BODYSHAPE_CERULEAN
 	resistance_flags = FLAMMABLE
 	dying_key = DYE_REGISTRY_BEDSHEET
 	interaction_flags_click = NEED_DEXTERITY|ALLOW_RESTING
@@ -393,7 +395,7 @@ LINEN BINS
 	add_overlay(gondola_mouth)
 	add_overlay(gondola_eyes)
 
-/obj/item/bedsheet/gondola/worn_overlays(mutable_appearance/standing, isinhands, icon_file)
+/obj/item/bedsheet/gondola/worn_overlays(mutable_appearance/standing, isinhands, icon_file, bodyshape = NONE)
 	. = ..()
 	if(!isinhands)
 		. += mutable_appearance(icon_file, gondola_mouth)

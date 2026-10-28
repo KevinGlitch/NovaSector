@@ -5,7 +5,7 @@
 	invisibility = INVISIBILITY_ABSTRACT
 	density = FALSE
 	stat = DEAD
-	//hud_type = /datum/hud/new_player // NOVA EDIT REMOVAL
+	hud_type = /datum/hud
 
 	/// String Values tied to Defines that state whether the new_player is ready to play or not.
 	/// Do try your best to compare this value directly against the defines for certainty but helper procs do exist in bulkier situations.
@@ -18,8 +18,6 @@
 	var/ineligible_for_roles = FALSE
 	/// Used to track if the player's jobs menu sent a message saying it successfully mounted.
 	var/jobs_menu_mounted = FALSE
-	///Cooldown for the Reset Lobby Menu HUD verb
-	COOLDOWN_DECLARE(reset_hud_cooldown)
 
 /mob/dead/new_player/Initialize(mapload)
 	if(client && SSticker.state == GAME_STATE_STARTUP)
@@ -34,7 +32,6 @@
 	. = ..()
 
 	GLOB.new_player_list += src
-	add_verb(src, /mob/dead/new_player/proc/reset_menu_hud)
 
 /mob/dead/new_player/Destroy()
 	GLOB.new_player_list -= src
@@ -143,6 +140,10 @@
 			return "[jobtitle] requires you to have flavour text for your character."
 		if(JOB_UNAVAILABLE_AUGMENT)
 			return "[jobtitle] is restricted due to your selected body augments."
+		if(JOB_UNAVAILABLE_MEDREC)
+			return "[jobtitle] requires you to have medical records text for your character."
+		if(JOB_UNAVAILABLE_SECREC)
+			return "[jobtitle] requires you to have security records text for your character."
 		//NOVA EDIT END
 		if(JOB_UNAVAILABLE_ANTAG_INCOMPAT)
 			return "[jobtitle] is not compatible with some antagonist role assigned to you."
@@ -187,7 +188,10 @@
 /mob/dead/new_player/proc/AttemptLateSpawn(rank)
 	// Check that they're picking someone new for new character respawning
 	if(CONFIG_GET(flag/allow_respawn) == RESPAWN_FLAG_NEW_CHARACTER)
-		if("[client.prefs.default_slot]" in persistent_client.joined_as_slots)
+		if(client?.is_localhost())
+			to_chat(client.mob, span_notice("This character already played in this round, however this is bypassed as localhost."))
+			log_admin("[key_name_and_tag(client)] is bypassing rejoining the round as the same character.")
+		else if("[client.prefs.default_slot]" in persistent_client.joined_as_slots)
 			tgui_alert(usr, "You already have played this character in this round!")
 			return FALSE
 
@@ -221,7 +225,7 @@
 	var/atom/destination = mind.assigned_role.get_latejoin_spawn_point()
 	if(!destination)
 		CRASH("Failed to find a latejoin spawn point.")
-	var/mob/living/character = create_character(destination)
+	var/mob/living/character = create_character(destination, forced_slot = client.prefs.default_slot)
 	if(!character)
 		CRASH("Failed to create a character for latejoin.")
 	transfer_character()
@@ -306,26 +310,40 @@
 		if(!employmentCabinet.virgin)
 			employmentCabinet.addFile(employee)
 
-/// Creates, assigns and returns the new_character to spawn as. Assumes a valid mind.assigned_role exists.
-/mob/dead/new_player/proc/create_character(atom/destination)
+/**
+ * Creates, assigns and returns the new_character to spawn as.
+ * Assumes a valid mind.assigned_role exists.
+ *
+ * * destination - where to spawn the character
+ * * forced_slot - if provided, will load whatever character is in that slot instead of their active slot
+ */
+/mob/dead/new_player/proc/create_character(atom/destination, forced_slot)
 	spawning = TRUE
-
 	hide_title_screen() // NOVA EDIT ADDITION - titlescreen
+
+	var/spawned_slot = isnum(forced_slot) ? forced_slot : LAZYACCESS(client.prefs.job_assigned_profiles, mind.assigned_role.title)
+	if(isnum(spawned_slot) && client.prefs.default_slot != spawned_slot)
+		client.prefs.load_character(spawned_slot) // if this fails, we will simply load their current slot anyways
 
 	mind.active = FALSE //we wish to transfer the key manually
 	var/mob/living/spawning_mob = mind.assigned_role.get_spawn_mob(client, destination)
-	if(QDELETED(src) || !HAS_CONNECTED_PLAYER(src))
-		return // Disconnected while checking for the appearance ban.
+	if(QDELETED(src))
+		return
+
+	// Annoyingly the AI mob yoinks our client on init so we have to check for it here
+	var/client/player_client = src.client || spawning_mob.client
+	if(isnull(player_client))
+		return
 
 	if(!isAI(spawning_mob)) // Unfortunately there's still snowflake AI code out there.
 		// transfer_to sets mind to null
 		var/datum/mind/preserved_mind = mind
-		preserved_mind.original_character_slot_index = client.prefs.default_slot
+		preserved_mind.original_character_slot_index = player_client.prefs.default_slot
 		preserved_mind.transfer_to(spawning_mob) //won't transfer key since the mind is not active
 		preserved_mind.set_original_character(spawning_mob)
 
-	LAZYADD(persistent_client.joined_as_slots, "[client.prefs.default_slot]")
-	client.init_verbs()
+	LAZYADD(player_client.persistent_client.joined_as_slots, "[player_client.prefs.default_slot]")
+	player_client.init_verbs()
 	. = spawning_mob
 	new_character = .
 
@@ -398,24 +416,8 @@
 		I.ui_interact(src)
 
 	// Add verb for re-opening the interview panel, fixing chat and re-init the verbs for the stat panel
-	add_verb(src, /mob/dead/new_player/proc/open_interview)
+	ASSIGN_GAME_VERB(src, /mob/dead/new_player, open_interview)
 	add_verb(client, /client/verb/fix_tgui_panel)
-
-///Resets the Lobby Menu HUD, recreating and reassigning it to the new player
-/mob/dead/new_player/proc/reset_menu_hud()
-	set name = "Reset Lobby Menu HUD"
-	set category = "OOC"
-	var/mob/dead/new_player/new_player = usr
-	if(!COOLDOWN_FINISHED(new_player, reset_hud_cooldown))
-		to_chat(new_player, span_warning("You must wait <b>[DisplayTimeText(COOLDOWN_TIMELEFT(new_player, reset_hud_cooldown))]</b> before resetting the Lobby Menu HUD again!"))
-		return
-	if(!new_player?.client)
-		return
-	COOLDOWN_START(new_player, reset_hud_cooldown, RESET_HUD_INTERVAL)
-	qdel(new_player.hud_used)
-	create_mob_hud()
-	to_chat(new_player, span_info("Lobby Menu HUD reset. You may reset the HUD again in <b>[DisplayTimeText(RESET_HUD_INTERVAL)]</b>."))
-	hud_used.show_hud(hud_used.hud_version)
 
 ///Auto deadmins an admin when they click to toggle the ready button or join game button in the menu
 /mob/dead/new_player/proc/auto_deadmin_on_ready_or_latejoin()

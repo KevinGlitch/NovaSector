@@ -37,7 +37,7 @@
 			if(blood_spell.positioned)
 				position_list.Remove(blood_spell.positioned)
 				continue
-			var/atom/movable/screen/movable/action_button/moving_button = blood_spell.viewers[hud]
+			var/atom/movable/screen/movable/action_button/moving_button = LAZYACCESS(blood_spell.viewers, hud)
 			if(!moving_button)
 				continue
 			var/first_available_slot = position_list[1]
@@ -792,11 +792,11 @@
 		construct_thing.balloon_alert(user, "out of blood!")
 		return FALSE
 	if(uses > missing_health)
-		construct_thing.adjust_health(-missing_health)
+		construct_thing.adjust_brute_loss(-missing_health)
 		construct_thing.visible_message(span_warning("[construct_thing] is fully healed by [user]'s blood magic!"))
 		uses -= missing_health
 	else
-		construct_thing.adjust_health(-uses)
+		construct_thing.adjust_brute_loss(-uses)
 		construct_thing.visible_message(span_warning("[construct_thing] is partially healed by [user]'s blood magic!"))
 		uses = 0
 	playsound(get_turf(construct_thing), 'sound/effects/magic/staff_healing.ogg', 25)

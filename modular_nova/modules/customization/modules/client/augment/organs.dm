@@ -34,7 +34,7 @@
 	abstract_type = /datum/augment_item/organ/brain
 	slot = AUGMENT_SLOT_BRAIN
 	icon = FA_ICON_BRAIN
-	species_blacklist = list(SPECIES_PROTEAN = 1)
+	species_blacklist = list(SPECIES_PROTEAN = 1, SPECIES_SLIMESTART = 1)
 
 /datum/augment_item/organ/brain/apply(mob/living/carbon/human/human_holder, character_setup = FALSE, datum/preferences/prefs)
 	if(character_setup)
@@ -70,7 +70,7 @@
 	abstract_type = /datum/augment_item/organ/heart
 	slot = AUGMENT_SLOT_HEART
 	icon = "tg-znova-heart-organ"
-	species_blacklist = list(SPECIES_HEMOPHAGE = 1)
+	species_blacklist = list(SPECIES_HEMOPHAGE = 1, SPECIES_SLIMESTART = 1)
 
 /datum/augment_item/organ/heart/normal
 	name = "Organic heart"
@@ -126,6 +126,7 @@
 	abstract_type = /datum/augment_item/organ/stomach
 	slot = AUGMENT_SLOT_STOMACH
 	icon = "tg-znova-stomach"
+	species_blacklist = list(SPECIES_SYNTH = 1)
 
 /datum/augment_item/organ/stomach/normal
 	name = "Organic stomach"

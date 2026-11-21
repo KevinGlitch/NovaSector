@@ -30,10 +30,6 @@ map icebox
 	votable
 endmap
 
-map catwalkstation
-	votable
-endmap
-
 map metastation
 	#voteweight 0.5
 	votable

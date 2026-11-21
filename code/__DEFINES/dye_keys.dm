@@ -34,3 +34,5 @@
 #define DYE_CHAP "chap"
 #define DYE_CENTCOM "centcom"
 #define DYE_PRISONER "prisoner"
+
+#define DYE_ARCANUM "arcanum"

@@ -115,6 +115,12 @@
 	icon_state = "stamp-centcom"
 	dye_color = DYE_CENTCOM
 
+/obj/item/stamp/arcanum
+	name = "Arcanum rubber stamp"
+	desc = "A rubber stamp for stamping important documents. This one comes from Arcanum Research Corporation. You're not meant to see this!"
+	icon_state = "stamp-arcanum"
+	dye_color = DYE_ARCANUM
+
 /obj/item/stamp/syndicate
 	name = "Syndicate rubber stamp"
 	icon_state = "stamp-syndicate"

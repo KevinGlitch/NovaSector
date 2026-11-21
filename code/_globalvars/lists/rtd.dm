@@ -43,6 +43,11 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Arrow Pattern Brick Tile", "type" = /obj/item/stack/tile/iron/pattern_10, "tile_cost" = 6),
 			list("name" = "Large Hex Floor Tile", "type" = /obj/item/stack/tile/iron/pattern_11, "tile_cost" = 6),
 			/// NOVA EDIT ADDITION END
+
+			//AZRE: Add the fancy bricks (expanded bricks)
+			list("name" = "Quarter-Width Edged Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_neutral, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged Corner Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_neutral, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged Inverse Corner Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_neutral, "tile_cost" = 6),
 		),
 		//Looks slightly transparent or faded
 		"Translucent" = list(
@@ -109,6 +114,14 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Arrow Pattern Brick Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_10, "tile_cost" = 6),
 			list("name" = "Large Hex Floor Tile", "type" = /obj/item/stack/tile/iron/dark/pattern_11, "tile_cost" = 6),
 			/// NOVA EDIT ADDITION END
+
+			//AZRE: Add the fancy bricks (expanded bricks)
+			list("name" = "Quarter-Width Dark Edged Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark, "tile_cost" = 6),
+			list("name" = "Quarter-Width Dark Edged Corner Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark, "tile_cost" = 6),
+			list("name" = "Quarter-Width Dark Edged Inverse Corner Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged Dark Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark_inv, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged Corner Dark Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark_inv, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged Inverse Corner Dark Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark_inv, "tile_cost" = 6),
 		),
 
 		//White Colored tiles
@@ -150,6 +163,14 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Arrow Pattern Brick Tile", "type" = /obj/item/stack/tile/iron/white/pattern_10, "tile_cost" = 6),
 			list("name" = "Large Hex Floor Tile", "type" = /obj/item/stack/tile/iron/white/pattern_11, "tile_cost" = 6),
 			/// NOVA EDIT ADDITION END
+
+			//AZRE: Add the fancy bricks (expanded bricks)
+			list("name" = "Quarter-Width White Edged Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_white, "tile_cost" = 6),
+			list("name" = "Quarter-Width White Edged Corner Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_white, "tile_cost" = 6),
+			list("name" = "Quarter-Width White Edged Inverse Corner Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged White Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_white_inv, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged Corner White Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_white_inv, "tile_cost" = 6),
+			list("name" = "Quarter-Width Edged Inverse Corner White Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white_inv, "tile_cost" = 6),
 		),
 
 		//Textured tiles
@@ -164,6 +185,14 @@ GLOBAL_LIST_INIT(floor_designs, list(
 			list("name" = "Textured Dark Half", "type" = /obj/item/stack/tile/iron/dark/textured_half, "tile_cost" = 5),
 			list("name" = "Textured Dark Corner", "type" = /obj/item/stack/tile/iron/dark/textured_corner, "tile_cost" = 5),
 			list("name" = "Textured Dark Large", "type" = /obj/item/stack/tile/iron/dark/textured_large, "tile_cost" = 7),
+
+			//AZRE: Add the fancy bricks (expanded bricks)
+			list("name" = "Quarter-Width White Edged Dark Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast, "tile_cost" = 6),
+			list("name" = "Quarter-Width White Edged Corner Dark Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast, "tile_cost" = 6),
+			list("name" = "Quarter-Width White Edged Inverse Corner Dark Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast, "tile_cost" = 6),
+			list("name" = "Quarter-Width Dark Edged White Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast_inv, "tile_cost" = 6),
+			list("name" = "Quarter-Width Dark Edged Corner White Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast_inv, "tile_cost" = 6),
+			list("name" = "Quarter-Width Dark Edged Inverse Corner White Brick", "type" = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast_inv, "tile_cost" = 6),
 		)
 	),
 

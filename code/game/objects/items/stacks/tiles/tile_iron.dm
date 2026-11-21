@@ -88,6 +88,29 @@
 		/obj/item/stack/tile/iron/freezer/large,
 		/obj/item/stack/tile/iron/grimy,
 		/obj/item/stack/tile/iron/sepia,
+
+		//AZRE: Add the brick types to the reskin list.
+		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_neutral,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_neutral,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_neutral,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_white,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_white,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_white_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_white_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast_inv,
+		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast_inv,
 	)
 
 /obj/item/stack/tile/iron/two
@@ -676,6 +699,161 @@
 	icon_state = "tile_sepia"
 	turf_type = /turf/open/floor/iron/sepia
 	merge_type = /obj/item/stack/tile/iron/sepia
+
+
+//AZRE: Add the fancy bricks (expanded brick)
+
+//base type to set all the rotation values, since all of these have 4-directional icons.
+/obj/item/stack/tile/iron/expanded_brick
+	tile_rotate_dirs = list(SOUTH, NORTH, EAST, WEST)
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_edge_neutral
+	name = "quarter-width edged brick"
+	singular_name = "quarter-width edged brick"
+	icon_state = "tile_quarter-edge-neutral"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/edge/neutral
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_neutral
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_corner_neutral
+	name = "quarter-width edged corner brick"
+	singular_name = "quarter-width edged corner brick"
+	icon_state = "tile_quarter-corner-neutral"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/corner/neutral
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_neutral
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_neutral
+	name = "quarter-width edged inner corner brick"
+	singular_name = "quarter-width edged inner corner brick"
+	icon_state = "tile_quarter-corner-neutral"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/neutral
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_neutral
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_edge_white
+	name = "quarter-width white edged brick"
+	singular_name = "quarter-width white edged brick"
+	icon_state = "tile_quarter-edge-white"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/edge/white
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_white
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_corner_white
+	name = "quarter-width white edged corner brick"
+	singular_name = "quarter-width white edged corner brick"
+	icon_state = "tile_quarter-corner-white"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/corner/white
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_white
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white
+	name = "quarter-width white edged inner corner brick"
+	singular_name = "quarter-width white edged inner corner brick"
+	icon_state = "tile_quarter-corner-white"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/white
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark
+	name = "quarter-width dark edged brick"
+	singular_name = "quarter-width dark edged brick"
+	icon_state = "tile_quarter-edge-dark"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/edge/dark
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark
+	name = "quarter-width dark edged corner brick"
+	singular_name = "quarter-width dark edged corner brick"
+	icon_state = "tile_quarter-corner-dark"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/corner/dark
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark
+	name = "quarter-width dark edged inner corner brick"
+	singular_name = "quarter-width dark edged inner corner brick"
+	icon_state = "tile_quarter-corner-dark"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/dark
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_edge_white_inv
+	name = "quarter-width edged white brick"
+	singular_name = "quarter-width edged white brick"
+	icon_state = "tile_quarter-edge-white-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/edge/white_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_white_inv
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_corner_white_inv
+	name = "quarter-width edged corner white brick"
+	singular_name = "quarter-width edged corner white brick"
+	icon_state = "tile_quarter-corner-white-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/corner/white_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_white
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white_inv
+	name = "quarter-width edged inner corner white brick"
+	singular_name = "quarter-width edged inner corner white brick"
+	icon_state = "tile_quarter-corner-white-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/white_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_white_inv
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark_inv
+	name = "quarter-width edged dark brick"
+	singular_name = "quarter-width edged dark brick"
+	icon_state = "tile_quarter-edge-dark-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/edge/dark_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_dark_inv
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark_inv
+	name = "quarter-width edged corner dark brick"
+	singular_name = "quarter-width edged corner dark brick"
+	icon_state = "tile_quarter-corner-dark-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/corner/dark_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_dark_inv
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark_inv
+	name = "quarter-width edged inner corner dark brick"
+	singular_name = "quarter-width edged inner corner dark brick"
+	icon_state = "tile_quarter-corner-dark-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/dark_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_dark_inv
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast
+	name = "quarter-width white edged dark brick"
+	singular_name = "quarter-width white edged dark brick"
+	icon_state = "tile_quarter-edge-contrast"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/edge/contrast
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast
+	name = "quarter-width white edged corner dark brick"
+	singular_name = "quarter-width white edged corner dark brick"
+	icon_state = "tile_quarter-corner-contrast"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/corner/contrast
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast
+	name = "quarter-width white edged inner corner dark brick"
+	singular_name = "quarter-width white edged inner corner dark brick"
+	icon_state = "tile_quarter-corner-contrast"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/contrast
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast_inv
+	name = "quarter-width dark edged white brick"
+	singular_name = "quarter-width dark edged white brick"
+	icon_state = "tile_quarter-edge-contrast-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/edge/contrast_inv
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_edge_contrast_inv
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast_inv
+	name = "quarter-width dark edged corner white brick"
+	singular_name = "quarter-width dark edged corner white brick"
+	icon_state = "tile_quarter-corner-contrast-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/corner/contrast_inv
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_corner_contrast_inv
+
+/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast_inv
+	name = "quarter-width dark edged inner corner white brick"
+	singular_name = "quarter-width dark edged inner corner white brick"
+	icon_state = "tile_quarter-corner-contrast-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/contrast_inv
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast_inv
+
 
 //Tiles below can't be gotten through tile reskinning
 

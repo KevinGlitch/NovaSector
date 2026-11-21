@@ -75,18 +75,18 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	EMERGENCY_RESPONSE_EMT = "You SHOULD call EMTs for:\n\
 		Large or excessive amounts of dead bodies, emergency medical situations that the station can't handle, etc.\n\
 		You SHOULD NOT call EMTs for:\n\
-		The Captain stubbing their toe, one or two dead bodies, minor viral outbreaks, etc.\n\
+		The Captain stubbing their toe, Gabriel Zeal has weather anomalies surrounding him again, one or two dead bodies, minor viral outbreaks, etc.\n\
 		Are you sure you want to call EMTs?",
 	EMERGENCY_RESPONSE_POLICE = "You SHOULD call Marshals for:\n\
 		Security ignoring Command, Security violating civil rights, Security engaging in Mutiny, \
-		General Violation of Sol Federation Citizen Rights by Command/Security, etc.\n\
+		General Violation of Exobytech Citizen Rights by Command/Security, etc.\n\
 		You SHOULD NOT call Marshals for:\n\
-		Corporate affairs, manhunts, settling arguments, etc.\n\
+		Corporate affairs, Nazaki causing chaos, manhunts, settling arguments, etc.\n\
 		Are you sure you want to call Marshals?",
 	EMERGENCY_RESPONSE_ATMOS = "You SHOULD call Advanced Atmospherics for:\n\
 		Stationwide atmospherics loss, wide-scale supermatter delamination related repairs, unending fires filling the hallways, or department-sized breaches with Engineering and Atmospherics unable to handle it, etc. \n\
 		You SHOULD NOT call Advanced Atmospherics for:\n\
-		A trashcan on fire in the library, a single breached room, heating issues, etc. - especially with capable Engineers/Atmos Techs.\n\
+		A trashcan on fire in the library, Nova with a lighter, a single breached room, heating issues, etc. - especially with capable Engineers/Atmos Techs.\n\
 		There is a response fee of [abs(GLOB.solfed_tech_charge)] credits per emergency responder.\n\
 		Are you sure you want to call Advanced Atmospherics?"
 ))
@@ -96,7 +96,7 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	var/team_size
 	var/datum/antagonist/ert/cops_to_send
 	var/announcement_message = "sussus amogus"
-	var/announcer = "Sol Federation Marshal Department"
+	var/announcer = "Exobytech Marshal Department"
 	var/poll_question = "fuck you leatherman"
 	var/cell_phone_number = "911"
 	var/list_to_use = "911_responders"
@@ -104,34 +104,34 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 		if(EMERGENCY_RESPONSE_POLICE)
 			team_size = 8
 			cops_to_send = /datum/antagonist/ert/request_911/police
-			announcement_message = "Crewmembers of [station_name()]. this is the Sol Federation. We've received a request for immediate marshal support, and we are \
+			announcement_message = "Crewmembers of [station_name()]. this is Exobytech. We've received a request for immediate marshal support, and we are \
 				sending our best marshals to support your station.\n\n\
 				If the first responders request that they need SWAT support to do their job, or to report a faulty 911 call, we will send them in at additional cost to your station to the \
 				tune of $20,000.\n\n\
 				The transcript of the call is as follows:\n\
 				[GLOB.call_911_msg]"
-			announcer = "Sol Federation Marshal Department"
+			announcer = "Exobytech Marshal Department"
 			poll_question = "The station has called for the Marshals. Will you respond?"
 		if(EMERGENCY_RESPONSE_ATMOS)
 			team_size = tgui_input_number(usr, "How many techs would you like dispatched?", "How badly did you screw up?", 3, 3, 1)
 			cops_to_send = /datum/antagonist/ert/request_911/atmos
-			announcement_message = "Crewmembers of [station_name()]. this is the Sol Federation's 811 dispatch. We've received a report of stationwide structural damage, atmospherics loss, fire, or otherwise, and we are \
+			announcement_message = "Crewmembers of [station_name()]. this is Exobytech's 811 dispatch. We've received a report of stationwide structural damage, atmospherics loss, fire, or otherwise, and we are \
 				sending an Advanced Atmospherics team to support your station.\n\n\
 				The transcript of the call is as follows:\n\
 				[GLOB.call_911_msg]"
-			announcer = "Sol Federation 811 Dispatch - Advanced Atmospherics"
+			announcer = "Exobytech 811 Dispatch - Advanced Atmospherics"
 			poll_question = "The station has called for an advanced engineering support team. Will you respond?"
 			cell_phone_number = "911"	//This needs to stay so they can communicate with SWAT
 		if(EMERGENCY_RESPONSE_EMT)
 			team_size = 8
 			cops_to_send = /datum/antagonist/ert/request_911/emt
-			announcement_message = "Crewmembers of [station_name()]. this is the Sol Federation. We've received a request for immediate medical support, and we are \
+			announcement_message = "Crewmembers of [station_name()]. this is Exobytech. We've received a request for immediate medical support, and we are \
 				sending our best emergency medical technicians to support your station.\n\n\
 				If the first responders request that they need SWAT support to do their job, or to report a faulty 911 call, we will send them in at additional cost to your station to the \
 				tune of $20,000.\n\n\
 				The transcript of the call is as follows:\n\
 				[GLOB.call_911_msg]"
-			announcer = "Sol Federation EMTs"
+			announcer = "Exobytech EMTs"
 			poll_question = "The station has called for medical support. Will you respond?"
 		if(EMERGENCY_RESPONSE_EMAG)
 			team_size = 8
@@ -252,9 +252,9 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 /// Does the final checks if a player is messaging solfed, providing final considerations and what consequences may come.
 /obj/machinery/computer/communications/proc/finalizing_solfedmessage(mob/user)
 	/// Notifies admins in case player is considering messaging solfed.
-	message_admins("[ADMIN_LOOKUPFLW(user)] is considering contacting the Sol Federation Regional Command.")
+	message_admins("[ADMIN_LOOKUPFLW(user)] is considering contacting Exobytech Regional Command.")
 	/// First Question
-	var/call_solfed_check1 = "Are you sure you want to message the Sol Federation? Un-necessary communications may result in a \
+	var/call_solfed_check1 = "Are you sure you want to message Exobytech? Un-necessary communications may result in a \
 		large fine or 25 years in federal prison."
 	/// Boolean for Solfed message
 	if(tgui_input_list(user, call_solfed_check1, "Call 911", list("Yes", "No")) != "Yes")
@@ -274,14 +274,14 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 			SEND_SOUND(staff, sound('sound/misc/server-ready.ogg'))
 	to_chat(GLOB.admins, reason_to_call_da_feds, type = MESSAGE_TYPE_PRAYER, confidential = TRUE)
 
-	log_game("[key_name(user)] has called the Sol Federation for the following reason:\n[GLOB.fedmessage]")
-	deadchat_broadcast(" has called the Sol Federation for the following reason:\n[GLOB.fedmessage]", span_name("[user.real_name]"), user, message_type = DEADCHAT_ANNOUNCEMENT)
+	log_game("[key_name(user)] has called Exobytech for the following reason:\n[GLOB.fedmessage]")
+	deadchat_broadcast(" has called Exobytech for the following reason:\n[GLOB.fedmessage]", span_name("[user.real_name]"), user, message_type = DEADCHAT_ANNOUNCEMENT)
 
 	to_chat(user, span_notice("Authorization confirmed. SolFed Intervention request sent, standby for official instructions."))
 	playsound(src, 'sound/machines/terminal/terminal_prompt_confirm.ogg', 50, FALSE)
 
 /obj/machinery/computer/communications/proc/calling_911(mob/user, called_group_pretty = "EMTs", called_group = EMERGENCY_RESPONSE_EMT)
-	message_admins("[ADMIN_LOOKUPFLW(user)] is considering calling the Sol Federation [called_group_pretty].")
+	message_admins("[ADMIN_LOOKUPFLW(user)] is considering calling Exobytech [called_group_pretty].")
 	var/call_911_msg_are_you_sure = "Are you sure you want to call 911? Faulty 911 calls results in a $20,000 fine and a 5 year superjail \
 		sentence."
 	if(tgui_input_list(user, call_911_msg_are_you_sure, "Call 911", list("Yes", "No")) != "Yes")
@@ -297,30 +297,30 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	GLOB.cops_arrived = TRUE
 	GLOB.call_911_msg = reason_to_call_911
 	GLOB.caller_of_911 = user.name
-	log_game("[key_name(user)] has called the Sol Federation [called_group_pretty] for the following reason:\n[GLOB.call_911_msg]")
-	message_admins("[ADMIN_LOOKUPFLW(user)] has called the Sol Federation [called_group_pretty] for the following reason:\n[GLOB.call_911_msg]")
-	deadchat_broadcast(" has called the Sol Federation [called_group_pretty] for the following reason:\n[GLOB.call_911_msg]", span_name("[user.real_name]"), user, message_type = DEADCHAT_ANNOUNCEMENT)
+	log_game("[key_name(user)] has called Exobytech [called_group_pretty] for the following reason:\n[GLOB.call_911_msg]")
+	message_admins("[ADMIN_LOOKUPFLW(user)] has called Exobytech [called_group_pretty] for the following reason:\n[GLOB.call_911_msg]")
+	deadchat_broadcast(" has called Exobytech [called_group_pretty] for the following reason:\n[GLOB.call_911_msg]", span_name("[user.real_name]"), user, message_type = DEADCHAT_ANNOUNCEMENT)
 
 	call_911(called_group)
-	to_chat(user, span_notice("Authorization confirmed. 911 call dispatched to the Sol Federation [called_group_pretty]."))
+	to_chat(user, span_notice("Authorization confirmed. 911 call dispatched to Exobytech [called_group_pretty]."))
 	playsound(src, 'sound/machines/terminal/terminal_prompt_confirm.ogg', 50, FALSE)
 
 /datum/antagonist/ert/request_911
 	name = "911 Responder"
 	antag_hud_name = "hud_spacecop"
-	suicide_cry = "FOR THE SOL FEDERATION!!"
+	suicide_cry = "FOR EXOBYTECH!!"
 	var/department = "Some stupid shit"
 
 /datum/antagonist/ert/request_911/greet()
 	var/missiondesc =  ""
-	missiondesc += "<B><font size=5 color=red>You are NOT a Nanotrasen Employee. You work for the Sol Federation as a [role].</font></B>"
+	missiondesc += "<B><font size=5 color=red>You are NOT a Nanotrasen Employee. You work for Exobytech as a [role].</font></B>"
 	missiondesc += "<BR>You are responding to emergency calls from the station for immediate SolFed [department] assistance!\n"
 	missiondesc += "<BR>Use the Cell Phone in your backpack to confer with fellow first responders!\n"
 	missiondesc += "<BR><B>911 Transcript is as follows</B>:"
 	missiondesc += "<BR> [GLOB.call_911_msg]"
 	missiondesc += "<BR><B>Your Mission</B>:"
 	missiondesc += "<BR> <B>1.</B> Contact [GLOB.caller_of_911] and assist them in resolving the matter."
-	missiondesc += "<BR> <B>2.</B> Protect, ensure, and uphold the rights of Sol Federation citizens on board [station_name()]."
+	missiondesc += "<BR> <B>2.</B> Protect, ensure, and uphold the rights of Exobytech citizens on board [station_name()]."
 	missiondesc += "<BR> <B>3.</B> If you believe yourself to be in danger, unable to do the job assigned to you due to a dangerous situation, \
 		or that the 911 call was made in error, you can use the S.W.A.T. Backup Caller in your backpack to vote on calling a S.W.A.T. team to assist in the situation."
 	missiondesc += "<BR> <B>4.</B> When you have finished with your work on the station, use the Beamout Tool in your backpack to beam out yourself \
@@ -511,7 +511,7 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 
 /datum/antagonist/ert/request_911/condom_destroyer/greet()
 	var/missiondesc =  ""
-	missiondesc += "<B><font size=5 color=red>You are NOT a Nanotrasen Employee. You work for the Sol Federation as a [role].</font></B>"
+	missiondesc += "<B><font size=5 color=red>You are NOT a Nanotrasen Employee. You work for Exobytech as a [role].</font></B>"
 	missiondesc += "<BR>You are here to backup the 911 first responders, as they have reported for your assistance..\n"
 	missiondesc += "<BR><B>Your Mission</B>:"
 	missiondesc += "<BR> <B>1.</B> Contact the first responders using the Cell Phone in your backpack to figure out the situation."
@@ -551,19 +551,19 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	id_trim = /datum/id_trim/solfed
 
 /datum/antagonist/ert/request_911/treason_destroyer
-	name = "Sol Federation Military"
+	name = "Exobytech Military"
 	role = "Private"
 	department = "Military"
 	outfit = /datum/outfit/request_911/treason_destroyer
 
 /datum/antagonist/ert/request_911/treason_destroyer/greet()
 	var/missiondesc =  ""
-	missiondesc += "<B><font size=5 color=red>You are NOT a Nanotrasen Employee. You work for the Sol Federation as a [role].</font></B>"
+	missiondesc += "<B><font size=5 color=red>You are NOT a local Exobytech employee. You work for Exobytech as a [role].</font></B>"
 	missiondesc += "<BR>You are here to assume control of [station_name()] due to the occupants engaging in Treason as reported by our SWAT team.\n"
 	missiondesc += "<BR><B>Your Mission</B>:"
 	missiondesc += "<BR> <B>1.</B> Contact the SWAT Team and the First Responders via your cell phone to get the situation from them."
 	missiondesc += "<BR> <B>2.</B> Arrest all suspects involved in the treason attempt."
-	missiondesc += "<BR> <B>3.</B> Assume control of the station for the Sol Federation, and initiate evacuation procedures to get non-offending citizens \
+	missiondesc += "<BR> <B>3.</B> Assume control of the station for Exobytech, and initiate evacuation procedures to get non-offending citizens \
 		away from the scene."
 	missiondesc += "<BR> <B>4.</B> If you need to use lethal force, do so, but only if you must."
 	to_chat(owner, missiondesc)
@@ -610,7 +610,7 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	/// What table should we be incrementing votes in and checking against in the solfed responders global?
 	var/type_of_callers = "911_responders"
 	/// What source should be supplied for the announcement message?
-	var/announcement_source = "Sol Federation S.W.A.T."
+	var/announcement_source = "Exobytech S.W.A.T."
 	/// Should the station be issued a fine when the vote completes?
 	var/fine_station = TRUE
 	/// What poll message should we show to the ghosts when they are asked to join the squad?
@@ -714,7 +714,7 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	desc = "Use this in-hand to vote to call SolFed S.W.A.T. backup. If half your team votes for it, SWAT will be dispatched."
 	type_to_check = /datum/antagonist/ert/request_911
 	type_of_callers = "911_responders"
-	announcement_source = "Sol Federation S.W.A.T."
+	announcement_source = "Exobytech S.W.A.T."
 	fine_station = TRUE
 	ghost_poll_msg = "The Sol-Fed 911 services have requested a S.W.A.T. backup. Do you wish to become a S.W.A.T. member?"
 	amount_to_summon = 6
@@ -738,24 +738,24 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	desc = "Use this in-hand to vote that the station is engaging in Treason. If half your team votes for it, the Military will handle the situation."
 	type_to_check = /datum/antagonist/ert/request_911/condom_destroyer
 	type_of_callers = "swat"
-	announcement_source = "Sol Federation National Guard"
+	announcement_source = "Exobytech National Guard"
 	fine_station = FALSE
-	ghost_poll_msg = "The station has decided to engage in treason. Do you wish to join the Sol Federation Military?"
+	ghost_poll_msg = "The station has decided to engage in treason. Do you wish to join the Exobytech Military?"
 	amount_to_summon = 12
 	type_to_summon = /datum/antagonist/ert/request_911/treason_destroyer
 	summoned_type = "national_guard"
 	announcement_message = "Crewmembers of the station. You have refused to comply with first responders and SWAT officers, and have assaulted them, \
-		and they are unable to carry out the wills of the Sol Federation, despite residing within Sol Federation borders.\n\
+		and they are unable to carry out the wills of Exobytech, despite residing within Exobytech borders.\n\
 		As such, we are charging those responsible with Treason. The penalty of which is death, or no less than twenty-five years in Superjail.\n\
 		Treason is a serious crime. Our military forces are en route to your station. They will be assuming direct control of the station, and \
 		will be evacuating civilians from the scene.\n\
-		Non-offending citizens, prepare for evacuation. Comply with all orders given to you by Sol Federation military personnel.\n\
+		Non-offending citizens, prepare for evacuation. Comply with all orders given to you by Exobytech military personnel.\n\
 		To all those who are engaging in treason, lay down your weapons and surrender. Refusal to comply may be met with lethal force."
 
 /obj/item/solfed_reporter/treason_reporter/questions(mob/user)
 	var/list/list_of_questions = list(
-		"Treason is the crime of attacking a state authority to which one owes allegiance. The station is located within Sol Federation space, \
-			and owes allegiance to the Sol Federation despite being owned by Nanotrasen. Did the station engage in this today?",
+		"Treason is the crime of attacking a state authority to which one owes allegiance. The station is located within Exobytech space, \
+			and owes allegiance to Exobytech despite being owned by Nanotrasen. Did the station engage in this today?",
 		"Did station crewmembers assault you or the SWAT team at the direction of Security and/or Command?",
 		"Did station crewmembers actively prevent you and the SWAT team from accomplishing your objectives at the direction of Security and/or Command?",
 		"Were you and your fellow SWAT members unable to handle the issue on your own?",
@@ -831,7 +831,7 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 
 /obj/item/beamout_tool
 	name = "beam-out tool" // TODO, find a way to make this into drop pods cuz that's cooler visually
-	desc = "Use this to begin the lengthy beam-out  process to return to Sol Federation space. It will bring anyone you are pulling with you."
+	desc = "Use this to begin the lengthy beam-out  process to return to Exobytech space. It will bring anyone you are pulling with you."
 	icon = 'modular_nova/modules/goofsec/icons/reporter.dmi'
 	icon_state = "beam_me_up_scotty"
 	w_class = WEIGHT_CLASS_SMALL
@@ -845,7 +845,7 @@ GLOBAL_LIST_INIT(call911_do_and_do_not, list(
 	to_chat(user, "You have begun the beam-out process. Please wait for the beam to reach the station.")
 	user.balloon_alert(user, "begun beam-out")
 	if(do_after(user, 30 SECONDS))
-		to_chat(user, "You have completed the beam-out process and are returning to the Sol Federation.")
+		to_chat(user, "You have completed the beam-out process and are returning to Exobytech.")
 		message_admins("[ADMIN_LOOKUPFLW(user)] has beamed themselves out.")
 		if(isliving(user))
 			var/mob/living/living_user = user

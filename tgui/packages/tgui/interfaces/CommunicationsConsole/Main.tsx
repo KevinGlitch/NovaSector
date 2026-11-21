@@ -227,26 +227,26 @@ export function PageMain(props) {
           {!!canMessageAssociates && (
             <Button
               icon="bullhorn"
-              color="gold"
+              color="purple"
               disabled={!importantActionReady}
               onClick={() => act('messagethefeds')}
             >
-              Send message to the Sol Federation Regional Command
+              Send message to the Exobytech Regional Command
             </Button>
           )}
           {!!canMakeAnnouncement && (
             <Button icon="bullhorn" onClick={() => act('callThePolice')}>
-              Call Sol Federation 911: Marshals Response
+              Call Exobytech 911: Marshals Response
             </Button>
           )}
           {!!canMakeAnnouncement && (
             <Button icon="bullhorn" onClick={() => act('callTheCatmos')}>
-              Call Sol Federation 811: Advanced Atmospherics Response
+              Call Exobytech 811: Advanced Atmospherics Response
             </Button>
           )}
           {!!canMakeAnnouncement && (
             <Button icon="bullhorn" onClick={() => act('callTheParameds')}>
-              Call Sol Federation 911: Medical Response
+              Call Exobytech 911: Medical Response
             </Button>
           )}
           {!!emagged && (

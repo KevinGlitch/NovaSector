@@ -136,6 +136,30 @@
 /turf/open/floor/circuit/red/telecomms
 	initial_gas_mix = TCOMMS_ATMOS
 
+//AZRE: Purple circuit!
+/turf/open/floor/circuit/purple
+	icon_state = "pcircuit"
+	base_icon_state = "pcircuit"
+	light_color = LIGHT_COLOR_INTENSE_PURPLE
+	floor_tile = /obj/item/stack/tile/circuit/purple
+
+/turf/open/floor/circuit/purple/off
+	icon_state = "pcircuitoff"
+	always_off = TRUE
+
+/turf/open/floor/circuit/purple/no_power
+	always_off = TRUE
+
+/turf/open/floor/circuit/purple/anim
+	icon_state = "pcircuitanim"
+	floor_tile = /obj/item/stack/tile/circuit/purple/anim
+
+/turf/open/floor/circuit/purple/airless
+	initial_gas_mix = AIRLESS_ATMOS
+
+/turf/open/floor/circuit/purple/telecomms
+	initial_gas_mix = TCOMMS_ATMOS
+
 /turf/open/floor/noslip
 	name = "high-traction floor"
 	icon_state = "noslip"

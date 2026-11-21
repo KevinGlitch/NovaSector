@@ -130,6 +130,27 @@
 /turf/open/floor/iron/expanded_brick/quarter/incorner/dark_brick/airless
 	initial_gas_mix = AIRLESS_ATMOS
 
+/turf/open/floor/iron/expanded_brick/half/edge/dark_brick
+	icon_state = "half-dark-brick"
+	base_icon_state = "half-dark-brick"
+
+/turf/open/floor/iron/expanded_brick/half/edge/dark_brick/airless
+	initial_gas_mix = AIRLESS_ATMOS
+
+/turf/open/floor/iron/expanded_brick/half/corner/dark_brick
+	icon_state = "half-corner-dark-brick"
+	base_icon_state = "half-corner-dark-brick"
+
+/turf/open/floor/iron/expanded_brick/half/corner/dark_brick/airless
+	initial_gas_mix = AIRLESS_ATMOS
+
+/turf/open/floor/iron/expanded_brick/half/incorner/dark_brick
+	icon_state = "half-incorner-dark-brick"
+	base_icon_state = "half-incorner-dark-brick"
+
+/turf/open/floor/iron/expanded_brick/half/incorner/dark_brick/airless
+	initial_gas_mix = AIRLESS_ATMOS
+
 /turf/open/floor/iron/expanded_brick/half/edge/dark
 	icon_state = "half-dark"
 	base_icon_state = "half-dark"

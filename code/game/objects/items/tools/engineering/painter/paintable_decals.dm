@@ -320,6 +320,11 @@ GLOBAL_LIST_INIT(paintable_decals, init_subtypes(/datum/paintable_decal_category
 	name = "3 Corners"
 	icon_state = "tile_anticorner_contrasted"
 
+//AZRE: Why did this not already exist? The icon state was there for it?
+/datum/paintable_decal/tile/anticorner_full
+	name = "Inner Corners"
+	icon_state = "tile_anticorner"
+
 /datum/paintable_decal/tile/tram
 	name = "Tram"
 	icon_state = "tile_tram"
@@ -513,6 +518,12 @@ GLOBAL_LIST_INIT(paintable_decals, init_subtypes(/datum/paintable_decal_category
 	name = "Siding Inner Corner"
 	icon_state = "siding_plain_corner_inner"
 
+//AZRE: Box version of the existing decal set.
+/datum/paintable_decal/colored_siding/line_box
+	name = "Siding Box"
+	icon_state = "siding_plain_box"
+	directional = FALSE
+
 // Sidings which are not colored / have a specific pattern, texture, etc
 /datum/paintable_decal/siding
 
@@ -534,6 +545,12 @@ GLOBAL_LIST_INIT(paintable_decals, init_subtypes(/datum/paintable_decal_category
 	name = "Wood Siding Inner Corner"
 	icon_state = "siding_wood__8" // 8 dir sprite
 
+//AZRE: Box version of the existing decal set.
+/datum/paintable_decal/siding/wood/line_box
+	name = "Wood Siding Box"
+	icon_state = "siding_wood_box"
+	directional = FALSE
+
 // Thin plating sidings and all color variations
 /datum/paintable_decal/plating/thinplating
 
@@ -552,6 +569,12 @@ GLOBAL_LIST_INIT(paintable_decals, init_subtypes(/datum/paintable_decal_category
 /datum/paintable_decal/plating/thinplating/line_inner_corner
 	name = "Thin Plating Siding Inner Corner"
 	icon_state = "siding_thinplating__8" // 8 dir sprite
+
+//AZRE: Box version of the existing decal set.
+/datum/paintable_decal/plating/thinplating/line_box
+	name = "Thin Plating Siding Box"
+	icon_state = "siding_thinplating_box"
+	directional = FALSE
 
 // Alt / new thin plating sidings and all color variations
 /datum/paintable_decal/plating/thinplatingalt
@@ -572,6 +595,12 @@ GLOBAL_LIST_INIT(paintable_decals, init_subtypes(/datum/paintable_decal_category
 	name = "Thin Plating Alt Siding Inner Corner"
 	icon_state = "siding_thinplating_new__8" // 8 dir sprite
 
+//AZRE: Box version of the existing decal set.
+/datum/paintable_decal/plating/thinplatingalt/line_box
+	name = "Thin Plating Alt Siding Box"
+	icon_state = "siding_thinplating_new_box"
+	directional = FALSE
+
 // Wide plating sidings and all color variations
 /datum/paintable_decal/plating/wideplating
 
@@ -591,6 +620,12 @@ GLOBAL_LIST_INIT(paintable_decals, init_subtypes(/datum/paintable_decal_category
 	name = "Wide Plating Siding Inner Corner"
 	icon_state = "siding_wideplating__8"  // 8 dir sprite
 
+//AZRE: Box version of the existing decal set.
+/datum/paintable_decal/plating/wideplating/line_box
+	name = "Wide Plating Siding Box"
+	icon_state = "siding_wideplating_box"
+	directional = FALSE
+
 // Alt / new wide plating sidings and all color variations
 /datum/paintable_decal/plating/wideplatingalt
 
@@ -609,3 +644,9 @@ GLOBAL_LIST_INIT(paintable_decals, init_subtypes(/datum/paintable_decal_category
 /datum/paintable_decal/plating/wideplatingalt/line_inner_corner
 	name = "Wide Plating Alt Siding Inner Corner"
 	icon_state = "siding_wideplating_new__8" // 8 dir sprite
+
+//AZRE: Box version of the existing decal set.
+/datum/paintable_decal/plating/wideplatingalt/line_box
+	name = "Wide Plating Alt Siding Box"
+	icon_state = "siding_wideplating_new_box"
+	directional = FALSE

@@ -1157,6 +1157,7 @@
 		/obj/item/stack/tile/circuit,
 		/obj/item/stack/tile/circuit/green,
 		/obj/item/stack/tile/circuit/red,
+		/obj/item/stack/tile/circuit/purple,
 	)
 	mats_per_unit = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 1.05, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 1.05)
 
@@ -1185,6 +1186,20 @@
 /obj/item/stack/tile/circuit/red/anim
 	turf_type = /turf/open/floor/circuit/red/anim
 	merge_type = /obj/item/stack/tile/circuit/red/anim
+
+//AZRE: Purple circuit! Because what else could possibly look more science-y?
+/obj/item/stack/tile/circuit/purple
+	name = "purple circuit tile"
+	singular_name = "purple circuit tile"
+	desc = "A purple circuit tile."
+	icon_state = "tile_pcircuit"
+	inhand_icon_state = "tile-pcircuit"
+	turf_type = /turf/open/floor/circuit/purple
+	merge_type = /obj/item/stack/tile/circuit/purple
+
+/obj/item/stack/tile/circuit/purple/anim
+	turf_type = /turf/open/floor/circuit/purple/anim
+	merge_type = /obj/item/stack/tile/circuit/purple/anim
 
 /obj/item/stack/tile/plastic
 	name = "plastic tile"

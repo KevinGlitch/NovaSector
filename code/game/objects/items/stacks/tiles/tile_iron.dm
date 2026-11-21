@@ -90,6 +90,24 @@
 		/obj/item/stack/tile/iron/sepia,
 
 		//AZRE: Add the brick types to the reskin list.
+		/obj/item/stack/tile/iron/expanded_brick/half_edge_white,
+		/obj/item/stack/tile/iron/expanded_brick/half_corner_white,
+		/obj/item/stack/tile/iron/expanded_brick/half_incorner_white,
+		/obj/item/stack/tile/iron/expanded_brick/half_edge_dark,
+		/obj/item/stack/tile/iron/expanded_brick/half_corner_dark,
+		/obj/item/stack/tile/iron/expanded_brick/half_incorner_dark,
+		/obj/item/stack/tile/iron/expanded_brick/half_edge_white_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_corner_white_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_incorner_white_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_edge_dark_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_corner_dark_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_incorner_dark_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_edge_contrast,
+		/obj/item/stack/tile/iron/expanded_brick/half_corner_contrast,
+		/obj/item/stack/tile/iron/expanded_brick/half_incorner_contrast,
+		/obj/item/stack/tile/iron/expanded_brick/half_edge_contrast_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_corner_contrast_inv,
+		/obj/item/stack/tile/iron/expanded_brick/half_incorner_contrast_inv,
 		/obj/item/stack/tile/iron/expanded_brick/quarter_edge_neutral,
 		/obj/item/stack/tile/iron/expanded_brick/quarter_corner_neutral,
 		/obj/item/stack/tile/iron/expanded_brick/quarter_incorner_neutral,
@@ -854,6 +872,131 @@
 	turf_type = /turf/open/floor/iron/expanded_brick/quarter/incorner/contrast_inv
 	merge_type = /obj/item/stack/tile/iron/expanded_brick/quarter_incorner_contrast_inv
 
+/obj/item/stack/tile/iron/expanded_brick/half_edge_white
+	name = "half-width white edged brick"
+	singular_name = "half-width white edged brick"
+	icon_state = "tile_half-edge-white"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/edge/white
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_edge_white
+
+/obj/item/stack/tile/iron/expanded_brick/half_corner_white
+	name = "half-width white edged corner brick"
+	singular_name = "half-width white edged corner brick"
+	icon_state = "tile_half-corner-white"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/corner/white
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_corner_white
+
+/obj/item/stack/tile/iron/expanded_brick/half_incorner_white
+	name = "half-width white edged inner corner brick"
+	singular_name = "half-width white edged inner corner brick"
+	icon_state = "tile_half-corner-white"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/incorner/white
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_incorner_white
+
+/obj/item/stack/tile/iron/expanded_brick/half_edge_dark
+	name = "half-width dark edged brick"
+	singular_name = "half-width dark edged brick"
+	icon_state = "tile_half-edge-dark"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/edge/dark
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_edge_dark
+
+/obj/item/stack/tile/iron/expanded_brick/half_corner_dark
+	name = "half-width dark edged corner brick"
+	singular_name = "half-width dark edged corner brick"
+	icon_state = "tile_half-corner-dark"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/corner/dark
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_corner_dark
+
+/obj/item/stack/tile/iron/expanded_brick/half_incorner_dark
+	name = "half-width dark edged inner corner brick"
+	singular_name = "half-width dark edged inner corner brick"
+	icon_state = "tile_half-corner-dark"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/incorner/dark
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_incorner_dark
+
+/obj/item/stack/tile/iron/expanded_brick/half_edge_white_inv
+	name = "half-width edged white brick"
+	singular_name = "half-width edged white brick"
+	icon_state = "tile_half-edge-white-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/edge/white_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_edge_white_inv
+
+/obj/item/stack/tile/iron/expanded_brick/half_corner_white_inv
+	name = "half-width edged corner white brick"
+	singular_name = "half-width edged corner white brick"
+	icon_state = "tile_half-corner-white-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/corner/white_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_corner_white
+
+/obj/item/stack/tile/iron/expanded_brick/half_incorner_white_inv
+	name = "half-width edged inner corner white brick"
+	singular_name = "half-width edged inner corner white brick"
+	icon_state = "tile_half-corner-white-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/incorner/white_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_incorner_white_inv
+
+/obj/item/stack/tile/iron/expanded_brick/half_edge_dark_inv
+	name = "half-width edged dark brick"
+	singular_name = "half-width edged dark brick"
+	icon_state = "tile_half-edge-dark-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/edge/dark_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_edge_dark_inv
+
+/obj/item/stack/tile/iron/expanded_brick/half_corner_dark_inv
+	name = "half-width edged corner dark brick"
+	singular_name = "half-width edged corner dark brick"
+	icon_state = "tile_half-corner-dark-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/corner/dark_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_corner_dark_inv
+
+/obj/item/stack/tile/iron/expanded_brick/half_incorner_dark_inv
+	name = "half-width edged inner corner dark brick"
+	singular_name = "half-width edged inner corner dark brick"
+	icon_state = "tile_half-corner-dark-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/incorner/dark_brick
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_incorner_dark_inv
+
+/obj/item/stack/tile/iron/expanded_brick/half_edge_contrast
+	name = "half-width white edged dark brick"
+	singular_name = "half-width white edged dark brick"
+	icon_state = "tile_half-edge-contrast"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/edge/contrast
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_edge_contrast
+
+/obj/item/stack/tile/iron/expanded_brick/half_corner_contrast
+	name = "half-width white edged corner dark brick"
+	singular_name = "half-width white edged corner dark brick"
+	icon_state = "tile_half-corner-contrast"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/corner/contrast
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_corner_contrast
+
+/obj/item/stack/tile/iron/expanded_brick/half_incorner_contrast
+	name = "half-width white edged inner corner dark brick"
+	singular_name = "half-width white edged inner corner dark brick"
+	icon_state = "tile_half-corner-contrast"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/incorner/contrast
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_incorner_contrast
+
+/obj/item/stack/tile/iron/expanded_brick/half_edge_contrast_inv
+	name = "half-width dark edged white brick"
+	singular_name = "half-width dark edged white brick"
+	icon_state = "tile_half-edge-contrast-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/edge/contrast_inv
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_edge_contrast_inv
+
+/obj/item/stack/tile/iron/expanded_brick/half_corner_contrast_inv
+	name = "half-width dark edged corner white brick"
+	singular_name = "half-width dark edged corner white brick"
+	icon_state = "tile_half-corner-contrast-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/corner/contrast_inv
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_corner_contrast_inv
+
+/obj/item/stack/tile/iron/expanded_brick/half_incorner_contrast_inv
+	name = "half-width dark edged inner corner white brick"
+	singular_name = "half-width dark edged inner corner white brick"
+	icon_state = "tile_half-corner-contrast-inv"
+	turf_type = /turf/open/floor/iron/expanded_brick/half/incorner/contrast_inv
+	merge_type = /obj/item/stack/tile/iron/expanded_brick/half_incorner_contrast_inv
 
 //Tiles below can't be gotten through tile reskinning
 
